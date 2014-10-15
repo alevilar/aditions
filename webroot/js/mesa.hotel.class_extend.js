@@ -1,14 +1,18 @@
 
 
-Mozo.prototype._initFn.push( function(){
-	
-});
 
 
-/**	
-* @param moment-js day
-**/
-Mozo.prototype.tieneMesaEl = function ( day ) {		
+/**
+*	Ejecutar al inicializar la creacion de un Mozo
+*
+***/
+Mozo.prototype._init.push( function( jsonData ) {
+
+
+	/**	
+	* @param moment-js day
+	**/
+	this.tieneMesaEl = function ( day ) {		
 		if ( !day ) return false;
 
 		var i = 0, 
@@ -29,12 +33,50 @@ Mozo.prototype.tieneMesaEl = function ( day ) {
 			i++;
 		}
 		return false;
-};
+
+	};
 
 
+	var mesaClass = function ( map ) {
 
-Mozo.prototype.mesasFromDataRangeByRange = function () {
+				var obj = {},
+
+					// defaults values
+					d = {
+						id: ko.observable(),
+						numero: ko.observable(),
+						dayName: ko.observable( '' ),
+						grillaExtraClass: ko.observable( 'libre' ),
+						diasEstadia: ko.observable( 1 ),
+						checkin: ko.observable( '' ),
+						checkout: ko.observable( '' ),
+						getEstadoIcon: function(){return ''},
+						clienteNameData: function(){return ''},
+						seleccionar: function(){}
+					}
+
+				if ( map ) {
+					obj = map;					
+				}
+
+				// combino con lo que vino
+				d = $.extend({}, d, obj);
+
+				d.diasEstadiaRecortado = ko.observable( d.diasEstadia() );
+
+				return d;
+
+		}
+
+
+	this.mesasWithinRange = ko.pureComputed( function () {
+	});
+
+
+	this.mesasFromDataRangeByRange = ko.pureComputed( function () {
 		 var days = Risto.Adition.adicionar.calendarGrid.days(),
+		 	 gridFirstDay = Risto.Adition.adicionar.calendarGrid.firstDay().toDate(),
+		 	 gridLastDay = Risto.Adition.adicionar.calendarGrid.lastDay().toDate(),
 		 	 curDay,
 		 	 mesa, 
 		 	 diasEstadia,
@@ -44,106 +86,75 @@ Mozo.prototype.mesasFromDataRangeByRange = function () {
 		 	 diffDays = 0,
 		 	 iant,
 		 	 diffMin, diffMax,
-		 	 className = '',
-		 	 i = 0;
-		if ( days ) {			
+		 	 i = 0,
+		 	 mesaRow = [],
+		 	 checkinClass = '', 
+		 	 checkoutClass = '',
+		 	 mesaCel;
+
+		if (this.numero() == 0) return [];
+
+
+		if ( days ) {
 			while ( i < days.length ) {
+				checkinClass = checkoutClass = '';
+				diasEstadia = 1;
+				
 				curDay = days[i];
+
 				mesa = this.tieneMesaEl( curDay );
 
-				if ( !mesa.hasOwnProperty('grillaExtraClass')) {
-					mesa.grillaExtraClass = ko.observable('checkin-checkout');
-				}
-
-				if ( !mesa.hasOwnProperty('diasEstadiaRecortado')) {
-					mesa.diasEstadiaRecortado = ko.observable( 0 );
-				}
-
-				
 				if ( mesa ) {
-					cin =  Date.clearHour( mesa.checkin() );
-					cout =  Date.clearHour( mesa.checkout() );
-						
-					diasEstadia = mesa.diasEstadia();
-				
-					diffMin = Date.diffDays( cin, days[0] );
-					diffMax = Date.diffDays( cout, days[days.length-1] );
-
-					// check limit de grilla inicial con checkin
-					if ( diffMin < 0 || diffMax  > 0 ) {
-						className = '';
-
-						if ( diffMin < 0 && diffMax > 0) {
-							// recortado
-							diasEstadia = days.length;
-							className = 'checkin-not-showed  checkout-not-showed';
-						} else if ( diffMin < 0 ) {
-							// recortado
-							diasEstadia = Math.abs( diasEstadia - Math.abs(Date.diffDays( cin, days[0] )) );											
-							className = 'checkin-not-showed';
-						} else if ( diffMax > 0 ) {
-							// check limit de grilla final con checkout
-							diasEstadia =  Math.abs( diasEstadia - Math.abs(Date.diffDays( cout, days[days.length-1] )) )+1;						
-							className = 'checkout-not-showed';
-						}
-						mesa.grillaExtraClass(className);
-					} else {
-						if ( mesa.grillaExtraClass() == 'checkin-not-showed' ) {
-							// si estaba recortado y luego se movio la grilla, resetear clase
-							mesa.grillaExtraClass('checkin-checkout');
-						}
-					}
-
-
-					mesa.diasEstadiaRecortado( diasEstadia );
-
-					// avanzar dias hasta el dia del checkout para seguir buscando
-					if ( mesa.diasEstadiaRecortado()  ) {
-						i = i + mesa.diasEstadiaRecortado() ;
-					} else {
-						i++;
-						// tambien devuelve la mesa en el dia del checkout, pero no me interesa ese dia
-						mesa = {
-							diasEstadia:0,
-							dayName: curDay.format('YYYY-MM-DD')
-						};
-					}
+					mesaCel = new mesaClass( mesa );
 				} else {
-					// avanzar 1 dia
-					i++;
-					mesa = {
-							diasEstadia:0,
-							dayName: curDay.format('YYYY-MM-DD')
-						};
+					// celda de mesa libre
+					mesaCel = new mesaClass;
 				}
-				cols.push(mesa);
+
+				mesaCel.dayName(curDay.format('YYYY-MM-DD'));
+
+				mesaRow.push( mesaCel );
+				if ( mesa ) {
+
+					cin =  Date.clearHour( mesaCel.checkin() ).toDate();
+					cout =  Date.clearHour( mesaCel.checkout() ).toDate();
+					diasEstadia = mesaCel.diasEstadia();
+
+					if ( cin < gridFirstDay ) {
+						// checkin fuera de la grilla
+						checkinClass = ' checkin-not-showed';
+
+						// restar dias que no se muestran
+						diffMin = Math.abs(Date.diffDays( cin, gridFirstDay ));
+						diasEstadia -= diffMin 
+					}
+
+					if ( cout > gridLastDay ) {
+						//checkout fuera de la grilla
+						checkoutClass = ' checkout-not-showed';
+
+						// restar dias que no se muestran
+						diffMax = Math.abs(Date.diffDays( cout, gridLastDay ));
+						diasEstadia -= diffMax ;
+					}
+					
+					mesaCel.diasEstadiaRecortado( diasEstadia );
+					
+					if ( checkinClass || checkoutClass ) {
+						mesaCel.grillaExtraClass( 'ocupada' + checkinClass + checkoutClass );
+					}  else {
+						mesaCel.grillaExtraClass( 'ocupada checkin-checkout' );
+					}
+				}
+
+				// avanzar los dias que dura la estadia de la mesa
+				i += diasEstadia;
+
 			}
-			return cols;
 		}
-		return [];
-	};
+		return mesaRow;
+	}, this);
 
 
-Mozo.prototype.mesasFromDataRange = function () {
-		var i, 
-			cin, 
-			cout,
-			mesas = [],
-			firstDay = Risto.Adition.adicionar.calendarGrid.days[0],
-			lastDay = Risto.Adition.adicionar.calendarGrid.days[ Risto.Adition.adicionar.calendarGrid.days.length -1 ];
-
-
-		for ( i in this.mesas() ) {
-			cin = this.mesas()[i]().checkin;
-			cout = this.mesas()[i]().checkout;
-			
-			if ( lastDay >= cin || firstDay <= cout ) {
-				// agregar mesa
-				mesas.push(this.mesas()[i]);
-			}
-		}
-
-		return mesas;
-	}
-
+});
 

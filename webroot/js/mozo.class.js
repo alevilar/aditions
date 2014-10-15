@@ -33,8 +33,7 @@ var MOZOS_POSIBLES_ESTADOS =  {
 
 
 
-var Mozo = function(jsonData){
-
+var Mozo = function(jsonData){    
     return this.initialize(jsonData);
 }
 
@@ -44,7 +43,8 @@ Mozo.prototype = {
     numero  : function( ) {return 0},
     mesas   : function( ) {return []},
 
-    _initFn: [], // array de functions to apply on initialization
+    _init:[], // you can add init functions into this array and will be called on initualize
+
 
     initialize: function( jsonData ) {
         var mozoNuevo = this,
@@ -72,11 +72,13 @@ Mozo.prototype = {
         
         ko.mapping.fromJS(jsonData, mapOps, this);
 
-        var i = 0;
-        while ( i < this._initFn.length) {
-            this._initFn[i].apply(this, arguments);
-            i++;
+
+        var len = 0;
+        while ( len < this._init.length ) {
+            this._init[len].apply(this, arguments);
+            len++;
         }
+
         return this;
     },
 
@@ -104,6 +106,10 @@ Mozo.prototype = {
     },
 
 
+    /**
+    *
+    *   Agrega una mesa existente al listado de mesas del mozo
+    **/
     agregarMesa: function(nuevaMesa){
         this.mesas.push(nuevaMesa);
         var evento = $.Event(MOZOS_POSIBLES_ESTADOS.agragaMesa.event);
@@ -120,6 +126,31 @@ Mozo.prototype = {
         }
         return false;
     },
+
+
+
+    /**
+     *  Pasado un JSON con los datos y atributos de una mesa, lo convierte
+     *  en un objeto Mesa
+     *  @param Mesa mesaJSON
+     *  @return Mesa
+     */
+    crearNuevaMesa: function(){        
+        var mesaJSON = {};
+        mesaJSON.mozo_id = this.id();
+        var mesa = new Mesa(this, mesaJSON);
+        mesa.seleccionar();
+
+        this.mesas.push(mesa);
+
+        mesa.create().fail(function(){
+            alert("No se ha podido crear la nueva mesa");
+        });
+
+        return mesa;
+    },
+
+
 
     /**
      * Cuando un mozo es clickeado o elegido, es seleccionado.

@@ -10401,8 +10401,7 @@ var MOZOS_POSIBLES_ESTADOS =  {
 
 
 
-var Mozo = function(jsonData){
-
+var Mozo = function(jsonData){    
     return this.initialize(jsonData);
 }
 
@@ -10411,8 +10410,6 @@ Mozo.prototype = {
     id      : function( ) {return 0},
     numero  : function( ) {return 0},
     mesas   : function( ) {return []},
-
-    _initFn: [], // array de functions to apply on initialization
 
     initialize: function( jsonData ) {
         var mozoNuevo = this,
@@ -10439,12 +10436,6 @@ Mozo.prototype = {
         } 
         
         ko.mapping.fromJS(jsonData, mapOps, this);
-
-        var i = 0;
-        while ( i < this._initFn.length) {
-            this._initFn[i].apply(this, arguments);
-            i++;
-        }
         return this;
     },
 
@@ -11577,13 +11568,6 @@ Mesa.prototype = {
         }, function(d){
             
         });
-
-        
-        if ( this.Pago().length == 1 && !this.Pago()[0].valor() ) {
-            // es porque la mesa esta cobrada
-            this.setEstadoCobrada();
-        }
-
 
         if ( this.totalPagos() && this.vuelto() >= 0) {
         	// es porque la mesa esta cobrada
@@ -13177,10 +13161,6 @@ Risto.Adition.detalleComanda.prototype = {
 	
 
 
-Mozo.prototype._initFn.push( function(){
-	
-});
-
 
 /**	
 * @param moment-js day
@@ -13206,7 +13186,8 @@ Mozo.prototype.tieneMesaEl = function ( day ) {
 			i++;
 		}
 		return false;
-};
+
+	};
 
 
 
@@ -13962,7 +13943,6 @@ $(document).bind("mobileinit", function(){
 
         // Al apretar el boton de cobro de pago procesa los pagos correspondientes
         $('#mesa-pagos-procesar').bind('click', function(){
-            
             Risto.Adition.adicionar.currentMesa().savePagos();            
         });
     });

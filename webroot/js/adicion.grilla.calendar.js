@@ -1,9 +1,11 @@
 
-
-
-
-
-	$('#listado-mesas').live('pageshow',function(event, ui){
+/**
+*
+*	Caalback para cuando se muestra la Page de la grilla en jquery mobile
+*	
+*
+****/
+Risto.domRegisterForEvents['listado-mesas'].show = function() {
 
 		/**
         pintar celdas para marcar
@@ -109,38 +111,45 @@
 			}			
 		}
 
-		$(this).delegate('td.libre', 'mousedown', function(e) {
+		$(this).on('mousedown', 'td.libre',  function(e) {
 			agregarAncla( $(this) );
 			iniciarCheckin( $(this) );
         });
 
-		$(this).delegate('.mozo-mesas td.libre', 'mouseenter', function(e) {
+		$(this).on('mouseenter', '.mozo-mesas td.libre', function(e) {
 			mostrarPosibleAncla( $(this) );
 			mostrarSiguienteAncla( $(this) );
 			resaltarThDay( $(this) );
         });
 
-        $('body').bind( 'mouseup', function(e) {
+        $(document).bind( 'mouseup', function(e) {
         	cortarAncla( $(this) );
         });
 
 
-		$(this).delegate('.mozo-mesas td.libre', 'mouseleave', function(e) {
+		$(this).on('mouseleave', '.mozo-mesas td.libre', function(e) {
 			ocultarPosibleAncla( $(this) );
 			quitarResaltadoThDay( $(this) );
         });
 
 
-        $(this).delegate('.mozo-mesas td.libre', 'mouseup', function(e) {
+        $(this).on('mouseup', '.mozo-mesas td.libre',  function(e) {
 			iniciarCheckout( $(this) );
         });
 
 
-        $(this).delegate('.mozo-mesas td.libre', 'mouseup', function(e) {
+        $(this).on('mouseup', '.mozo-mesas td.libre',  function(e) {
 			iniciarCheckout( $(this) );
         });
 
-        $(this).delegate('.control-header', 'mousewheel DOMMouseScroll', function(e) {
+
+        $(this).on('click', '.mozo-mesas a', function(e) {
+        	console.debug(this);
+        	console.info(e);
+			$.mobile.changePage( this.href );
+        });
+
+        $(this).on('mousewheel DOMMouseScroll', '.control-header',  function(e) {
         	e.preventDefault();
         	if (e.originalEvent.wheelDelta > 0 || e.originalEvent.detail < 0) {
 		        // scroll up
@@ -152,18 +161,21 @@
 		    }
 
         });
-        
+}
 
-    });
 
-    $('#listado-mesas').live('pagebeforehide',function(event, ui){
-         $(this).undelegate('td.libre', 'mousedown');
-         $(this).undelegate('.mozo-mesas td.libre', 'mouseenter');
-         $('body').unbind( 'mouseup');
-         $(this).undelegate('.mozo-mesas td.libre', 'mouseleave');
-         $(this).undelegate('.mozo-mesas td.libre', 'mouseup');
-         $(this).undelegate('.control-header', 'mousewheel DOMMouseScroll');
-    });
+
+
+Risto.domRegisterForEvents['listado-mesas'].hide = function() {
+	     $(this).off('mousedown', 'td.libre');
+         $(this).off('mouseenter', '.mozo-mesas td.libre');
+         $(document).unbind( 'mouseup');
+         $(this).off('mouseleave', '.mozo-mesas td.libre');
+         $(this).off('mouseup', '.mozo-mesas td.libre');
+         $(this).off('mousewheel DOMMouseScroll', '.control-header');
+         $(this).off('click', '.mozos-grid a');
+}
+
 
     
     
@@ -173,6 +185,18 @@
         this.cantDayShown	= ko.observable(24);        
         this.months         = ko.observableArray( [] );
         this.days           = ko.observableArray( [] );
+
+
+        this.firstDay = ko.computed(function(){
+				return this.days()[0];
+			}, this);
+
+
+        this.lastDay = ko.computed(function(){
+				return this.days()[this.days().length-1];
+			}, this);
+
+
         
         // agrego atributos generales
         Risto.modelizar(this);
@@ -187,7 +211,10 @@
 			var from  = Date.clearHour(), //devuelve el dia actual con las horas min y segs en 00
 				to    = moment(from).add( this.cantDayShown(), 'days' );
 				
-			this.setFromToDate(from, to);				
+			this.setFromToDate(from, to);	
+
+
+				
 		},
 
 		setFromToDate: function ( from, to) {

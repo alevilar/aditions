@@ -1,5 +1,5 @@
 {
-	"name": "ristorantino/adition",
+	"name": "ristorantino/aditions",
 	"description": "Adition Plugin for Ristorantino Mágico",
 	"type": "cakephp-plugin",
 	"homepage": "https://github.com/alevilar/adition",
@@ -16,6 +16,6 @@
 		"composer/installers": "*"
 	},
 	"extra": {
-		"installer-name": "Adition"
+		"installer-name": "Aditions"
 	}
 }

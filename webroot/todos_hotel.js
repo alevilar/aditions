@@ -12043,6 +12043,33 @@ Risto.Adition.handleMesasRecibidas = {
             $raeh.adicionMesasActualizadas();
             return 1;
         },
+
+
+
+         /**
+         * 
+         * Recibiendo las mesas borradas
+         * 
+         */
+        borradas: function ( data ) {
+            if (!data.mozos) return -1;
+            var mesaEncontrada, 
+                z; // contador index de mozos
+                       
+            for (z in data.mozos) {
+                for( var m in data.mozos[z].mesas ) {
+                    mesaEncontrada = Risto.Adition.adicionar.findMesaById( data.mozos[z].mesas[m].id );
+                    
+                    if ( mesaEncontrada ) {  
+//                        ko.mapping.fromJS( data.mozos[z].mesas[m], {}, mesaEncontrada );
+                        mesaEncontrada.mozo().sacarMesa( mesaEncontrada );
+                    }
+                }
+            }
+            // reinicializar vistas
+            $raeh.adicionMesasActualizadas();
+            return 1;
+        },
         
         
         /**

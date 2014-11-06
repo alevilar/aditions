@@ -12009,6 +12009,8 @@ Risto.Adition.handleMesasRecibidas = {
                     mesaEncontrada = Risto.Adition.adicionar.findMesaById( data.mozos[z].mesas[m].id );
                     if ( mesaEncontrada ) {
                         mesaEncontrada.update( mozo, data.mozos[z].mesas[m] );
+                    } else {
+                        new Mesa(mozo, data.mozos[z].mesas[m] );
                     }
                 }
             }

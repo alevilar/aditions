@@ -690,6 +690,21 @@
 </div>  
 
 
+
+<!--
+                    MESA CAMBIAR NUMERO
+
+-->
+<div data-role="page" id="notificaciones" data-theme="f" data-role="dialog">
+    <div data-role="header">
+        <h1 class="titulo"></h1>
+    </div>
+    <div data-role="content" class="contenido">            
+        <div></div>
+    </div>
+</div>  
+
+
 <?php 
 // $jsonMesas =  json_encode( $mesas );  
 ?>

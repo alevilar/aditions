@@ -13411,6 +13411,17 @@ Risto.Adition.koAdicionModel = {
 
       
 $(document).bind("mobileinit", function(){    
+
+
+
+    $(this).ajaxError(function ( ev, data ) {
+        $( '.titulo', '#notificaciones').html(data.statusText);
+        
+        $.mobile.changePage('#notificaciones', {role: 'dialog'});
+
+        $( '.contenido > div', '#notificaciones').html( data.responseText );
+
+    });
     
     /**
      *

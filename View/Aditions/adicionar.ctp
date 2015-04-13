@@ -81,11 +81,13 @@
                     <?php
                     if ( Configure::check('Site.logo_path') ) {
                                     $imgLogo = $this->Html->image(Configure::read('Site.logo_path'));
-                                    echo $this->Html->link($imgLogo, array('plugin'=>'risto', 'controller' => 'pages', 'action' => 'display', 'dashboard'), array(
-                                            'data-ajax' => 'false',
-                                            'data-role' => 'none',
-                                            'class' => 'navbar-brand navbar-brand-logo', 'escape'=>false)); 
-                                }
+                                    echo $this->Html->link($imgLogo, '#adicion-opciones' , array(
+                                           // 'data-ajax' => 'false',
+                                            'data-rel' => 'dialog',
+                                            'class' => 'navbar-brand', 
+                                            'escape'=>false
+                                            )); 
+                    }
                     ?>
 
                     <div class="control-actions">                            

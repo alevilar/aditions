@@ -259,7 +259,7 @@
                     <fieldset data-role="fieldcontain">
                             <h3 class="numero-mesa">Número de <?php echo Configure::read('Mesa.tituloMesa') ?></h3>
                             <label for="mesa-add-numero">Ingresar el número</label>
-                            <input type="number" min="1" name="numero" data-risto="mesa" id="mesa-add-numero" required="required"/>
+                            <input type="text" name="numero" data-risto="mesa" id="mesa-add-numero" required="required"/>
                             <div class="ui-grid-a">
                                 <div class="ui-block-a"><button type="button"  data-theme="c" id="add-mesa-paso2-volver">Volver</button></div>
                                 <div class="ui-block-b"><button type="button"  data-theme="b" id="add-mesa-paso2-submit">Siguiente</button></div>
@@ -613,7 +613,7 @@
         <form name="cambiar-mozo" id="form-cambiar-numero" action="#mesa-view" data-ajax="false"  data-transition="reverse">
             <fieldset data-role="controlgroup" data-type="horizontal">
                 <label for="numeroacambiar">Ingresar nuevo número</label>
-                <input type="number" name="numero" id="numeroacambiar" />
+                <input type="text" name="numero" id="numeroacambiar" />
             </fieldset>
             
             <fieldset class="ui-grid-a">

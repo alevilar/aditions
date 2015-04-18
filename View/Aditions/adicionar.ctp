@@ -135,28 +135,10 @@
             
             <a href="<?php echo $this->Html->url(array('plugin'=>'aditions', 'controller'=>'adicionar', '#listado-mesas-cerradas'))?>" rel="external" data-role="button" data-icon="refresh">Refrescar Cajero</a>
             
-            <h3>Informes Fiscales</h3>
-            <div class="ui-grid-a">
-                <div class="ui-block-a">
-                    <a href="#listado-mesas-cerradas" 
-                       data-role="button" 
-                       data-href="<?php echo $this->Html->url(array('plugin'=>'printers', 'controller'=>'printers', 'action'=>'cierre', 'x'));?>" 
-                       data-direction="reverse">
-                       Imprimir informe "X"
-                   </a>
-                </div>
-                <div class="ui-block-b">
-                    <a href="#listado-mesas-cerradas" 
-                       data-role="button" 
-                       data-href="<?php echo $this->Html->url(array('plugin'=>'printers', 'controller'=>'printers', 'action'=>'cierre', 'z'));?>" 
-                       data-direction="reverse">
-                       Imprimir informe "Z"
-                   </a>
-               </div>
-            </div>
-            <a href="<?php echo $this->Html->url(array('plugin'=>'printers', 'controller'=>'printers', 'action'=>'nota_credito'));?>" data-role="button">Nota de crédito</a>
+
+           
+            <?php echo $this->element( 'Aditions.printers_types_cajero_ops_'. strtolower( $printer['Printer']['driver'] ) ); ?>
             
-            <hr />
            
             
             <div class="ui-grid-a">
@@ -176,10 +158,7 @@
     </div>
     <div data-role="content">
         
-            <?php if ( Configure::read('Adicion.usarCajero') ) { ?>
             <a href="#listado-mesas-cerradas" data-role="button">Modo Cajero</a>
-            <?php } ?>
-            
             
             <a href="#" onclick="window.location.reload(true);" data-ajax="false" data-role="button" data-icon="refresh">
                 Refrescar Adición</a>
@@ -254,35 +233,42 @@
                             ?>                     
                     </fieldset>
                 </div>
-                    
+
+
                 <div id="add-mesa-paso2" style="display: none">
-                    <fieldset data-role="fieldcontain">
-                            <h3 class="numero-mesa">Número de <?php echo Configure::read('Mesa.tituloMesa') ?></h3>
-                            <label for="mesa-add-numero">Ingresar el número</label>
-                            <input type="text" name="numero" data-risto="mesa" id="mesa-add-numero" required="required"/>
-                            <div class="ui-grid-a">
-                                <div class="ui-block-a"><button type="button"  data-theme="c" id="add-mesa-paso2-volver">Volver</button></div>
-                                <div class="ui-block-b"><button type="button"  data-theme="b" id="add-mesa-paso2-submit">Siguiente</button></div>
-                            </div>
-
-                    </fieldset>
-                </div>
-
-                <div id="add-mesa-paso3" style="display: none">
                     
                     <fieldset data-role="fieldcontain">
                         <h3 class="cubiertos"><?php echo Inflector::pluralize(Configure::read('Mesa.tituloCubierto')) ?></h3>
                             <label for="mesa-add-cant_comensales"><?php echo __( 'Ingresar la cantidad de %s', Inflector::pluralize(Configure::read('Mesa.tituloCubierto'))) ?></label>
                             <input type="number" name="cant_comensales" id="mesa-add-cant_comensales"/>
 
+                             <div class="ui-grid-a">
+                                <div class="ui-block-a"><button type="button"  data-theme="c" id="add-mesa-paso2-volver">Volver</button></div>
+                                <div class="ui-block-b"><button type="button"  data-theme="b" id="add-mesa-paso2-submit">Siguiente</button></div>
+                            </div>
+
+
+
+                    </fieldset>
+                </div>
+
+
+                    
+                <div id="add-mesa-paso3" style="display: none">
+                    <fieldset data-role="fieldcontain">
+                            <h3 class="numero-mesa"><?php echo Configure::read('Mesa.tituloMesa'). " " . __("Descripción") ?></h3>
+                            <input type="text" name="numero" data-risto="mesa" id="mesa-add-numero" required="required"/>
+                           
+
                             <div class="ui-grid-a">
                                 <div class="ui-block-a"><button type="button"  data-theme="c" id="add-mesa-paso3-volver">Volver</button></div>
 
                                 <div class="ui-block-b"><button type="submit"  data-theme="b" id="add-mesa-paso3-submit">Abrir <?php echo Configure::read('Mesa.tituloMesa')?></button></div>
                             </div>
-
                     </fieldset>
                 </div>
+
+                
                         
             </form>
         </div>
@@ -449,12 +435,16 @@
     
     <div data-role="footer">
         <h3>
-            <span id="mesa-cant-comensales"  style="float: left">            
+
+            <span id="mesa-cant-comensales"  style="float: left">   
+                <?php if ( Configure::read('Adicion.cantidadCubiertosObligatorio') ) {?>         
                 <a data-role="button" data-bind="visible: !parseInt(adn().currentMesa().cant_comensales())">
                     <?php echo __( 'Ingresar %s', Inflector::pluralize(Configure::read('Mesa.tituloCubierto'))) ?>
                 </a>
                 <span data-bind="visible: parseInt( adn().currentMesa().cant_comensales()) > 0"><span data-bind="text: adn().currentMesa().cant_comensales()"></span> <?php echo Inflector::pluralize(Configure::read('Mesa.tituloCubierto'))  ?></span>
+                <?php } ?>
             </span>
+
             <span class="mesa-total"><span data-bind="text: adn().currentMesa().textoTotalCalculado()"></span></span>
             <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL) { ?>
             <span class="hora-abrio">Abrió a las <span data-bind="text: adn().currentMesa().timeCreated()"></span></span>

@@ -386,18 +386,16 @@ $(document).bind("mobileinit", function(){
                 
                 
                 // init
-                $p2.hide();
-                $p3.hide();
-                $p1.show();
-                
+                irPaso1();
+
 
                 /**
                  *
                  * Luego de apretar el submit del formulario agregar mesa....
                  */
-                function agregarNuevaMesa(e){
+                function agregarNuevaMesa ( e ) {
                     unbindALl();
-                    e.preventDefault();
+                   // e.preventDefault();
 
                     var rta = $formMesaAdd.serializeArray(), 
                         miniMesa = {}, // json modelo, para crear la mesa
@@ -405,12 +403,14 @@ $(document).bind("mobileinit", function(){
                         r; // cada atributo del formuario de mesa
 
                     for (r in rta ) {
-                        if (rta[r].name == 'numero' && !rta[r].value){
+                        if (rta[r].name == 'numero' && !rta[r].value && RISTO_CONFIGURE_ADICION.numeroMesaObligatorio){
+                            irPaso2();
                             alert("Debe completar numero de mesa");
                             return false;
                         }
 
-                        if (rta[r].name == 'cant_comensales' && !rta[r].value && Risto.Adition.cubiertosObligatorios){
+                        if (rta[r].name == 'cant_comensales' && !rta[r].value && RISTO_CONFIGURE_ADICION.cubiertosObligatorios){
+                            irPaso3();
                             alert("Debe indicar la cantidad de "+Risto.TITULO_CUBIERTO);
                             return false;
                         }
@@ -427,12 +427,22 @@ $(document).bind("mobileinit", function(){
                 }
                 
                 function irPaso1(){
+                    if ( Risto.Adition.adicionar.mozos().length == 1 ) {
+                        var mozo_id = Risto.Adition.adicionar.mozos()[0].id();
+                        $( '#radio-mozo-id-' + mozo_id).attr('checked', 1);
+                        return irPaso2();
+                    }
+                    
                     $p3.hide();
                     $p2.hide();
                     $p1.show();
                 }
                 
                 function irPaso2(){
+                    if ( !RISTO_CONFIGURE_ADICION.cantidadCubiertosObligatorio ) {
+                        return irPaso3();
+                    }
+
                     $p1.hide();
                     $p3.hide();
                     $p2.show();           
@@ -440,10 +450,20 @@ $(document).bind("mobileinit", function(){
                 }
                 
                 function irPaso3(){
+                     if ( !RISTO_CONFIGURE_ADICION.numeroMesaObligatorio ) {
+                        return irPaso4();
+                    }
+
                     $p1.hide();
                     $p2.hide();
-                    $p3.show();   
+                    $p3.show(); 
+                    
                     $('#add-mesa-paso3').find( 'input').focus();
+                }
+
+                function irPaso4 () {
+                    agregarNuevaMesa();
+                  //  $('#add-mesa-paso3-submit').trigger('click');
                 }
     
                 
@@ -458,7 +478,7 @@ $(document).bind("mobileinit", function(){
                 // Ir al paso 3
                 $('#add-mesa-paso2-submit').bind('click', irPaso3);
                 
-
+                // submit form
                 $('#form-mesa-add').bind('submit', agregarNuevaMesa);
 
         });

@@ -1,3 +1,4 @@
+<?php App::uses('MtSites', 'MtSites.Utility'); ?>
 <!DOCTYPE HTML>
 <html xml:lang="es-ES" lang="es-ES" dir="ltr">    
 <head>
@@ -6,7 +7,9 @@
         <!--
             // Inicializacion de variable global de url
             var URL_DOMAIN = "<?php echo $this->Html->url('/' ,true);?>";
-            var TENANT = "<?php echo $this->Session->read('MtSites.current');?>";
+            var TENANT = "<?php echo  MtSites::getSiteName();?>";
+            var RISTO_CONFIGURE_SITE = JSON.parse( '<?php echo json_encode( Configure::read('Site'), JSON_NUMERIC_CHECK );?>');
+            var RISTO_CONFIGURE_ADICION = JSON.parse( '<?php echo json_encode( Configure::read('Adicion'), JSON_NUMERIC_CHECK );?>');
         -->
         </script>
     

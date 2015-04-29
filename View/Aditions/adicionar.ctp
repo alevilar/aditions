@@ -137,7 +137,12 @@
             
 
            
-            <?php echo $this->element( 'Aditions.printers_types_cajero_ops_'. strtolower( $printer['Printer']['driver'] ) ); ?>
+            <?php 
+            $cajeroElOps = 'Aditions.printers_types_cajero_ops_'. strtolower( $printer['Printer']['driver'] );
+            if ( $this->elementExists( $cajeroElOps ) ) {
+                echo $this->element( $cajeroElOps ); 
+            }
+            ?>
             
            
             

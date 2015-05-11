@@ -32,6 +32,7 @@ ul.listado-adicion li {
     height: auto;
     margin: 0.5%;
     min-width: 70px;
+    vertical-align: top;
 }
 ul.listado-adicion li a {
     margin: 0;
@@ -121,16 +122,8 @@ ul.listado-adicion .mesa-mozo,ul.listado-adicion .mozo-cant-mesas {
     font-weight:bold;
 }
 
-.mesa-tipofactura{
-    padding: 10px 0px 7px 0px;
-    width: 15px;
-    text-align: center;
-    font-size: small;
-    position: absolute;
-    left: 3px;
-    top: -10px;
-    text-shadow: none !important;
-    font-weight:bold;
+.mesa-tipofactura{    
+    font-size: small;    
 }
 
 .mesa-descuento{
@@ -382,12 +375,7 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
 }
 
 .mesa-time{
-    font-size: xx-small;
-    margin-left: -17px;
-    position: absolute;
-    margin-left: 2px;
-    top: 3px;
-    right: 3px;
+    font-size: xx-small;    
 }
 
 

@@ -2,6 +2,8 @@
 <script type="text/javascript">
     <!--
 
+        PROMPT_DESCRIPCION_DE_MESA = "<?php echo __('indicar Descripción de %s', Configure::read('Mesa.tituloMesa'))?>";
+
         moment.locale("es");
         if ( typeof Risto.CalendarGrid != 'undefined' ) {
             Risto.Adition.adicionar.calendarGrid = new Risto.CalendarGrid;

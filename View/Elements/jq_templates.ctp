@@ -188,16 +188,8 @@ el ajax que verifica el estado de las mesas (si fue abierta o cerrada alguna. --
 
                 <span class="mesa-span ui-btn-inner">
                       <span class="ui-btn-text">
-
-                          
-                          <span class="mesa-mozo" data-bind="text: mozo().numero"></span><br>
                           <span class="mesa-numero" data-bind="text: numero"></span>
-                          <hr />
-                          
-                          <span class="mesa-total">$ <span data-bind="text: totalCalculado()"></span></span>
-
-                          <span class="mesa-descuento" data-bind="visible: clienteDescuentoText(),text: clienteDescuentoText()"></span><br>
-
+                          <hr />                         
                           <span class="mesa-time" data-bind="text: textoHora()"></span>
                 </span>
             </span>
@@ -226,9 +218,6 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
 
                 <span class="mesa-span ui-btn-inner">
                       <span class="ui-btn-text">
-
-                          
-                          <span class="mesa-mozo" data-bind="text: mozo().numero"></span><br>
                           <span class="mesa-numero" data-bind="text: numero"></span>
                           <hr />
                           
@@ -244,4 +233,21 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
 
     
 </script>
+
+
+
+<script id="listaMozos" type="text/x-jquery-tmpl">
+    <?php $anchoTabMozo =  floor( 100/ (count($mozos) +1) );?>
+    <li  style="width: <?php echo 100 - ($anchoTabMozo*(count($mozos)))?>%">
+        
+        <button type="button" data-bind="click: seleccionar, text: numero, attr: {value: id}"  class="adicion-mozo-title"></button>
+               
+        <ul class="listado-adicion" data-role="listview"
+               data-bind="template: {name: 'listaMesas', foreach: mesas}"
+               style="margin: 0px;">
+
+        </ul>     
+    </li>
+</script>
+
 

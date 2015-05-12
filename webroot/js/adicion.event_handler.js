@@ -102,8 +102,6 @@ $raeh = Risto.Adition.EventHandler = {
     },
     
     
-    
-    
 
     cambiarMozo: function(e){    
         var mozoId = $(this).find('[name="mozo_id"]:checked').val();

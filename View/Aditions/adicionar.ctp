@@ -15,51 +15,14 @@
 
             <h1><span style="color: #fcf0b5" data-bind="text: adn().mesas().length">0</span> <?php echo Inflector::pluralize( Configure::read('Mesa.tituloMesa') )?></h1>
 
-            <a href='#adicion-opciones' data-icon="gear" data-rel="dialog" class="ui-btn-right">Opciones</a>
-            
-            <?php  if ( count($mozos) > 1 ): ?>
-            <div data-role="navbar">
-                <ul id="listado-mozos-para-mesas">
-                    <?php $anchoTabMozo =  floor( 100/ (count($mozos) +1) );?>
-                    <li  style="width: <?php echo 100 - ($anchoTabMozo*(count($mozos)))?>%"><a href="#" class="ui-btn-active">Todos</a></li>
-
-                    <?php foreach ($mozos as $m):
-                            $k = $m['Mozo']['id'];
-                            $n = $m['Mozo']['numero'];
-                            ?>
-                        <li  style="width: <?php echo $anchoTabMozo?>%"><a href="#" data-mozo-id="<?php echo $k?>"><?php echo $n?></a></li>
-                    <?php endforeach; ?>
-
-                </ul>
-            </div>
-            <?php endif; ?>
+            <a href='#adicion-opciones' data-icon="gear" data-rel="dialog" class="ui-btn-right">Opciones</a>                    
     </div>
                     
     <div  data-role="content" class="content_mesas">       
 
-            <?php $usar_generica =  Configure::read('Mesa.usar_generica');
-                if ( !empty($usar_generica) ) {
-                    ?>
-
-                    <a href="#mesa-view" id="mesa-abrir-mesa-generica-btn" class="abrir-mesa" 
-                        data-mozo-id="<?php echo Configure::read('Mesa.generica_mozo_id')?>"
-                        data-numero="99"
-                        data-role="button" 
-                        title="<?php echo Configure::read('Mesa.generica_name')?>"
-                        data-theme="a"><?php echo $this->Html->image('/aditions/css/img/flash.png')?></a>
-                    
-                    <?php
-                }
-            ?>    
-
-            <!-- aca va el listado de mesas que se carga dinamicamente en un script de abajo -->
-            <a href="#mesa-add" id="mesa-abrir-mesa-btn" data-rel="dialog"  class="abrir-mesa" data-role="button" data-theme="a">
-                Abrir<br><?php echo Configure::read('Mesa.tituloMesa')?>
-            </a>  
-
-            <ul id="mesas_container" class="listado-adicion" data-bind='template: { name: "listaMesas", foreach: adn().mesas }'>
-                    
+            <ul id="mozos22_container" class="adicion-lista-mozo" data-bind='template: { name: "listaMozos", foreach: adn().mozos }'>
             </ul>
+        
     </div><!-- /navbar -->
 
 </div>
@@ -203,81 +166,6 @@
 </div>
 <!-- Fin Pagina Cajero -->
 
-
-
-
-
-
-
-<!--
-                        MESA-ADD
-
--->
-<div  data-role="page"  id="mesa-add" data-theme="e" class="dialog-ancho dialog-arriba">
-        <div  data-role="header"  data-position="inline">
-            <h1>Abrir <?php echo Configure::read('Mesa.tituloMesa') ?></h1>
-            <a href="#"  data-rel="back">Cancelar</a>
-        </div>
-    
-        <div data-role="content">
-            <form name="form-mesa-add" action="#" id="form-mesa-add" class="pasos">
-                
-                <div  id="add-mesa-paso1">
-                    <h3 class="numero-mozo"><?php echo Inflector::pluralize( Configure::read('Mesa.tituloMozo') )?></h3>
-                    <fieldset data-role="controlgroup" data-type="horizontal" style="margin: auto;">
-
-                            <legend>Seleccionar <?php echo Configure::read('Mesa.tituloMozo') ?></legend>
-                            <?php
-                            $first = true;
-                                foreach ($mozos as $m) {
-                                    $k = $m['Mozo']['id'];
-                                    $n = $m['Mozo']['numero'];
-                                    echo "<input type='radio' name='mozo_id' id='radio-mozo-id-$k' value='$k'/>";
-                                    echo "<label for='radio-mozo-id-$k'>$n</label>";
-                                }
-                            ?>                     
-                    </fieldset>
-                </div>
-
-
-                <div id="add-mesa-paso2" style="display: none">
-                    
-                    <fieldset data-role="fieldcontain">
-                        <h3 class="cubiertos"><?php echo Inflector::pluralize(Configure::read('Mesa.tituloCubierto')) ?></h3>
-                            <label for="mesa-add-cant_comensales"><?php echo __( 'Ingresar la cantidad de %s', Inflector::pluralize(Configure::read('Mesa.tituloCubierto'))) ?></label>
-                            <input type="number" name="cant_comensales" id="mesa-add-cant_comensales"/>
-
-                             <div class="ui-grid-a">
-                                <div class="ui-block-a"><button type="button"  data-theme="c" id="add-mesa-paso2-volver">Volver</button></div>
-                                <div class="ui-block-b"><button type="button"  data-theme="b" id="add-mesa-paso2-submit">Siguiente</button></div>
-                            </div>
-
-
-
-                    </fieldset>
-                </div>
-
-
-                    
-                <div id="add-mesa-paso3" style="display: none">
-                    <fieldset data-role="fieldcontain">
-                            <h3 class="numero-mesa"><?php echo Configure::read('Mesa.tituloMesa'). " " . __("Descripción") ?></h3>
-                            <input type="text" name="numero" data-risto="mesa" id="mesa-add-numero" required="required"/>
-                           
-
-                            <div class="ui-grid-a">
-                                <div class="ui-block-a"><button type="button"  data-theme="c" id="add-mesa-paso3-volver">Volver</button></div>
-
-                                <div class="ui-block-b"><button type="submit"  data-theme="b" id="add-mesa-paso3-submit">Abrir <?php echo Configure::read('Mesa.tituloMesa')?></button></div>
-                            </div>
-                    </fieldset>
-                </div>
-
-                
-                        
-            </form>
-        </div>
-</div> 
 
 
 

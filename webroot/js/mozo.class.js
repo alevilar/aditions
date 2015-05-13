@@ -149,6 +149,15 @@ Mozo.prototype = {
 
 
     full_image_url: function () {
-        return URL_DOMAIN + TENANT + "/risto/medias/media/view/" + this.media_id();
+        return URL_DOMAIN + TENANT + "/risto/medias/view/" + this.media_id();
+    },
+
+
+    tieneMediaId: function () {
+        if ( Number.parseInt( this.media_id() ) ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 };

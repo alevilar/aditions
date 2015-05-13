@@ -67,16 +67,13 @@
 
          </div>
         
-        
+        <span class="ui-options-btn ui-icon ui-icon-arrow-u ui-icon-shadow">Opciones</span>
+
         <span data-bind="text: realCant()" class="ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
          
         <span data-bind="text: nameConSabores() + ' ' +observacion()"></span>
         
-        <span class="ui-options-btn">
-            
-            Opciones
         
-        </span>
      </li>
  </script>
  
@@ -237,10 +234,18 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
 
 
 <script id="listaMozos" type="text/x-jquery-tmpl">
-    <?php $anchoTabMozo =  floor( 100/ (count($mozos) +1) );?>
-    <li  style="width: <?php echo 100 - ($anchoTabMozo*(count($mozos)))?>%">
+    <li  style="width: <?php echo floor( 100/ count($mozos) ); ?>%">
         
-        <button type="button" data-bind="click: seleccionar, text: numero, attr: {value: id}"  class="adicion-mozo-title"></button>
+        <button type="button" data-bind="click: seleccionar, attr: {value: id}"  class="adicion-mozo-title">
+            <span data-bind="visible: tieneMediaId()">
+                <img data-bind="attr:{src: full_image_url()}" />
+            </span>
+
+            <span data-bind="visible: !tieneMediaId(), text: numero">
+            </span>
+
+        </button>
+
                
         <ul class="listado-adicion" data-role="listview"
                data-bind="template: {name: 'listaMesas', foreach: mesas}"

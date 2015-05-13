@@ -87,21 +87,39 @@ $(document).bind("mobileinit", function(){
             $('textarea','#comanda-add-observacion').focus();
         });
         
-     
         $('#ul-productos-seleccionados').delegate(
-                '.ui-options-btn',
+                'li',
                 'click',
-                function(){
-                    var $ops = $(this).parent().find('.ui-options'),
-                        $opsBtn = $(this).parent().find('.ui-options-btn');
-                        
-                    if ( $opsBtn.hasClass('ui-options-btn-open') ) {
-                        $ops.hide();
-                        $opsBtn.removeClass('ui-options-btn-open');
-                    } else {
+                function(e){
+                     var $ops = $(this).parent().find('.ui-options'),
+                         $opsBtn = $('.ui-options-btn', this);
+
+                    function openCoso () {
                         $ops.show();
                         $opsBtn.addClass('ui-options-btn-open');
+                        $opsBtn.show();
                     }
+
+                    function closeCoso () {
+                        $ops.hide();
+                        $opsBtn.removeClass('ui-options-btn-open');
+
+                        $opsBtn.unbind('click');
+                        $opsBtn.hide();
+                    }
+
+                    if ( this == e.target) {
+                        $opsBtn.bind('click', function(){
+                            closeCoso();
+                        });
+                            
+                        if ( $opsBtn.hasClass('ui-options-btn-open') ) {
+                           closeCoso();
+                        } else {
+                            openCoso();
+                        }
+                    }
+
                 }
         );            
 
@@ -164,7 +182,7 @@ $(document).bind("mobileinit", function(){
         );                
         
         $('#ul-productos-seleccionados').undelegate(
-                '.ui-options-btn',
+                'li',
                 'click'
         ); 
             
@@ -326,6 +344,7 @@ $(document).bind("mobileinit", function(){
             var mesaNumero = window.prompt(PROMPT_DESCRIPCION_DE_MESA);
             if ( mesaNumero ) {
                 abrirMesa( mesaNumero, e.mozo.id() );
+                $.mobile.changePage("#mesa-view");
             }
 
         });

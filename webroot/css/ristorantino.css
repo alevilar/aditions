@@ -33,9 +33,9 @@ ul.listado-adicion{
 
 ul.listado-adicion li {
     height: auto;
-    margin: 3% 5%;
-    min-width: 70px;
-    max-width: 172px;
+    margin: 5px 8px;
+    min-width: 48px;
+    max-width: 92px;
     vertical-align: top;
     width: 90%;
 }
@@ -628,13 +628,21 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
     #ul-productos-seleccionados li.tiene-observacion{
         
     }
+
+.listado-productos-seleccionados .ui-controlgroup-horizontal{
+    position: relative;
+    left: 43px;
+}
     
     .ui-options-btn{
-        float: right;
+        display: none;
+        float: left;
         text-indent: -1999px;
         background-color: #F7C942;
         width: 35px;
         height: 33px;
+        margin-right: 5px;
+        background-position: -172px 50%;
     }
     
     .ui-options-btn-open{
@@ -654,35 +662,37 @@ ul.adicion-lista-mozo {
     align-items: stretch;
 }
 
+ul.adicion-lista-mozo > li{
+    text-align: center;
+    }
+
 
 ul.adicion-lista-mozo >li:nth-child(odd) {
     background-color: #B6B6B6;
-    border-right: 1px solid #B3B3B3;
+    border: 1px solid #B3B3B3;
 }
 ul.adicion-lista-mozo >li:nth-child(even) {
-    border-right: 1px solid #B3B3B3;
-   
+    border: 1px solid #B3B3B3;
+    background-color: #C6C6C6;
 }
 
 
 button.adicion-mozo-title {
     width: 98%;
-    display: block;
-    padding: 10px 0px;
+    height: 72px;
     text-align: center;
     margin-top: -2px;
     margin-bottom: 10px;
     margin-left: 1%;
     margin-right: 1%;
+    border-radius: 100%;
+    max-width: 48px;
+    min-width: 92px;
+    text-align: center;
+    padding: 0px;
 }
 
-
-.new-mesa{
-    display: none;
-      transition: 0.5;
-}
-
-.new-mesa.visible{
-    display: block;
-}
+button.adicion-mozo-title img{
+    width: 100%;
+} 
 

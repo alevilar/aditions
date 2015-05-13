@@ -50,7 +50,7 @@
                                     echo $valorCubierto > 0 ? $valorCubierto : 0;  ?>;
         
         // hace que luego de cobrar una mesa, esta quede activa durante X segundos
-//        Risto.ESPERAR_DESPUES_DE_COBRAR = 0;
+        Risto.ESPERAR_DESPUES_DE_COBRAR = parseInt( "<?php echo Configure::read('Adicion.cobrada_hide_ms')?>" );
         
         
         Risto.IMPRIME_REMITO_PRIMERO = <?php echo Configure::read('Mesa.imprimePrimeroRemito')?1:0?>;

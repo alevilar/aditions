@@ -10575,8 +10575,13 @@ $raeh = Risto.Adition.EventHandler = {
      */
     mesaCobrada: function(e){
         // envio los datos al servidor
-        var m = e.mesa;       
-        
+        if ( Risto.ESPERAR_DESPUES_DE_COBRAR > 0 ) {
+            
+            this.ocultarlaTimer = setTimeout( function () {
+                e.mesa.mozo().sacarMesa( e.mesa );
+            }, Risto.ESPERAR_DESPUES_DE_COBRAR );
+            
+        }
     },
 
     mesaOcultada: function(e){

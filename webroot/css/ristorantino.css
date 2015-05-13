@@ -67,14 +67,22 @@ ul.listado-adicion li a {
 }
 
 
+.listado-adicion .mesa-numero{
+    white-space: normal;
+}
+
 
 ul.listado-adicion .mesa-cobrada A{
     border: 1px solid #AEB1AF;
-    background: #B4CEBD;
-    color: 					#fff;
+    background: #BFDCC9;
+    color: #2B322D;
     font-weight: bold;
     text-shadow: none !important;
     
+}
+
+ul.listado-adicion .mesa-cerrada .mesa-cobrada{
+    color: #0027C5;
 }
 
 ul.listado-adicion .mesa-cerrada .mesa-total{

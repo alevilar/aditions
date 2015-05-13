@@ -91,35 +91,23 @@ $(document).bind("mobileinit", function(){
                 'li',
                 'click',
                 function(e){
-                     var $ops = $(this).parent().find('.ui-options'),
-                         $opsBtn = $('.ui-options-btn', this);
+                    var $ops = $('.ui-options', this);
 
                     function openCoso () {
                         $ops.show();
-                        $opsBtn.addClass('ui-options-btn-open');
-                        $opsBtn.show();
                     }
 
                     function closeCoso () {
                         $ops.hide();
-                        $opsBtn.removeClass('ui-options-btn-open');
-
-                        $opsBtn.unbind('click');
-                        $opsBtn.hide();
                     }
 
-                    if ( this == e.target) {
-                        $opsBtn.bind('click', function(){
-                            closeCoso();
-                        });
-                            
-                        if ( $opsBtn.hasClass('ui-options-btn-open') ) {
-                           closeCoso();
-                        } else {
-                            openCoso();
-                        }
+                    if ( $ops[0]['data-open'] === true ) {
+                        closeCoso();
+                        $ops[0]['data-open'] = false;
+                    } else {
+                        openCoso();
+                        $ops[0]['data-open'] = true;
                     }
-
                 }
         );            
 

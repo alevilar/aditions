@@ -67,7 +67,6 @@
 
          </div>
         
-        <span class="ui-options-btn ui-icon ui-icon-arrow-u ui-icon-shadow">Opciones</span>
 
         <span data-bind="text: realCant()" class="ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
          

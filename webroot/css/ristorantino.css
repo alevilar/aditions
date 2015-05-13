@@ -629,29 +629,6 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
         
     }
 
-.listado-productos-seleccionados .ui-controlgroup-horizontal{
-    position: relative;
-    left: 43px;
-}
-    
-    .ui-options-btn{
-        display: none;
-        float: left;
-        text-indent: -1999px;
-        background-color: #F7C942;
-        width: 35px;
-        height: 33px;
-        margin-right: 5px;
-        background-position: -172px 50%;
-    }
-    
-    .ui-options-btn-open{
-        height: 91px;
-        margin-top: -66px;
-    }
-
-
-
 
 ul.adicion-lista-mozo {
     list-style: none;

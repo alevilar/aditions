@@ -674,9 +674,9 @@ button.adicion-mozo-title {
     margin-bottom: 10px;
     margin-left: 1%;
     margin-right: 1%;
-    -webkit-border-radius: 100%px;
-    -moz-border-radius: 100%px;
-    border-radius: 100%px;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
     max-width: 48px;
     min-width: 92px;
     min-height: 48px;

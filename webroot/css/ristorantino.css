@@ -677,11 +677,15 @@ button.adicion-mozo-title {
     border-radius: 100%;
     max-width: 48px;
     min-width: 92px;
+    min-height: 48px;
+    max-height: 92px;
     text-align: center;
     padding: 0px;
+    overflow: hidden;
 }
 
 button.adicion-mozo-title img{
     width: 100%;
 } 
+
 

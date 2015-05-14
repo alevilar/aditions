@@ -10522,7 +10522,7 @@ Mozo.prototype = {
 
 
     tieneMediaId: function () {
-        if ( Number.parseInt( this.media_id() ) ) {
+        if ( parseInt( this.media_id() ) ) {
             return true;
         } else {
             return false;

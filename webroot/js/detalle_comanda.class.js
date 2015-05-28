@@ -32,6 +32,7 @@ Risto.Adition.detalleComanda = function(jsonData) {
 
 
 Risto.Adition.detalleComanda.prototype = {
+    id          : function( ) {return undefined},
     Producto    : function( ) {},
     DetalleSabor: function( ) {return []}, // array de Sabores
 
@@ -160,17 +161,34 @@ Risto.Adition.detalleComanda.prototype = {
         if (!window.confirm('Seguro que desea eliminar 1 unidad de '+this.Producto().name)){
             return false;
         }
-        
+
+Risto.Adition.adicionar.currentMesa().Comanda()[0].DetalleComanda()[0]
+
         if (this.realCant() > 0 ) {
             this.cant_eliminada( parseInt( this.cant_eliminada() ) + 1 );
             this.modificada(true);
         }
-        var dc = this;
-        $cakeSaver.send({
-           url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/edit/' + dc.id(),
-           obj: dc
-        }, function() {
-        });
+
+        var id;
+        if ( typeof this.id == 'function' ) {
+            id = this.id();
+        } else if ( typeof this.id == 'number' ) {
+            id = this.id;
+        }
+
+        if ( id ) {
+
+            // guardar cambios
+            var dc = this;
+            $cakeSaver.send({
+               url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/edit/' + id,
+               obj: dc
+            }, function() {
+            });
+        } else {
+            console.error("El ID del detalle comanda es: %o. No se pudo guardar el cambio", id);
+        }
+
     },
     
     /**

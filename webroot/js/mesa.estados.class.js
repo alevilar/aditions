@@ -23,6 +23,12 @@ var MESA_ESTADOS_POSIBLES =  {
         icon: 'mesa-abierta',
         url: URL_DOMAIN + TENANT  + '/mesa/mesas/reabrir'
     },
+    checkout: {
+        msg: 'Cerrada',
+        event: Risto.Adition.EventHandler.mesaCheckout,
+        id: 0,
+        icon: 'mesa-checkout'
+    },
     cerrada: {
         msg: 'Cerrada',
         event: Risto.Adition.EventHandler.mesaCerrada,

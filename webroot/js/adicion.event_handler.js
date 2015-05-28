@@ -44,14 +44,13 @@ $raeh = Risto.Adition.EventHandler = {
      *  Procesar los pagos de la mesa
      */
     mesaCobrada: function(e){
-        // envio los datos al servidor
-        if ( Risto.ESPERAR_DESPUES_DE_COBRAR > 0 ) {
-            
-            this.ocultarlaTimer = setTimeout( function () {
-                e.mesa.mozo().sacarMesa( e.mesa );
-            }, Risto.ESPERAR_DESPUES_DE_COBRAR );
-            
-        }
+        
+    },
+
+
+    mesaCheckout: function (e) {
+        e.mesa.doCheckout();
+        e.mesa.mozo().sacarMesa( e.mesa );
     },
 
     mesaOcultada: function(e){

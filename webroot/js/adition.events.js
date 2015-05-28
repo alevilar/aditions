@@ -249,6 +249,12 @@ $(document).bind("mobileinit", function(){
               Risto.Adition.adicionar.agregarCantCubiertos();
           });
 
+        $('#mesa-checkout').bind('click', function(){
+            var mesa = Risto.Adition.adicionar.currentMesa();
+            mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.checkout );
+
+        });
+
 
         $('#mesa-cerrar').bind('click', function(){
             var mesa = Risto.Adition.adicionar.currentMesa();
@@ -308,6 +314,7 @@ $(document).bind("mobileinit", function(){
         $('#mesa-textarea-observation').unbind('focus');
         $('#mesa-textarea-observation').unbind('focusout');
         $('#mesa-observacion-submit').unbind('click');
+        $('#mesa-checkout').unbind('click');
     });
 
 

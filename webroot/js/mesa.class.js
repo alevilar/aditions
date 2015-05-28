@@ -10,12 +10,19 @@ var Mesa = function(mozo, jsonData) {
         
         this.id             = ko.observable();
         this.created        = ko.observable();
+
+
         this.checkin        = ko.observable();
+
+
         this.checkout       = ko.observable();
         this.observation    = ko.observable('');
 
 
         this.momentRange    = ko.observable( );
+
+
+       
 
         // Observables Dependientes
         this.momentRange = ko.dependentObservable( function(){
@@ -46,8 +53,6 @@ var Mesa = function(mozo, jsonData) {
         this.Pago           = ko.observableArray( [] );
         this.cant_comensales= ko.observable(0);
         
-        // agrego atributos generales
-        Risto.modelizar(this);
         
         return this.initialize(mozo, jsonData);
 }
@@ -58,14 +63,25 @@ Mesa.prototype = {
     model       : 'Mesa',
     
     /**
-     * es timeCreated o sea la fecha de creacion del mysql timestamp
+     * es la fecha de apertura de la Mesa
      * @return string timestamp
      **/
     timeAbrio: function(){
-        if (!this.timeCreated) {
-            Risto.modelizar(this);
+
+        var checkin;
+        if (typeof this.checkin == 'function'){
+            checkin = this.checkin();
+        } else {
+            checkin = this.checkin;
         }
-        return this.timeCreated();
+        if (!checkin) {
+            d = new Date();
+        } else {
+            d = new Date( mysqlTimeStampToDate(this.checkin()) );       
+        }
+
+        var min =  (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+        return d.getHours()+":"+min;    
     },
 
     /**
@@ -242,9 +258,11 @@ Mesa.prototype = {
             $ajax; // jQuery Ajax object
             
         this.setEstado( estado );
-        $ajax = $.get( estado.url+'/'+this.id() );
-        $ajax.error = function(){
-            mesa.setEstado( estadoAnt );
+        if ( estado.url ) {
+            $ajax = $.get( estado.url+'/'+this.id() );
+            $ajax.error = function(){
+                mesa.setEstado( estadoAnt );
+            }
         }
     },
 
@@ -390,6 +408,16 @@ Mesa.prototype = {
      */        
     getCantComensales : function(){
         return this.cantComensales();
+    },
+
+
+    doCheckout: function () {
+        var dd = new Date();
+        var date = dd.getFullYear()+"-"+dd.getMonth()+'-'+dd.getDate()+" "+dd.getHours()+":"+dd.getSeconds()+":"+dd.getMilliseconds();
+        var ob = {
+            'data[Mesa][checkout]': date
+        };
+        this.editar( ob );
     },
 
     /**
@@ -700,8 +728,8 @@ Mesa.prototype = {
                 }
             } else {
                 txt = 'Abrió a las ';
-                if (typeof this.created == 'function') {
-                    date = mysqlTimeStampToDate(this.created());            
+                if (typeof this.checkin == 'function') {
+                    date = mysqlTimeStampToDate(this.checkin());            
                 }
             }
             if ( !date ) {

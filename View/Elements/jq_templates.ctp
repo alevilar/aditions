@@ -151,7 +151,7 @@
      <span data-type="horizontal" data-role="controlgroup">
         <a id="mesa-action-detalle-comanda-sacar-item" data-bind="click: deseleccionarYEnviar" data-role="button" data-icon="minus" data-iconpos="notext" href="#" title="-" data-theme="c">
             -</a>
-        <a data-bind="css: { es_entrada: esEntrada()}" data-role="button" data-iconpos="notext" data-icon="entrada" href="#" title="Entrada" data-theme="c">
+        <a data-bind="css: { es_entrada: es_entrada}" data-role="button" data-iconpos="notext" data-icon="entrada" href="#" title="Entrada" data-theme="c">
             Entrada
         </a>
      </span>

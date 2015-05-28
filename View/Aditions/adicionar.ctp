@@ -252,6 +252,11 @@
                         <a href="#listado-mesas" class="mesa-reimprimir"  data-rel="back"><?php echo $this->Html->image('/aditions/css/img/printer.png')?>Imprimir Ticket</a>
                     </li>
 
+                    <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL) { ?>
+                    <li id="mesa-action-checkout" data-bind="attr: {'estado': 'mesa-checkout_'+adn().currentMesa().estado().icon}">
+                        <a href="#listado-mesas" id="mesa-checkout" data-direction="reverse"><?php echo $this->Html->image('/aditions/css/img/checkout.png')?>Checkout</a>
+                    </li>
+                    <?php } ?>
                     
                     <li id="mesa-action-cambiar-mozo">
                         <a href="#mesa-cambiar-mozo" data-rel="dialog"><?php echo $this->Html->image('/aditions/css/img/cambiarmozo.png')?>Cambiar <?php echo Configure::read('Mesa.tituloMozo')?></a>
@@ -340,7 +345,7 @@
 
             <span class="mesa-total"><span data-bind="text: adn().currentMesa().textoTotalCalculado()"></span></span>
             <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL) { ?>
-            <span class="hora-abrio">Abrió a las <span data-bind="text: adn().currentMesa().timeCreated()"></span></span>
+            <span class="hora-abrio">Abrió a las <span data-bind="text: adn().currentMesa().timeAbrio()"></span></span>
             <?php } ?>
         </h3>
     </div>

@@ -149,7 +149,7 @@ Mozo.prototype = {
 
 
     full_image_url: function () {
-        return URL_DOMAIN + TENANT + "/risto/medias/view/" + this.media_id();
+        return URL_DOMAIN + TENANT + "/risto/medias/thumb/" + this.media_id() + "/88/88";
     },
 
 

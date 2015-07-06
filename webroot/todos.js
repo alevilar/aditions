@@ -13564,6 +13564,8 @@ $(document).bind("mobileinit", function(){
 
       $('.tipo-de-pagos-disponibles','#mesa-cobrar').delegate('a', 'click', function() {
 
+        $('.pagos-seleccionados','#mesa-cobrar').show();
+        
         var json = $(this).data('pago-json');
         var tipoDePago = eval("(function(){return " + json + ";})()");
 

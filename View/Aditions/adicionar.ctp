@@ -570,14 +570,23 @@
             
             <div class="ui-grid-d">
                     <div class="ui-block-a">
+                        <a href="#" data-role="button" data-rel="back" data-theme="c">Cancelar</a>
+                        
+                    </div>
+                    <div class="ui-block-b">
+                        <a href="#" data-role="button" id="mesa-cajero-reabrir" class="mesa-cajero-clickeable">Re Abrir</a>
+                    </div>
+                    <div class="ui-block-c">
+                        <a href="#" data-role="button" class="mesa-reimprimir mesa-cajero-clickeable">Imprimir Ticket</a>
+                    </div>
+                    <div class="ui-block-d">
                         <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL ) {  ?>
-                            <a href="#" data-role="button" id="mesa-cajero-checkout" class="mesa-cajero-clickeable" >Checkout</a>
+                            <a href="#" data-role="button" id="mesa-cajero-checkout" class="mesa-cajero-clickeable" >Hacer Checkout</a>
                         <?php } ?>
                     </div>
-                    <div class="ui-block-b"><a href="#" data-role="button" id="mesa-cajero-reabrir" class="mesa-cajero-clickeable">Re Abrir</a></div>
-                    <div class="ui-block-c"><a href="#" data-role="button" class="mesa-reimprimir mesa-cajero-clickeable">Imprimir Ticket</a></div>
-                    <div class="ui-block-d"><a href="#" data-role="button" id="mesa-pagos-procesar" class="mesa-cajero-clickeable">Guardar Cobro</a></div>
-                    <div class="ui-block-e"><a href="#" data-role="button" data-rel="back" data-theme="b">Listo</a></div>
+                    <div class="ui-block-e">
+                        <a href="#" data-role="button" id="mesa-pagos-procesar" data-theme="b" data-rel="back">Guardar Cobro</a>
+                    </div>
     	    </div>
         </div>
     </div>

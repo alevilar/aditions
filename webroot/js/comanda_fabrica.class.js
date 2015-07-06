@@ -48,12 +48,16 @@ Risto.Adition.comandaFabrica.prototype = {
      * @param comanderas Array listado de comandas
      */
     __generarComanda: function( comandaJsonCopy, comanderas ){
+        var comanderaComanda;
          // creo una nueva comanda para cada comandera
         for (var com in comanderas ) {
             comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
+            primcomanda = comanderaComanda;
             comanderaComanda.DetalleComanda( comanderas[com] );
             this.mesa.Comanda.unshift( comanderaComanda );
-            
+
+            megacomanda = comanderaComanda;
+
              //  para cada comandera
             $cakeSaver.send({
                 url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 

@@ -1579,3 +1579,7 @@ span.ui-slider-label-b { right: -100%;  margin-left: -1px }
     height: 36px !important;
 }
 
+.mesa-cajero-clickeable-apretado{
+	background-color: rgb(110, 98, 36)!important;
+    color: rgb(199, 186, 57) !important;	
+}

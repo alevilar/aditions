@@ -377,28 +377,7 @@ $(document).bind("mobileinit", function(){
          
     
 
-    /**
-     *
-     *          COBROS               -------    CAJERO
-     *
-     */
-    $('#mesa-cobrar').live('pageshow',function(event, ui){
-        $('#mesa-cajero-reabrir').bind('click',function(){
-            var mesa = Risto.Adition.adicionar.currentMesa();
-            mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.reabierta );
-        });
-        $('.mesa-reimprimir', '#mesa-cobrar').bind('click', function(){
-            var mesa = Risto.Adition.adicionar.currentMesa();
-            var url = mesa.urlReimprimirTicket();
-            $.get(url);
-        });
-    });
-
-    $('#mesa-cobrar').live('pagebeforehide',function(event, ui){
-        $('#mesa-cajero-reabrir').unbind('click');
-        $('.mesa-reimprimir', '#mesa-cobrar').unbind('click');        
-    });
-
+   
 
     
 
@@ -493,11 +472,40 @@ $(document).bind("mobileinit", function(){
      *          Page COBRAR
      *
      */
+    $('#mesa-cobrar').live('pageshow',function(event, ui){
+        $('#mesa-cajero-reabrir').bind('click',function(){
+            var mesa = Risto.Adition.adicionar.currentMesa();
+            mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.reabierta );
+        });
+        $('.mesa-reimprimir', '#mesa-cobrar').bind('click', function(){
+            var mesa = Risto.Adition.adicionar.currentMesa();
+            var url = mesa.urlReimprimirTicket();
+            $.get(url);
+        });
+
+
+        $('#mesa-cajero-checkout', '#mesa-cobrar').bind('click', function() {
+            var mesa = Risto.Adition.adicionar.currentMesa();
+            mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.checkout );
+        });
+
+        $('.mesa-cajero-clickeable', '#mesa-cobrar').bind('click', function() {
+            $(this).addClass('mesa-cajero-clickeable-apretado');
+        });
+    });
+
+    $('#mesa-cobrar').live('pagebeforehide',function(event, ui){
+        $('#mesa-cajero-reabrir').unbind('click');
+        $('.mesa-reimprimir', '#mesa-cobrar').unbind('click');      
+        $('#mesa-cajero-checkout', '#mesa-cobrar').unbind('click');
+        $('.mesa-cajero-clickeable', '#mesa-cobrar').unbind('click');
+    });
+
+
+
     $('#mesa-cobrar').live('pageshow', function(){
 
       $('.tipo-de-pagos-disponibles','#mesa-cobrar').delegate('a', 'click', function() {
-
-
 
         var json = $(this).data('pago-json');
         var tipoDePago = eval("(function(){return " + json + ";})()");

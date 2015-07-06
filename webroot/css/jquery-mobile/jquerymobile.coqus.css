@@ -1587,3 +1587,15 @@ span.ui-slider-label-b { right: -100%;  margin-left: -1px }
 .pagos-seleccionados{
 	display: none;
 }
+
+#comanda-add-menu .comanda-add-menu-mesa-numero{
+	float: left;
+	left: 10%
+	position: relative;
+}
+
+@media (max-width: 600px) {
+  #comanda-add-menu .comanda-add-menu-mesa-numero{
+    display: none;
+  }
+}

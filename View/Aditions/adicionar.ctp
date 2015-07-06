@@ -359,15 +359,24 @@
 <div data-role="page" id="comanda-add-menu" class="comanda dialog-ancho dialog-arriba">
     <div data-role="header">                   
 
-            <div data-role="controlgroup" data-type="horizontal" style="float: right;">
+        <h1 class="comanda-add-menu-mesa-numero">
+            <span data-bind="text: adn().currentMesa().numero()"></span>
+            <?php 
+            echo $this->Html->image('mesa-abrio.png') . " " . Configure::read('Mesa.tituloMesa') ." - " .
+            Configure::read('Mesa.tituloMozo') . " " . $this->Html->image('mozomoniob.png') 
+            ?>
+            <span data-bind="text: adn().currentMesa().mozo().numero()"></span>
+        </h1>
 
-                <a style="min-width: 160px" href="#" data-role="button" title="Haga click para desactivar la impresión de comanda" data-bind="click: function(){adn().currentMesa().currentComanda().comanda.imprimir( 0 )}, visible: adn().currentMesa().currentComanda().comanda.imprimir()"><?php echo $this->Html->image('print48.png', array('class'=> 'btn-comanda-icon'))?>Si Imprime</a>
-                <a style="min-width: 160px" href="#" data-role="button" title="Haga click para activar impresión de comanda" data-bind="click: function(){adn().currentMesa().currentComanda().comanda.imprimir( 1 )}, visible: !adn().currentMesa().currentComanda().comanda.imprimir()" ><?php echo $this->Html->image('dontprint48.png', array('class'=> 'btn-comanda-icon'))?>No Imprime</a>
+        <div data-role="controlgroup" data-type="horizontal" style="float: right;">
 
-                <a style="min-width: 160px" href="#" id="comanda-obervacion-a" data-role="button" title="Agregar Observación"><?php echo $this->Html->image('pencil_48.png', array('class'=> 'btn-comanda-icon'))?>Observación</a>
-                <a href="#mesa-view" data-role="button" id="comanda-add-guardar"  data-icon="check" data-theme="b">Enviar Comanda</a>
+            <a style="min-width: 160px" href="#" data-role="button" title="Haga click para desactivar la impresión de comanda" data-bind="click: function(){adn().currentMesa().currentComanda().comanda.imprimir( 0 )}, visible: adn().currentMesa().currentComanda().comanda.imprimir()"><?php echo $this->Html->image('print48.png', array('class'=> 'btn-comanda-icon'))?>Si Imprime</a>
+            <a style="min-width: 160px" href="#" data-role="button" title="Haga click para activar impresión de comanda" data-bind="click: function(){adn().currentMesa().currentComanda().comanda.imprimir( 1 )}, visible: !adn().currentMesa().currentComanda().comanda.imprimir()" ><?php echo $this->Html->image('dontprint48.png', array('class'=> 'btn-comanda-icon'))?>No Imprime</a>
 
-            </div>
+            <a style="min-width: 160px" href="#" id="comanda-obervacion-a" data-role="button" title="Agregar Observación"><?php echo $this->Html->image('pencil_48.png', array('class'=> 'btn-comanda-icon'))?>Observación</a>
+            <a href="#mesa-view" data-role="button" id="comanda-add-guardar"  data-icon="check" data-theme="b">Enviar Comanda</a>
+
+        </div>
     </div>
 
     <div data-role="content" style="min-height: 300px">
@@ -570,7 +579,7 @@
             
             <div class="ui-grid-d">
                     <div class="ui-block-a">
-                        <a href="#" data-role="button" data-rel="back" data-theme="c">Cancelar</a>
+                        <a href="#" data-role="button" data-rel="back" data-theme="c">Volver Atrás</a>
                         
                     </div>
                     <div class="ui-block-b">

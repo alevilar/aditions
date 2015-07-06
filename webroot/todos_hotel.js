@@ -13963,10 +13963,16 @@ $(document).bind("mobileinit", function(){
 
     $('#mesa-cobrar').live('pageshow', function(){
 
+      function showPagos() {
+        if ( Risto.Adition.adicionar.currentMesa().Pago().length ) {
+          $('.pagos-seleccionados','#mesa-cobrar').show();
+        }
+      }
+
+      showPagos();
+
       $('.tipo-de-pagos-disponibles','#mesa-cobrar').delegate('a', 'click', function() {
 
-        $('.pagos-seleccionados','#mesa-cobrar').show();
-        
         var json = $(this).data('pago-json');
         var tipoDePago = eval("(function(){return " + json + ";})()");
 
@@ -13979,7 +13985,7 @@ $(document).bind("mobileinit", function(){
         Risto.Adition.adicionar.currentMesa().Pago.push( nuevoPago );
 
         $('.pagos_creados li:last','#mesa-cobrar').find('input').focus();
-        
+        showPagos();
       });
       
 
@@ -13991,6 +13997,7 @@ $(document).bind("mobileinit", function(){
     });
 
     $('#mesa-cobrar').live('pagebeforehide', function(){
+        $('.pagos-seleccionados','#mesa-cobrar').hide();
         $('#mesa-pagos-procesar').unbind('click');
         $('.tipo-de-pagos-disponibles','#mesa-cobrar').undelegate('a', 'click');
     });

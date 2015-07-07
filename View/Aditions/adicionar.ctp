@@ -546,7 +546,7 @@
     </div>
 
     <div data-role="content">   
-        <h2>Cobrar la <?php echo Configure::read('Mesa.tituloMesa')?> <span data-bind="text: adn().currentMesa().numero"></span> <span class="mesa-total" style="float: right; color: red;">Total $<span data-bind="text: adn().currentMesa().totalCalculado()"></span></span></h2>
+        <h2>Seleccionar Tipos de Pago para Cobrar <span class="mesa-total" style="float: right; color: red;">Total $<span data-bind="text: adn().currentMesa().totalCalculado()"></span></span></h2>
         
         <ul class="tipo_de_pagos tipo-de-pagos-disponibles">
         <?php 

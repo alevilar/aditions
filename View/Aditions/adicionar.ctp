@@ -533,10 +533,19 @@
 <div data-role="page" id="mesa-cobrar" data-theme="e" class="dialog-reancho dialog-arriba">
     <div data-role="header">
         <h1><?php echo Configure::read('Mesa.tituloMesa')?> <span data-bind="text: adn().currentMesa().numero()"></span> | <span data-bind="text: adn().currentMesa().vueltoText()"></span></h1>
-        <a href="#mesa-view" data-direction="reverse">Ver Mesa</a>
+        <a href="#mesa-view" data-direction="reverse">Ver Mesa</a>        
+
+        <div style="text-align: center">
+            <a href="#" data-role="button" id="mesa-cajero-reabrir" class="mesa-cajero-clickeable">Re Abrir</a>
+            <a href="#" data-role="button" class="mesa-reimprimir mesa-cajero-clickeable">Imprimir Ticket</a>
+            <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL ) {  ?>
+                <a href="#" data-role="button" id="mesa-cajero-checkout" class="mesa-cajero-clickeable" >Hacer Checkout</a>
+            <?php } ?>
+        </div>
+        <br/>
     </div>
 
-    <div data-role="content">                  
+    <div data-role="content">   
         <h2>Cobrar la <?php echo Configure::read('Mesa.tituloMesa')?> <span data-bind="text: adn().currentMesa().numero"></span> <span class="mesa-total" style="float: right; color: red;">Total $<span data-bind="text: adn().currentMesa().totalCalculado()"></span></span></h2>
         
         <ul class="tipo_de_pagos tipo-de-pagos-disponibles">
@@ -583,15 +592,13 @@
                         
                     </div>
                     <div class="ui-block-b">
-                        <a href="#" data-role="button" id="mesa-cajero-reabrir" class="mesa-cajero-clickeable">Re Abrir</a>
+                       
                     </div>
                     <div class="ui-block-c">
-                        <a href="#" data-role="button" class="mesa-reimprimir mesa-cajero-clickeable">Imprimir Ticket</a>
+                       
                     </div>
                     <div class="ui-block-d">
-                        <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL ) {  ?>
-                            <a href="#" data-role="button" id="mesa-cajero-checkout" class="mesa-cajero-clickeable" >Hacer Checkout</a>
-                        <?php } ?>
+                       
                     </div>
                     <div class="ui-block-e">
                         <a href="#" data-role="button" id="mesa-pagos-procesar" data-theme="b" data-rel="back">Guardar Cobro</a>

@@ -13957,6 +13957,7 @@ $(document).bind("mobileinit", function(){
         $('.mesa-reimprimir', '#mesa-cobrar').unbind('click');      
         $('#mesa-cajero-checkout', '#mesa-cobrar').unbind('click');
         $('.mesa-cajero-clickeable', '#mesa-cobrar').unbind('click');
+        $('.mesa-cajero-clickeable-apretado', '#mesa-cobrar').removeClass('mesa-cajero-clickeable-apretado');
     });
 
 

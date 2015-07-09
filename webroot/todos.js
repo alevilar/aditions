@@ -11216,13 +11216,15 @@ Mesa.prototype = {
     },
 
 
-    doCheckout: function () {
-        var dd = new Date();
-        var date = dd.getFullYear()+"-"+dd.getMonth()+'-'+dd.getDate()+" "+dd.getHours()+":"+dd.getSeconds()+":"+dd.getMilliseconds();
-        var ob = {
-            'data[Mesa][checkout]': date
-        };
-        this.editar( ob );
+    doCheckout: function () {        
+        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/checkout';
+        var id;
+        if (typeof this.id == 'function') {
+            id = this.id();
+        } else {
+            id = this.id;
+        }
+        $.get( url+"/"+id);
     },
 
     /**
@@ -11230,7 +11232,13 @@ Mesa.prototype = {
      */
     reimprimir : function(){
         var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/imprimirTicket';
-        $.get( url+"/"+this.id);
+        var id;
+        if (typeof this.id == 'function') {
+            id = this.id();
+        } else {
+            id = this.id;
+        }
+        $.get( url+"/"+id);
     },
 
 

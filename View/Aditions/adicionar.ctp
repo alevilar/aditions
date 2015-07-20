@@ -307,21 +307,19 @@
 
                         <button id="mesa-observacion-submit" type="button" value="Guardar" style="display: none" data-enhance="false" data-role="none">Guardar</button>
                         <button id="mesa-observacion-cancel" type="button" value="Guardar" style="display: none" data-enhance="false" data-role="none">Cancelar</button>
-                    </div>
-                    
-                <?php if (Configure::read('Site.type') !=  SITE_TYPE_RESTAURANTE) { ?>
+                    </div>                            
 
                     <div class="date-checkin-checkout" data-bind="visible: adn().currentMesa().checkin() || adn().currentMesa().checkin() ">
                         <div class="date-checkin" data-bind="visible: adn().currentMesa().checkin()">
-                            <span class="title">Checkin:</span> <span class="data" data-bind="text: moment(adn().currentMesa().checkin()).format('dddd, DD/MM/YY')"></span>
+                            <span class="title">Checkin:</span> <span class="data" data-bind="text: moment(adn().currentMesa().checkin()).format('dddd, DD/MM/YY HH:mm')"></span>
                         </div>
                         <div class="date-checkout" data-bind="visible: adn().currentMesa().checkout()">
-                            <span class="title">Checkout:</span> <span class="data" data-bind="text: moment(adn().currentMesa().checkout()).format('dddd, DD/MM/YY')"></span>
+                            <span class="title">Checkout:</span> <span class="data" data-bind="text: moment(adn().currentMesa().checkout()).format('dddd, DD/MM/YY HH:mm')"></span>
                         </div>                    
                     </div>
 
                     <hr />
-                <?php } ?>
+                
                 <h3 class="titulo-comanda">Productos Comandados</h3>
 
                 <!-- template -->

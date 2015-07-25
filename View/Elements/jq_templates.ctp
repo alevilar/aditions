@@ -233,7 +233,7 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
 
 
 <script id="listaMozos" type="text/x-jquery-tmpl">
-    <li  style="width: <?php echo floor( 100/ count($mozos) ); ?>%">
+    <li  style="width: <?php echo floor( 100/ count($mozos) ); ?>%" class="<?php echo ( count($mozos) > 8 )?'adicion-listado-mozos-mesa-small':'adicion-listado-mozos-mesa-big'; ?>">
         
         <button type="button" data-bind="click: seleccionar, attr: {value: id}"  class="adicion-mozo-title">
             <span data-bind="visible: tieneMediaId()">

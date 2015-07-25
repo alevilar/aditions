@@ -33,7 +33,7 @@ ul.listado-adicion{
 
 ul.listado-adicion li {
     height: auto;
-    margin: 5px 8px;
+    margin: 5px 0px;
     min-width: 48px;
     max-width: 92px;
     vertical-align: top;
@@ -665,6 +665,21 @@ ul.adicion-lista-mozo >li:nth-child(even) {
     background-color: #C6C6C6;
 }
 
+.adicion-listado-mozos-mesa-small .mesa-time{
+    display: none;
+}
+
+.adicion-listado-mozos-mesa-small ul.listado-adicion li {
+    margin: 1px 0px;   
+}
+
+.adicion-listado-mozos-mesa-big ul.listado-adicion li {
+    margin: 5px 8px;   
+}
+
+.adicion-listado-mozos-mesa-small hr{
+    display: none;
+}
 
 button.adicion-mozo-title {
     width: 98%;
@@ -677,8 +692,8 @@ button.adicion-mozo-title {
     -webkit-border-radius: 100%;
     -moz-border-radius: 100%;
     border-radius: 100%;
-    max-width: 48px;
-    min-width: 92px;
+    max-width: 92px;
+    min-width: 48px;
     min-height: 48px;
     max-height: 92px;
     text-align: center;

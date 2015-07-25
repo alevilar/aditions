@@ -39,23 +39,6 @@
         <meta name="msapplication-TileColor" content="#666666">
         <meta name="msapplication-TileImage" content="/mstile-144x144.png">
         <meta name="theme-color" content="#ffffff">
-
-
-        <?php 
-        if ( Configure::check('Site.favicon') ) {
-            $favicon = Configure::read('Site.favicon');
-            if ( is_array( $favicon ) ) {
-                foreach ( $favicon as $f=>$ops) {
-                    echo $this->Html->meta('icon', $this->Html->url( $f ), $ops ); 
-                }
-            } else {
-                echo $this->Html->meta('icon', $this->Html->url( $favicon ) ); 
-                
-            }
-        } else {
-            echo $this->Html->meta('icon', $this->Html->url('/favicon.png')); 
-        }
-        ?>
         
     
         <base href="<?php echo $this->Html->url('/')?>" />

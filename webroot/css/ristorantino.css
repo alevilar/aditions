@@ -33,7 +33,7 @@ ul.listado-adicion{
 
 ul.listado-adicion li {
     height: auto;
-    margin: 5px 0px;
+    margin: 5px 10px;
     min-width: 48px;
     max-width: 92px;
     vertical-align: top;
@@ -670,7 +670,7 @@ ul.adicion-lista-mozo >li:nth-child(even) {
 }
 
 .adicion-listado-mozos-mesa-small ul.listado-adicion li {
-    margin: 1px 0px;   
+    margin: 2px 0px;   
 }
 
 .adicion-listado-mozos-mesa-big ul.listado-adicion li {

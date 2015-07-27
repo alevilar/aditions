@@ -10545,7 +10545,7 @@ Mozo.prototype = {
         } else {
             return false;
         }
-    },
+    }
    
 };
 

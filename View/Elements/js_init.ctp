@@ -4,6 +4,8 @@
 
         PROMPT_DESCRIPCION_DE_MESA = "<?php echo __('Crear Nueva %s. Agregarle una descripción:', Configure::read('Mesa.tituloMesa'))?>";
 
+        PROMPT_CANT_CUBIERTOS = "<?php echo __('Ingresar Cantidad de %s:', Inflector::pluralize(Configure::read('Mesa.tituloCubierto')))?>";
+
         moment.locale("es");
         if ( typeof Risto.CalendarGrid != 'undefined' ) {
             Risto.Adition.adicionar.calendarGrid = new Risto.CalendarGrid;

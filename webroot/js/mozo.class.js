@@ -35,6 +35,13 @@ var MOZOS_POSIBLES_ESTADOS =  {
 
 var Mozo = function(jsonData){
 
+    
+    var este = this;
+    this.mesasOrdenadas = ko.dependentObservable( function(){
+        return este.ordenarMesasPorNumero();
+    });
+    
+
     return this.initialize(jsonData);
 }
 
@@ -77,6 +84,8 @@ Mozo.prototype = {
             this._initFn[i].apply(this, arguments);
             i++;
         }
+
+
         return this;
     },
 
@@ -109,17 +118,26 @@ Mozo.prototype = {
         var evento = $.Event(MOZOS_POSIBLES_ESTADOS.agragaMesa.event);
         evento.mozo = this;
         evento.mesa = nuevaMesa;
-        $(document).trigger(evento);
+        $(document).trigger(evento);        
     },
 
 
     sacarMesa: function ( mesa ) {
+        var sacar = false;
         if ( this.mesas.remove(mesa) ) {
-            delete mesa;            
-            return true
+            delete mesa;
+            sacar = true;
         }
-        return false;
+        return sacar;
     },
+
+
+    ordenarMesasPorNumero: function(){
+        return this.mesas().sort(function(left, right) {
+            return left.numero() == right.numero() ? 0 : (parseInt(left.numero()) < parseInt(right.numero()) ? -1 : 1) 
+        })
+    },
+
 
     /**
      * Cuando un mozo es clickeado o elegido, es seleccionado.
@@ -159,5 +177,7 @@ Mozo.prototype = {
         } else {
             return false;
         }
-    }
+    },
+   
 };
+

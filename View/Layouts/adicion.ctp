@@ -8,6 +8,7 @@
             // Inicializacion de variable global de url
             var URL_DOMAIN = "<?php echo $this->Html->url('/' ,true);?>";
             var TENANT = "<?php echo  MtSites::getSiteName();?>";
+            var RISTO_CUBIERTOS_OBLIGATORIOS = JSON.parse( '<?php echo json_encode( Configure::read('Adicion.cantidadCubiertosObligatorio'), JSON_NUMERIC_CHECK );?>');
             var RISTO_CONFIGURE_SITE = JSON.parse( '<?php echo json_encode( Configure::read('Site'), JSON_NUMERIC_CHECK );?>');
             var RISTO_CONFIGURE_ADICION = JSON.parse( '<?php echo json_encode( Configure::read('Adicion'), JSON_NUMERIC_CHECK );?>');
         -->

@@ -247,7 +247,7 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
 
                
         <ul class="listado-adicion" data-role="listview"
-               data-bind="template: {name: 'listaMesas', foreach: mesas}"
+               data-bind="template: {name: 'listaMesas', foreach: mesasOrdenadas}"
                style="margin: 0px;">
 
         </ul>     

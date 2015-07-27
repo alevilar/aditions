@@ -10403,6 +10403,13 @@ var MOZOS_POSIBLES_ESTADOS =  {
 
 var Mozo = function(jsonData){
 
+    
+    var este = this;
+    this.mesasOrdenadas = ko.dependentObservable( function(){
+        return este.ordenarMesasPorNumero();
+    });
+    
+
     return this.initialize(jsonData);
 }
 
@@ -10445,6 +10452,8 @@ Mozo.prototype = {
             this._initFn[i].apply(this, arguments);
             i++;
         }
+
+
         return this;
     },
 
@@ -10477,17 +10486,26 @@ Mozo.prototype = {
         var evento = $.Event(MOZOS_POSIBLES_ESTADOS.agragaMesa.event);
         evento.mozo = this;
         evento.mesa = nuevaMesa;
-        $(document).trigger(evento);
+        $(document).trigger(evento);        
     },
 
 
     sacarMesa: function ( mesa ) {
+        var sacar = false;
         if ( this.mesas.remove(mesa) ) {
-            delete mesa;            
-            return true
+            delete mesa;
+            sacar = true;
         }
-        return false;
+        return sacar;
     },
+
+
+    ordenarMesasPorNumero: function(){
+        return this.mesas().sort(function(left, right) {
+            return left.numero() == right.numero() ? 0 : (parseInt(left.numero()) < parseInt(right.numero()) ? -1 : 1) 
+        })
+    },
+
 
     /**
      * Cuando un mozo es clickeado o elegido, es seleccionado.
@@ -10527,8 +10545,11 @@ Mozo.prototype = {
         } else {
             return false;
         }
-    }
-};/**
+    },
+   
+};
+
+/**
  * 
  * @scope Risto.Adition
  * 
@@ -13803,8 +13824,12 @@ $(document).bind("mobileinit", function(){
                 
         $(document).bind(MOZOS_POSIBLES_ESTADOS.seleccionado.event, function(e){
             var mesaNumero = window.prompt(PROMPT_DESCRIPCION_DE_MESA);
+            var cubiertos = null;
+            if (RISTO_CUBIERTOS_OBLIGATORIOS) {
+              cubiertos = window.prompt(PROMPT_CANT_CUBIERTOS);
+            }
             if ( mesaNumero ) {
-                abrirMesa( mesaNumero, e.mozo.id() );
+                abrirMesa( mesaNumero, e.mozo.id(), cubiertos );
                 $.mobile.changePage("#mesa-view");
             }
 
@@ -13823,7 +13848,7 @@ $(document).bind("mobileinit", function(){
             var miniMesa = {
                 numero: numero,
                 mozo_id: mozoId,
-                cubiertos: cubiertos
+                cant_comensales: cubiertos
             };
             mesa = Risto.Adition.adicionar.crearNuevaMesa( miniMesa );
             Risto.Adition.EventHandler.mesaSeleccionada( {"mesa": mesa} );
@@ -13972,13 +13997,7 @@ $(document).bind("mobileinit", function(){
 
     $('#mesa-cobrar').live('pageshow', function(){
 
-      function showPagos() {
-        if ( Risto.Adition.adicionar.currentMesa().Pago().length ) {
-          $('.pagos-seleccionados','#mesa-cobrar').show();
-        }
-      }
-
-      showPagos();
+      
 
       $('.tipo-de-pagos-disponibles','#mesa-cobrar').delegate('a', 'click', function() {
 
@@ -13993,8 +14012,10 @@ $(document).bind("mobileinit", function(){
 
         Risto.Adition.adicionar.currentMesa().Pago.push( nuevoPago );
 
-        $('.pagos_creados li:last','#mesa-cobrar').find('input').focus();
-        showPagos();
+        $('.pagos_creados li:last','#mesa-cobrar').find('input')
+            .focus()
+            .val(Risto.Adition.adicionar.currentMesa().total() / Risto.Adition.adicionar.currentMesa().Pago().length )
+            .trigger('change');
       });
       
 
@@ -14005,8 +14026,7 @@ $(document).bind("mobileinit", function(){
         });
     });
 
-    $('#mesa-cobrar').live('pagebeforehide', function(){
-        $('.pagos-seleccionados','#mesa-cobrar').hide();
+    $('#mesa-cobrar').live('pagebeforehide', function(){        
         $('#mesa-pagos-procesar').unbind('click');
         $('.tipo-de-pagos-disponibles','#mesa-cobrar').undelegate('a', 'click');
     });

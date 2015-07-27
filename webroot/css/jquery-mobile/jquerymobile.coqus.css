@@ -1584,9 +1584,6 @@ span.ui-slider-label-b { right: -100%;  margin-left: -1px }
     color: rgb(199, 186, 57) !important;	
 }
 
-.pagos-seleccionados{
-	display: none;
-}
 
 #comanda-add-menu .comanda-add-menu-mesa-numero{
 	float: left;

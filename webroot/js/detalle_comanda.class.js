@@ -156,13 +156,11 @@ Risto.Adition.detalleComanda.prototype = {
         }
     },
     
-    deseleccionarYEnviar: function(){
+    deseleccionarYEnviar: function () {
         
         if (!window.confirm('Seguro que desea eliminar 1 unidad de '+this.Producto().name)){
             return false;
         }
-
-Risto.Adition.adicionar.currentMesa().Comanda()[0].DetalleComanda()[0]
 
         if (this.realCant() > 0 ) {
             this.cant_eliminada( parseInt( this.cant_eliminada() ) + 1 );

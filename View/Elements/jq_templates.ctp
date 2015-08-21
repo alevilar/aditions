@@ -148,12 +148,18 @@
 <!-- Template: Listado de productos del detalle Comanda -->
 <script id="li-productos-detallecomanda" type="text/x-jquery-tmpl">
  <li>
-     <span data-type="horizontal" data-role="controlgroup">
-        <a id="mesa-action-detalle-comanda-sacar-item" data-bind="click: deseleccionarYEnviar" data-role="button" data-icon="minus" data-iconpos="notext" href="#" title="-" data-theme="c">
+     <span data-type="horizontal" data-role="controlgroup" data-bind="visible: id()">
+        <a id="mesa-action-detalle-comanda-sacar-item" 
+            data-bind="click: deseleccionarYEnviar" data-role="button" data-icon="minus" data-iconpos="notext" href="#" title="-" data-theme="c">
             -</a>
         <a data-bind="css: { es_entrada: es_entrada}" data-role="button" data-iconpos="notext" data-icon="entrada" href="#" title="Entrada" data-theme="c">
             Entrada
         </a>
+     </span>
+
+     <span data-bind="visible: !id()">
+        <span style="font-size: 8pt; color: #80D8F6">Guardando</span>
+        <?php echo $this->Html->image('/aditions/css/img/loading.gif'); ?>
      </span>
 
      <span data-bind="text: realCant()" style="padding-left: 20px;"></span>

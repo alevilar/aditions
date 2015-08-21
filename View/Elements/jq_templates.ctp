@@ -220,6 +220,7 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
 
                 <span class="mesa-span ui-btn-inner">
                       <span class="ui-btn-text">
+                          <span class="mozo-numero" data-bind="text: mozo().numero" style="color: grey; font-size: 8pt"></span><br>
                           <span class="mesa-numero" data-bind="text: numero"></span>
                           <hr />
                           

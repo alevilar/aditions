@@ -266,6 +266,19 @@ ul.listado-adicion .mesa-mozo,ul.listado-adicion .mozo-cant-mesas {
     text-overflow: visible !important;
 }
 
+
+/* Portrait and Landscape */
+@media only screen 
+  and (min-width: 320px) 
+  and (max-width: 568px) {
+    .mesa-actions ul li A{
+        text-indent: -1000px;
+    }
+}
+
+
+
+
 .mesa-actions ul li[estado='comanda-add-menu_mesa-cerrada'],
 .mesa-actions ul li[estado='mesa-cerrar_mesa-cerrada'],
 .mesa-actions ul li[estado='mesa-reabrir_mesa-abierta'],

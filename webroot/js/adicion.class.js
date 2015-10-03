@@ -168,6 +168,9 @@ Risto.Adition.adicionar = {
     // microtime de la ultima actualizacion de las mesas
     mesasLastUpdatedTime : ko.observable( 0 ),
     
+
+    // listado de clientes que generalmente son buscador y cargados mediajnte ajax
+    clientes: ko.observableArray( [] ),
     
     
     /**
@@ -439,6 +442,17 @@ Risto.Adition.adicionar = {
         if ( this.currentMesa() && this.currentMesa().currentComanda() && this.currentMesa().currentComanda().currentSabores() ) {
             return this.currentMesa().currentComanda().currentSabores();    
         }
+    },
+
+
+
+    /**
+    *
+    *   Se encarga de agregar el cliente clickeada a la mesa actual
+    *
+    **/
+    setClienteACurrentMesa : function ( cliente ) {
+        return Risto.Adition.adicionar.currentMesa().setCliente( cliente );
     }
 
 

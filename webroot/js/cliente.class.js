@@ -43,7 +43,7 @@ Risto.Adition.cliente.prototype = {
             return null;
         }
         if (jsonMap.hasOwnProperty( 'Cliente' ) ) {
-            jsonMap = cliente.Cliente;
+            jsonMap = jsonMap.Cliente;
         }
         
         this.Descuento  = ko.observable( null );

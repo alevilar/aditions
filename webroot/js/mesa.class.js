@@ -559,7 +559,10 @@ Mesa.prototype = {
         var ctx = this, 
             clienteId = null;
         
-        if ( objCliente ) {
+        if ( objCliente && typeof objCliente.id == 'function' ) {
+            clienteId = objCliente.id();
+        }
+        if ( objCliente && ( typeof objCliente.id == 'number' || typeof objCliente.id == 'string') ){
             clienteId = objCliente.id;
         }
         $.get( this.urlAddCliente( clienteId ), function(data) {

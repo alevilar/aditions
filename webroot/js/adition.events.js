@@ -392,9 +392,32 @@ $(document).bind("mobileinit", function(){
      *
      */
     $('#listado_de_clientes').live('pageshow',function(event, ui){
+        $('input', '#contenedor-listado-clientes').focus();
+        
+        $('input', '#contenedor-listado-clientes').bind('keyup', function(){
+            var cliente, 
+                clientesNuevos = [], 
+                val = $(this).val();
 
-        $('input', '#contenedor-listado-clientes-factura-a').bind('keypress', function(){
-                    $('.factura-a-cliente-add').show();
+            if ( val.length > 2 )
+            $.getJSON(URL_DOMAIN + TENANT +'/clientes/index', {
+                'search' : val
+            }, function (e) {
+              clientesNuevos = [];
+              if ( e.clientes ) {
+                $.each(e.clientes, function( index, cliente ) {
+                  cli = new Risto.Adition.cliente( cliente );
+                  clientesNuevos.push( cli );
+                });
+                Risto.Adition.adicionar.clientes( clientesNuevos );
+              }
+            });
+
+            if (Risto.Adition.adicionar.clientes.length == 0 ) {
+              $('.btn-action-cliente-add').show();
+            }        
+
+
          });
 
         $('#mesa-eliminar-cliente').bind('click',function(){
@@ -405,9 +428,9 @@ $(document).bind("mobileinit", function(){
     });
 
     $('#listado_de_clientes').live('pagebeforehide',function(event, ui){
-
+        Risto.Adition.adicionar.clientes([]);
         $('#mesa-eliminar-cliente').unbind('click');
-        $('input', '#contenedor-listado-clientes-factura-a').unbind('keypress');
+        $('input', '#contenedor-listado-clientes').val('').unbind('keypress');
     });
 
 

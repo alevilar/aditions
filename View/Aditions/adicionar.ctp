@@ -232,7 +232,7 @@
                     </li>
                     
                     <li id="mesa-action-cliente" data-bind="attr: {'estado': 'mesa-cliente_'+adn().currentMesa().estado().icon}">
-                        <a href="<?php echo $this->Html->url(array('plugin'=>'fidelization', 'controller'=>'clientes', 'action'=>'jqm_clientes'))?>" data-rel="dialog">
+                        <a  href="#listado_de_clientes" data-rel="dialog">
                                 <?php echo $this->Html->image('/aditions/css/img/customers.png')?>
                             <span data-bind="visible: !adn().currentMesa().Cliente()"><?php echo __('Agregar %s', Configure::read('Mesa.tituloCliente')) ?></span>
                             <span data-bind="visible: adn().currentMesa().Cliente()" style="white-space: normal"><span data-bind="text: adn().currentMesa().clienteNameData()"></span></span>
@@ -621,6 +621,48 @@
 </div>  
 
 
-<?php 
-// $jsonMesas =  json_encode( $mesas );  
-?>
+
+
+<!--
+
+            LISTADO DE CLIENTES
+
+-->
+
+<div data-role="page" id="listado_de_clientes" data-role="dialog">   
+    <div data-role="header">
+        <h1 class="titulo">Seleccionar</h1>
+    </div> 
+       <div data-role="content" >
+            <div class="header-cliente">
+
+                <a href="#mesa-view" data-direction="reverse" data-role="button" data-inline="true">Volver</a>
+                
+                <?php echo $this->Html->link(__('Crear %s', Configure::read('Mesa.tituloCliente')), array('plugin'=>'fidelization', 'controller'=>'clientes', 'action'=>'simple_add'), array(
+                    'data-role' => 'button',
+                    'data-inline' => 'true',
+                    'data-theme' => 'b',
+                    'data-rel' => 'dialog',
+                )) ?>
+
+                <a href="#mesa-view" data-role="button" id="mesa-eliminar-cliente" data-inline="true" data-theme="" data-direction="reverse" data-bind="visible: adn().currentMesa().Cliente()">
+                        Borrar</span>
+                </a>
+
+            </div>
+
+            <div id="contenedor-listado-clientes">
+                <input type="text" class="clientes-search" placeholder="Ingresar criterio de búsqueda"/>
+                <div style="display: none" class="btn-action-cliente-add" data-theme="b">
+                    <br>
+                    <a href="<?php echo $this->Html->url(array('plugin'=>'fidelization', 'controller'=>'clientes', 'action'=>'simple_add')) ?>"><?php echo __( 'Agregar Nuevo %s',Configure::read('Mesa.tituloCliente')) ?></a>
+                </div>
+
+                <ul id="listado-clientes" class="listado-clientes" data-bind='template: { name: "listaClientes", foreach: adn().clientes }'>
+                </ul>
+
+
+            </div>
+            
+        </div>
+</div>

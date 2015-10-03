@@ -58,5 +58,21 @@ Risto.Adition.categoria.prototype = {
     
     seleccionar: function() {
         Risto.Adition.menu.seleccionarCategoria( this );
-    }
+    },
+
+    
+    tieneMedia: function () {
+        var mediaId;
+        if (typeof this.media == 'function' ) {
+            mediaId = this.media();
+        } else {
+            mediaId = this.media;
+        }
+
+        if ( parseInt( mediaId ) && mediaId != null ) {
+            return true;
+        } else {
+            return false;
+        }
+    },
 }

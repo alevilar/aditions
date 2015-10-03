@@ -10535,12 +10535,25 @@ Mozo.prototype = {
 
 
     full_image_url: function () {
-        return URL_DOMAIN + TENANT + "/risto/medias/thumb/" + this.media_id() + "/88/88";
+        var mediaId;
+        if (typeof this.media == 'function' ) {
+            mediaId = this.media();
+        } else {
+            mediaId = this.media;
+        }
+        return URL_DOMAIN + TENANT + "/risto/medias/thumb/" + mediaId + "/88/88";
     },
 
 
     tieneMediaId: function () {
-        if ( parseInt( this.media_id() ) ) {
+        var mediaId;
+        if (typeof this.media == 'function' ) {
+            mediaId = this.media();
+        } else {
+            mediaId = this.media;
+        }
+
+        if ( parseInt( mediaId ) && mediaId != null ) {
             return true;
         } else {
             return false;
@@ -11385,7 +11398,10 @@ Mesa.prototype = {
         var ctx = this, 
             clienteId = null;
         
-        if ( objCliente ) {
+        if ( objCliente && typeof objCliente.id == 'function' ) {
+            clienteId = objCliente.id();
+        }
+        if ( objCliente && ( typeof objCliente.id == 'number' || typeof objCliente.id == 'string') ){
             clienteId = objCliente.id;
         }
         $.get( this.urlAddCliente( clienteId ), function(data) {
@@ -12188,6 +12204,9 @@ Risto.Adition.adicionar = {
     // microtime de la ultima actualizacion de las mesas
     mesasLastUpdatedTime : ko.observable( 0 ),
     
+
+    // listado de clientes que generalmente son buscador y cargados mediajnte ajax
+    clientes: ko.observableArray( [] ),
     
     
     /**
@@ -12459,6 +12478,17 @@ Risto.Adition.adicionar = {
         if ( this.currentMesa() && this.currentMesa().currentComanda() && this.currentMesa().currentComanda().currentSabores() ) {
             return this.currentMesa().currentComanda().currentSabores();    
         }
+    },
+
+
+
+    /**
+    *
+    *   Se encarga de agregar el cliente clickeada a la mesa actual
+    *
+    **/
+    setClienteACurrentMesa : function ( cliente ) {
+        return Risto.Adition.adicionar.currentMesa().setCliente( cliente );
     }
 
 
@@ -12602,7 +12632,23 @@ Risto.Adition.categoria.prototype = {
     
     seleccionar: function() {
         Risto.Adition.menu.seleccionarCategoria( this );
-    }
+    },
+
+    
+    tieneMedia: function () {
+        var mediaId;
+        if (typeof this.media == 'function' ) {
+            mediaId = this.media();
+        } else {
+            mediaId = this.media;
+        }
+
+        if ( parseInt( mediaId ) && mediaId != null ) {
+            return true;
+        } else {
+            return false;
+        }
+    },
 }/*--------------------------------------------------------------------------------------------------- Risto.Adicion.sabor
  *
  *
@@ -12717,7 +12763,7 @@ Risto.Adition.cliente.prototype = {
             return null;
         }
         if (jsonMap.hasOwnProperty( 'Cliente' ) ) {
-            jsonMap = cliente.Cliente;
+            jsonMap = jsonMap.Cliente;
         }
         
         this.Descuento  = ko.observable( null );
@@ -13476,9 +13522,32 @@ $(document).bind("mobileinit", function(){
      *
      */
     $('#listado_de_clientes').live('pageshow',function(event, ui){
+        $('input', '#contenedor-listado-clientes').focus();
+        
+        $('input', '#contenedor-listado-clientes').bind('keyup', function(){
+            var cliente, 
+                clientesNuevos = [], 
+                val = $(this).val();
 
-        $('input', '#contenedor-listado-clientes-factura-a').bind('keypress', function(){
-                    $('.factura-a-cliente-add').show();
+            if ( val.length > 2 )
+            $.getJSON(URL_DOMAIN + TENANT +'/clientes/index', {
+                'search' : val
+            }, function (e) {
+              clientesNuevos = [];
+              if ( e.clientes ) {
+                $.each(e.clientes, function( index, cliente ) {
+                  cli = new Risto.Adition.cliente( cliente );
+                  clientesNuevos.push( cli );
+                });
+                Risto.Adition.adicionar.clientes( clientesNuevos );
+              }
+            });
+
+            if (Risto.Adition.adicionar.clientes.length == 0 ) {
+              $('.btn-action-cliente-add').show();
+            }        
+
+
          });
 
         $('#mesa-eliminar-cliente').bind('click',function(){
@@ -13489,9 +13558,9 @@ $(document).bind("mobileinit", function(){
     });
 
     $('#listado_de_clientes').live('pagebeforehide',function(event, ui){
-
+        Risto.Adition.adicionar.clientes([]);
         $('#mesa-eliminar-cliente').unbind('click');
-        $('input', '#contenedor-listado-clientes-factura-a').unbind('keypress');
+        $('input', '#contenedor-listado-clientes').val('').unbind('keypress');
     });
 
 
@@ -13885,6 +13954,8 @@ Risto.Adition.menu = {
         Risto.Adition.koAdicionModel.menu(this);
         return this;
     },
+
+
     
     
     /**

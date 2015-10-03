@@ -21,6 +21,23 @@
 
 
 
+<script id="listaClientes" type="text/x-jquery-tmpl">
+  <li data-theme="c" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-btn-up-c">
+    <div class="ui-btn-inner ui-li">
+      <div class="ui-btn-text">&nbsp;
+        <a href="#mesa-view" data-direction="reverse" class="ui-link-inherit"  data-bind="click: Risto.Adition.adicionar.setClienteACurrentMesa">
+          <span class="cliente-nrodoc" data-bind="text: nombre"></span>
+          <span class="cliente-nombre" data-bind="text: nrodocumento"></span>                                    
+        </a>                   
+      </div>
+      <span class="ui-icon ui-icon-arrow-r ui-icon-shadow"></span>
+    </div>
+  </li>
+</script>
+
+
+
+
 <!--  TEmplate: Productos seleccionados en el menu. comandas add -->
 <script id="categorias-productos-seleccionados" type="text/x-jquery-tmpl">
     <li data-bind="visible: cant(), css:{'es-entrada': esEntrada(), 'tiene-observacion': observacion()}"  class="ui-li ui-li-static ui-body-c listado-productos-seleccionados" >
@@ -103,7 +120,9 @@
        data-bind="css: {'sin-imagen': !media_id, 'con-imagen': media_id}"
        class="">
            <?php $urlForCategory = $this->Html->url(array('plugin'=>'risto', 'controller'=>'medias', 'action'=>'view')); ?>
-           <image class="menu-img" data-bind="visible: media_id, attr: {src: '<?php echo $urlForCategory ?>/'+media_id}"/>           
+           <span data-bind="visible: tieneMedia">
+              <image class="menu-img" data-bind="attr: {src: '<?php echo $urlForCategory ?>/'+media_id}"/>
+           </span  
            <span data-bind="text: name"></span>
    </a>
 </script>
@@ -136,7 +155,9 @@
 <!-- listado de pagos seleccionados -->
 <script id="li-pagos-creados" type="text/x-jquery-tmpl">
      <li>
-         <img src="" data-bind="attr: {src: image(), alt: TipoDePago().name, title: TipoDePago().name}"/>
+         <span data-bind="visible: media_id">
+            <img src="" data-bind="visible: media_id, attr: {src: image(), alt: TipoDePago().name, title: TipoDePago().name}"/>
+          </span>
          <input name="valor" data-bind="value: valor, valueUpdate: 'keyup'" placeholder="Ej: 100.4" class="ui-input-text ui-body-e ui-corner-all ui-shadow-inset"/>
      </li>
 </script>
@@ -238,13 +259,12 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
 </script>
 
 
-
 <script id="listaMozos" type="text/x-jquery-tmpl">
     <li  style="width: <?php echo floor( 100/ count($mozos) ); ?>%" class="<?php echo ( count($mozos) > 8 )?'adicion-listado-mozos-mesa-small':'adicion-listado-mozos-mesa-big'; ?>">
         
         <button type="button" data-bind="click: seleccionar, attr: {value: id}"  class="adicion-mozo-title">
             <span data-bind="visible: tieneMediaId()">
-                <img data-bind="attr:{src: full_image_url()}" />
+                <img data-bind="visible: media_id =! null, attr:{src: full_image_url()}" />
             </span>
 
             <span data-bind="visible: !tieneMediaId(), text: numero">

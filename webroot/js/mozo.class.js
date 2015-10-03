@@ -167,12 +167,25 @@ Mozo.prototype = {
 
 
     full_image_url: function () {
-        return URL_DOMAIN + TENANT + "/risto/medias/thumb/" + this.media_id() + "/88/88";
+        var mediaId;
+        if (typeof this.media == 'function' ) {
+            mediaId = this.media();
+        } else {
+            mediaId = this.media;
+        }
+        return URL_DOMAIN + TENANT + "/risto/medias/thumb/" + mediaId + "/88/88";
     },
 
 
     tieneMediaId: function () {
-        if ( parseInt( this.media_id() ) ) {
+        var mediaId;
+        if (typeof this.media == 'function' ) {
+            mediaId = this.media();
+        } else {
+            mediaId = this.media;
+        }
+
+        if ( parseInt( mediaId ) && mediaId != null ) {
             return true;
         } else {
             return false;

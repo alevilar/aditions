@@ -137,6 +137,14 @@ Mesa.prototype = {
                     },
                     key: function(data) {
                         return ko.utils.unwrapObservable( data.id );
+                    },
+                    'DetalleComanda': {
+                        create: function(ops) {
+                            return new Risto.Adition.detalleComanda(ops.data);
+                        },
+                        key: function(data) {
+                            return ko.utils.unwrapObservable( data.id );
+                        }
                     }
                 }
             }

@@ -2,3 +2,6 @@
 
 sh concatenizador_generic.sh
 sh concatenizador_hotel.sh
+
+
+yui-compressor -o '.js$:.min.js' *.js

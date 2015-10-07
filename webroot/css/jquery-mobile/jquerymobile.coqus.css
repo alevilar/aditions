@@ -1601,3 +1601,42 @@ span.ui-slider-label-b { right: -100%;  margin-left: -1px }
 ul.listado-clientes{
 	padding: 0px;
 }
+
+
+.adn-btn-restar-cantidad{
+	display: inline-block;
+    background: rgb(103, 103, 103);
+    color: white;
+    display: inline;
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow:    2px 2px 5px 0px rgba(50, 50, 50, 0.75);
+	box-shadow:         2px 2px 5px 0px rgba(50, 50, 50, 0.75);
+	-webkit-transition: all 0.2s;
+    transition: all 0.s;
+    border: 1px solid #5D5D5D;
+    text-decoration: none;
+    padding: 2px;
+    margin-left: 5px;
+}
+
+.adn-btn-restar-cantidad:hover{
+	background: rgb(99, 99, 99);
+	-webkit-box-shadow: 3px 3px 6px 0px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow:    3px 3px 6px 0px rgba(50, 50, 50, 0.75);
+	box-shadow:         3px 3px 6px 0px rgba(50, 50, 50, 0.75);
+	 -ms-transform: scale(1.2); /* IE 9 */
+   	-webkit-transform: scale(1.2); /* Safari */
+    transform: scale(1.2);
+
+}
+
+.adn-btn-restar-cantidad .ui-btn-inner{
+	padding: 3px 5px;
+	display: inline;
+}
+
+
+
+#comanda-detalle-collapsible .ui-collapsible-content{
+	padding: 0px;
+}

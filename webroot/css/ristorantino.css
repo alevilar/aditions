@@ -5,8 +5,6 @@
   user-select: none;
 }
 
-
-
 .ui-dialog .ui-header{
     margin: 2% auto 15px auto;
 }
@@ -216,15 +214,42 @@ ul.listado-adicion .mesa-mozo,ul.listado-adicion .mozo-cant-mesas {
     font-weight: normal;
 }
 
+#comanda-detalle-collapsible .comanda-items{
+    margin: 0px 1em;
+    padding: 0px;
+}
+
+
+
 .comanda-items li{
-    padding: .3em 10px!important;
+    list-style: none;
+    border-bottom: none;
+    border-top: none;
     border-left-color: #B3B3B3;
     border-left-width: 1px;
     border-left-style: solid;
     border-right-color: #B3B3B3;
     border-right-width: 1px;
     border-right-style: solid;
+    background-color: #D0D0D0;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-bottom-color: #B3B3B3;
+    border-bottom-width: 1px;
+    border-bottom-style: dashed;
+}
 
+.comanda-items li:last-child{
+    margin-bottom: 1em;
+    border-bottom-style: solid;
+}
+
+.comanda-items .adn-mesa-comanda-cantidad{
+    background: white;
+    padding: 3px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
 }
 
 .mesa-actions{
@@ -391,7 +416,8 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
 }
 
 .es_entrada{
-    background: #437FBE;
+    color: #1C4773;
+    padding: 3px 5px;
 }
 
 .tachada{
@@ -422,7 +448,6 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
 
 .producto-precio{
     float: right;
-    margin-top: 11px;
 }
 
 

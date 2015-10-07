@@ -9,14 +9,9 @@ Risto.Adition.comanda = function(jsonData){
 }
 
 
-Risto.Adition.comanda.prototype = {
-    // Array de DetalleComanda, cada detalleComanda es 1 producto
-    DetalleComanda  : function( ) {return []},
-    created         : function( ) { },
+Risto.Adition.comanda.prototype = {   
     model           : 'Comanda',
-    imprimir        : function( ) {return true},
-    id              : ko.observable(),
-    observacion     : function( ) { return '' },
+    
     
     initialize: function(jsonData) {
         this.id = ko.observable();
@@ -31,6 +26,9 @@ Risto.Adition.comanda.prototype = {
                 'DetalleComanda': {
                     create: function(ops) {
                         return new Risto.Adition.detalleComanda(ops.data);
+                    },
+                    key: function(data) {
+                        return ko.utils.unwrapObservable( data.id );
                     }
                 }
             }

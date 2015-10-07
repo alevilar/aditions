@@ -82,12 +82,7 @@ $raeh = Risto.Adition.EventHandler = {
          * */
         var onMesasActualizadasHandlerByPage = {
             'listado-mesas': function(){
-                var btnMozo = $('#listado-mozos-para-mesas .ui-btn-active'),
-                    mozoId = 0;
-                if ( btnMozo[0] ) {
-                    mozoId = $(btnMozo[0]).attr('data-mozo-id');
-                }
-                $raeh.mostrarMesasDeMozo(mozoId);
+               
             },
             'mesa-view': function() {
                 $('#comanda-detalle-collapsible').trigger('create');

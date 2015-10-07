@@ -13,6 +13,8 @@ Risto.Adition.comandaFabrica.prototype = {
     mesa: {},
     
     comanda: {},
+
+
     
     // array de los sabores del producto seleccionado
     currentSabores: function( ) {return []},
@@ -48,20 +50,32 @@ Risto.Adition.comandaFabrica.prototype = {
      * @param comanderas Array listado de comandas
      */
     __generarComanda: function( comandaJsonCopy, comanderas ){
-        var comanderaComanda;
+        var comanderaComanda
+            self = this;
+
          // creo una nueva comanda para cada comandera
         for (var com in comanderas ) {
+
             comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
-            primcomanda = comanderaComanda;
             comanderaComanda.DetalleComanda( comanderas[com] );
-            this.mesa.Comanda.unshift( comanderaComanda );
-
-            megacomanda = comanderaComanda;
-
+            self.mesa.Comanda.unshift( comanderaComanda );
+            
              //  para cada comandera
             $cakeSaver.send({
                 url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 
                 obj: comanderaComanda
+            }).done( function ( data ) {
+
+                if ( data && data.Comanda && data.Comanda.DetalleComanda) {
+                    data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
+                    nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
+
+                      // comanderaComanda.id( data.Comanda.Comanda.id );
+                    comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
+                }
+
+            }).error( function ( ev ) {
+                alert("Se produjo un error de conexión en el servidor, no se pudo guardar.");
             });
         }
     },

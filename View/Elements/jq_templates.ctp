@@ -2,7 +2,7 @@
 <script id="listaComandas" type="text/x-jquery-tmpl">
    <div data-role="collapsible">
        <h3>
-           <span class="id-comanda">#<span data-bind="text: id()"></span></span>  <span class="hora-comanda"  data-bind="text: timeCreated()"></span>&nbsp;&nbsp;&nbsp;
+           <span class="id-comanda">#<span data-bind="text: id"></span></span>  <span class="hora-comanda"  data-bind="text: timeCreated()"></span>&nbsp;&nbsp;&nbsp;
            <span class="comanda-listado-productos-string" data-bind="text: productsStringListing()"></span>
            
            <a style="float: right;" href="#" data-bind="click: imprimirComanda" class="btn-comanda-icon">
@@ -11,8 +11,7 @@
        </h3>
 
         <ul class="comanda-items" data-role="listview"
-           data-bind="template: {name: 'li-productos-detallecomanda', foreach: DetalleComanda}"
-           style="margin: 0px;">
+           data-bind="template: {name: 'li-productos-detallecomanda', foreach: DetalleComanda}">
 
         </ul>                                                                           
    </div>
@@ -122,7 +121,7 @@
            <?php $urlForCategory = $this->Html->url(array('plugin'=>'risto', 'controller'=>'medias', 'action'=>'view')); ?>
            <span data-bind="visible: tieneMedia">
               <image class="menu-img" data-bind="attr: {src: '<?php echo $urlForCategory ?>/'+media_id}"/>
-           </span  
+           </span>  
            <span data-bind="text: name"></span>
    </a>
 </script>
@@ -168,24 +167,21 @@
 
 <!-- Template: Listado de productos del detalle Comanda -->
 <script id="li-productos-detallecomanda" type="text/x-jquery-tmpl">
- <li>
-     <span data-type="horizontal" data-role="controlgroup" data-bind="visible: id()">
-        <a id="mesa-action-detalle-comanda-sacar-item" 
-            data-bind="click: deseleccionarYEnviar" data-role="button" data-icon="minus" data-iconpos="notext" href="#" title="-" data-theme="c">
-            -</a>
-        <a data-bind="css: { es_entrada: es_entrada}" data-role="button" data-iconpos="notext" data-icon="entrada" href="#" title="Entrada" data-theme="c">
-            Entrada
-        </a>
-     </span>
-
+ <li class="ui-li ui-li-static ui-body-c">
      <span data-bind="visible: !id()">
         <span style="font-size: 8pt; color: #80D8F6">Guardando</span>
         <?php echo $this->Html->image('/aditions/css/img/loading.gif'); ?>
      </span>
 
-     <span data-bind="text: realCant()" style="padding-left: 20px;"></span>
-     <span data-bind="text: nameConSabores() + ' ' +observacion(), css: {tachada: realCant()==0}" style="padding-left: 20px;"></span>
-     <span class="producto-precio">p/u: {{= '$'}}<span data-bind="text: precio()"></span></span>
+    <span data-bind="visible: id()">
+       <span class="producto-precio">p/u: {{= '$'}}<span data-bind="text: precio()"></span></span>
+       
+       <span data-bind="visible: esEntrada(), css: { es_entrada: esEntrada()}" href="#" title="Entrada" data-theme="c">E</span>
+
+       <span data-bind="text: realCant()" class="adn-mesa-comanda-cantidad"></span>
+       <span data-bind="text: nameConSaboresyObservacion(), css: {tachada: realCant()==0}" class="adn-mesa-comanda-nombre-producto"></span>
+       <a data-bind="click: deseleccionarYEnviar" data-role="button" href="#" title="restar cantidad" data-theme="c" class="adn-btn-restar-cantidad">⇩</a>
+    </span>
  </li>
 </script>
 

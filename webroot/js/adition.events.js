@@ -550,7 +550,7 @@ $(document).bind("mobileinit", function(){
 
         $('.pagos_creados li:last','#mesa-cobrar').find('input')
             .focus()
-            .val(Risto.Adition.adicionar.currentMesa().total() / Risto.Adition.adicionar.currentMesa().Pago().length )
+            .val( Risto.Adition.adicionar.currentMesa().total() - Risto.Adition.adicionar.currentMesa().totalPagos() )
             .trigger('change');
       });
       

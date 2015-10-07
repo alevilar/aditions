@@ -58,7 +58,20 @@ Risto.Adition.comandaFabrica.prototype = {
 
             comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
             comanderaComanda.DetalleComanda( comanderas[com] );
+
             self.mesa.Comanda.unshift( comanderaComanda );
+
+            $.each( comanderaComanda.DetalleComanda(), function (i, el){
+            	var prodId;
+            	if ( typeof el.Producto().id == 'function'  ) {
+            		prodId = el.Producto().id();
+            	} else {
+            		prodId = el.Producto().id;
+            	}
+            	el.producto_id ( prodId );
+            });
+
+            
             
              //  para cada comandera
             $cakeSaver.send({

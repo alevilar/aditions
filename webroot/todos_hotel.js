@@ -10646,12 +10646,7 @@ $raeh = Risto.Adition.EventHandler = {
          * */
         var onMesasActualizadasHandlerByPage = {
             'listado-mesas': function(){
-                var btnMozo = $('#listado-mozos-para-mesas .ui-btn-active'),
-                    mozoId = 0;
-                if ( btnMozo[0] ) {
-                    mozoId = $(btnMozo[0]).attr('data-mozo-id');
-                }
-                $raeh.mostrarMesasDeMozo(mozoId);
+               
             },
             'mesa-view': function() {
                 $('#comanda-detalle-collapsible').trigger('create');
@@ -11734,13 +11729,19 @@ Risto.Adition.comanda.prototype = {
     },
     
     productsStringListing: function(){
-        var name = '';        
+        var name = '',
+            prodName;        
         for (var dc in this.DetalleComanda() ){
             if ( this.DetalleComanda()[dc].realCant() ) {
                 if ( name ){
                     name += ', ';
-                }        
-                name += this.DetalleComanda()[dc].realCant()+' '+this.DetalleComanda()[dc].Producto().name;
+                }
+                if ( typeof this.DetalleComanda()[dc].Producto().name == 'function' ) {
+                    prodName = this.DetalleComanda()[dc].Producto().name();
+                } else {
+                    prodName = this.DetalleComanda()[dc].Producto().name;
+                }
+                name += this.DetalleComanda()[dc].realCant()+' '+prodName;
             }
         }
         return name;
@@ -11844,7 +11845,20 @@ Risto.Adition.comandaFabrica.prototype = {
 
             comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
             comanderaComanda.DetalleComanda( comanderas[com] );
+
             self.mesa.Comanda.unshift( comanderaComanda );
+
+            $.each( comanderaComanda.DetalleComanda(), function (i, el){
+            	var prodId;
+            	if ( typeof el.Producto().id == 'function'  ) {
+            		prodId = el.Producto().id();
+            	} else {
+            		prodId = el.Producto().id;
+            	}
+            	el.producto_id ( prodId );
+            });
+
+            
             
              //  para cada comandera
             $cakeSaver.send({
@@ -12184,6 +12198,7 @@ Risto.Adition.handleMesasRecibidas = {
             $raeh.adicionMesasActualizadas();
             return 1;
         },
+
         
         
         /**
@@ -12269,9 +12284,8 @@ Risto.Adition.adicionar = {
             worker = new Worker(URL_DOMAIN + "aditions/js/adicion.model.js");
 
             worker.onmessage = function ( evt ) {
-
                 // si tiene mesas las proceso
-                if ( evt.hasOwnProperty('data') && evt.data.hasOwnProperty('mesas') ) { 
+                if ( evt.data && evt.data.mesas && typeof evt.data.mesas == 'object') { 
                     for ( cbk in evt.data.mesas ) {                       
                         if ( typeof Risto.Adition.handleMesasRecibidas[cbk] == 'function' ) {
                             Risto.Adition.handleMesasRecibidas[cbk].call( Risto.Adition.adicionar, evt.data.mesas[cbk] );
@@ -12861,13 +12875,6 @@ Risto.Adition.pago.prototype = {
 Risto.Adition.detalleComanda = function(jsonData) {
     this.initialize(jsonData);
     
-    // Observables Dependientes
-    this.producto_id = ko.dependentObservable( function(){
-        if ( this.Producto() ) {
-            return this.Producto().id;
-        }
-        return undefined;
-    },this);
     
     
     this.printer_id = ko.dependentObservable( function(){
@@ -12889,14 +12896,15 @@ Risto.Adition.detalleComanda.prototype = {
     
     initialize: function(jsonData){
         this.DetalleSabor   = ko.observableArray( [] );
+        this.Producto       = ko.observable();
         this.imprimir       = ko.observable( true );
         this.cant           = ko.observable( 0 );
         this.es_entrada     = ko.observable( 0 );
         this.observacion    = ko.observable( '' );
         this.modificada     = ko.observable( false );
+        this.producto_id     = ko.observable();
 
         this.id = ko.observable();
-        this.Producto = ko.observable();
 
 
         if ( jsonData ) {
@@ -12905,9 +12913,6 @@ Risto.Adition.detalleComanda.prototype = {
                 'Producto': {
                     create: function(ops) {
                         return new Risto.Adition.producto(ops.data);
-                    },
-                    key: function(data) {
-                        return ko.utils.unwrapObservable( data.id );
                     }
                 },
                 'DetalleSabor': {

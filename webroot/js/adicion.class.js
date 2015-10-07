@@ -61,16 +61,13 @@ Risto.Adition.handleMesasRecibidas = {
             if (!data.mozos) return -1;
             var mesaEncontrada, 
                 mozo;
-            console.info("vino mesa modificada %o", data.mozos);
             for(var z in data.mozos){
                 mozo = Risto.Adition.adicionar.findMozoById( data.mozos[z].id );
                 for( var m in data.mozos[z].mesas ) {
                     mesaEncontrada = Risto.Adition.adicionar.findMesaById( data.mozos[z].mesas[m].id );
                     if ( mesaEncontrada ) {
-                        console.info("mesa ENCONTRADA %o", mesaEncontrada);
                         mesaEncontrada.update( mozo, data.mozos[z].mesas[m] );
                     } else {
-                        console.info("mesa NUEVA %o", data.mozos[z].mesas[m]);
                         new Mesa(mozo, data.mozos[z].mesas[m] );
                     }
                 }

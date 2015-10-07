@@ -8,13 +8,6 @@
 Risto.Adition.detalleComanda = function(jsonData) {
     this.initialize(jsonData);
     
-    // Observables Dependientes
-    this.producto_id = ko.dependentObservable( function(){
-        if ( this.Producto() ) {
-            return this.Producto().id;
-        }
-        return undefined;
-    },this);
     
     
     this.printer_id = ko.dependentObservable( function(){
@@ -36,14 +29,15 @@ Risto.Adition.detalleComanda.prototype = {
     
     initialize: function(jsonData){
         this.DetalleSabor   = ko.observableArray( [] );
+        this.Producto       = ko.observable();
         this.imprimir       = ko.observable( true );
         this.cant           = ko.observable( 0 );
         this.es_entrada     = ko.observable( 0 );
         this.observacion    = ko.observable( '' );
         this.modificada     = ko.observable( false );
+        this.producto_id     = ko.observable();
 
         this.id = ko.observable();
-        this.Producto = ko.observable();
 
 
         if ( jsonData ) {
@@ -52,9 +46,6 @@ Risto.Adition.detalleComanda.prototype = {
                 'Producto': {
                     create: function(ops) {
                         return new Risto.Adition.producto(ops.data);
-                    },
-                    key: function(data) {
-                        return ko.utils.unwrapObservable( data.id );
                     }
                 },
                 'DetalleSabor': {

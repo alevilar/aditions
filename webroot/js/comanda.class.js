@@ -42,13 +42,19 @@ Risto.Adition.comanda.prototype = {
     },
     
     productsStringListing: function(){
-        var name = '';        
+        var name = '',
+            prodName;        
         for (var dc in this.DetalleComanda() ){
             if ( this.DetalleComanda()[dc].realCant() ) {
                 if ( name ){
                     name += ', ';
-                }        
-                name += this.DetalleComanda()[dc].realCant()+' '+this.DetalleComanda()[dc].Producto().name;
+                }
+                if ( typeof this.DetalleComanda()[dc].Producto().name == 'function' ) {
+                    prodName = this.DetalleComanda()[dc].Producto().name();
+                } else {
+                    prodName = this.DetalleComanda()[dc].Producto().name;
+                }
+                name += this.DetalleComanda()[dc].realCant()+' '+prodName;
             }
         }
         return name;

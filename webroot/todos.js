@@ -10402,8 +10402,6 @@ var MOZOS_POSIBLES_ESTADOS =  {
 
 
 var Mozo = function(jsonData){
-
-    
     var este = this;
     this.mesasOrdenadas = ko.dependentObservable( function(){
         return este.ordenarMesasPorNumero();
@@ -11400,17 +11398,17 @@ Mesa.prototype = {
     setCliente: function( objCliente ){
         var ctx = this, 
             clienteId = null;
-        
+
         if ( objCliente && typeof objCliente.id == 'function' ) {
             clienteId = objCliente.id();
         }
         if ( objCliente && ( typeof objCliente.id == 'number' || typeof objCliente.id == 'string') ){
             clienteId = objCliente.id;
         }
+        ctx.Cliente( objCliente );
+
         $.get( this.urlAddCliente( clienteId ), function(data) {
-            if ( data.Cliente ){
-                ctx.Cliente( new Risto.Adition.cliente(data.Cliente) );
-            } else{
+            if ( !data.Cliente ){              
                 ctx.Cliente(null);
             }
         });
@@ -11443,13 +11441,14 @@ Mesa.prototype = {
      *@return float
      */
     totalCalculadoNeto: function(){
-        var valorPorCubierto =  Risto.VALOR_POR_CUBIERTO || 0,
+        var precio = 0,
+            valorPorCubierto =  Risto.VALOR_POR_CUBIERTO || 0,
             total = this.cant_comensales() * valorPorCubierto,
             c = 0;
-
         for (c in this.Comanda()){
             for (dc in this.Comanda()[c].DetalleComanda() ){
-                total += parseFloat( this.Comanda()[c].DetalleComanda()[dc].precio() * this.Comanda()[c].DetalleComanda()[dc].realCant() );
+                precio = this.Comanda()[c].DetalleComanda()[dc].precio()
+                total += parseFloat( precio * this.Comanda()[c].DetalleComanda()[dc].realCant() );
             }
         }
 
@@ -11502,8 +11501,6 @@ Mesa.prototype = {
                 dto = 0, 
                 totalText = '$'+total ;
             
-            
-        
             if ( this.porcentajeDescuento() ) {
                 dto = Math.round( Math.floor( total * this.porcentajeDescuento()  / 100 ) *100 ) /100;
                 totalText = totalText+' - [Dto '+this.porcentajeDescuento()+'%] $'+dto+' = $'+ this.totalCalculado();
@@ -12875,8 +12872,6 @@ Risto.Adition.pago.prototype = {
 Risto.Adition.detalleComanda = function(jsonData) {
     this.initialize(jsonData);
     
-    
-    
     this.printer_id = ko.dependentObservable( function(){
         var prod = this.Producto();
         if ( prod ) {
@@ -12931,11 +12926,24 @@ Risto.Adition.detalleComanda.prototype = {
     /**
      *Es el valor del producto sumandole los sabores
      */
-    precio: function(){
-        var total = parseFloat( this.Producto().precio );
-        for (var s in this.DetalleSabor() ){
-            total += parseFloat( this.DetalleSabor()[s].precio );
+    precio: function(){        
+
+        var precioSabor;
+        var total;
+        if ( typeof this.Producto().precio == 'function') {
+            total = this.Producto().precio();
+        } else {
+            total = this.Producto().precio;
         }
+
+        $.each( this.DetalleSabor(), function( index, sabor ){
+            if ( sabor.Sabor && sabor.Sabor.precio) {
+                precioSabor = sabor.Sabor.precio;
+            } else {
+                precioSabor = sabor.precio;
+            }
+            total += parseFloat( precioSabor );
+        });
         return total;
     },
     

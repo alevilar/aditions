@@ -566,17 +566,17 @@ Mesa.prototype = {
     setCliente: function( objCliente ){
         var ctx = this, 
             clienteId = null;
-        
+
         if ( objCliente && typeof objCliente.id == 'function' ) {
             clienteId = objCliente.id();
         }
         if ( objCliente && ( typeof objCliente.id == 'number' || typeof objCliente.id == 'string') ){
             clienteId = objCliente.id;
         }
+        ctx.Cliente( objCliente );
+
         $.get( this.urlAddCliente( clienteId ), function(data) {
-            if ( data.Cliente ){
-                ctx.Cliente( new Risto.Adition.cliente(data.Cliente) );
-            } else{
+            if ( !data.Cliente ){              
                 ctx.Cliente(null);
             }
         });
@@ -609,13 +609,14 @@ Mesa.prototype = {
      *@return float
      */
     totalCalculadoNeto: function(){
-        var valorPorCubierto =  Risto.VALOR_POR_CUBIERTO || 0,
+        var precio = 0,
+            valorPorCubierto =  Risto.VALOR_POR_CUBIERTO || 0,
             total = this.cant_comensales() * valorPorCubierto,
             c = 0;
-
         for (c in this.Comanda()){
             for (dc in this.Comanda()[c].DetalleComanda() ){
-                total += parseFloat( this.Comanda()[c].DetalleComanda()[dc].precio() * this.Comanda()[c].DetalleComanda()[dc].realCant() );
+                precio = this.Comanda()[c].DetalleComanda()[dc].precio()
+                total += parseFloat( precio * this.Comanda()[c].DetalleComanda()[dc].realCant() );
             }
         }
 
@@ -668,8 +669,6 @@ Mesa.prototype = {
                 dto = 0, 
                 totalText = '$'+total ;
             
-            
-        
             if ( this.porcentajeDescuento() ) {
                 dto = Math.round( Math.floor( total * this.porcentajeDescuento()  / 100 ) *100 ) /100;
                 totalText = totalText+' - [Dto '+this.porcentajeDescuento()+'%] $'+dto+' = $'+ this.totalCalculado();

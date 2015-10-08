@@ -69,7 +69,7 @@
         // $vec['time'] = $mesasLastUpdatedTime; // curren Unix server time
         // $vec['modified'] = $modified;
 
-        $mesas = json_encode($mesas, JSON_NUMERIC_CHECK);
+        $mesas = json_encode($mesas);
         ?>
 
         var jsonMesas = <?php echo $mesas; ?>,

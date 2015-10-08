@@ -154,10 +154,8 @@
 <!-- listado de pagos seleccionados -->
 <script id="li-pagos-creados" type="text/x-jquery-tmpl">
      <li>
-         <span data-bind="visible: media_id">
-            <img src="" data-bind="visible: media_id, attr: {src: image(), alt: TipoDePago().name, title: TipoDePago().name}"/>
-          </span>
-         <input name="valor" data-bind="value: valor, valueUpdate: 'keyup'" placeholder="Ej: 100.4" class="ui-input-text ui-body-e ui-corner-all ui-shadow-inset"/>
+        <img src="" data-bind="attr: {src: image(), alt: TipoDePago().name, title: TipoDePago().name}"/>
+        <input name="valor" data-bind="value: valor, valueUpdate: 'keyup'" placeholder="Ej: 100.4" class="ui-input-text ui-body-e ui-corner-all ui-shadow-inset"/>
      </li>
 </script>
 

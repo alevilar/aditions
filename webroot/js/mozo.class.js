@@ -34,8 +34,6 @@ var MOZOS_POSIBLES_ESTADOS =  {
 
 
 var Mozo = function(jsonData){
-
-    
     var este = this;
     this.mesasOrdenadas = ko.dependentObservable( function(){
         return este.ordenarMesasPorNumero();

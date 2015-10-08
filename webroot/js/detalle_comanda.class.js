@@ -8,8 +8,6 @@
 Risto.Adition.detalleComanda = function(jsonData) {
     this.initialize(jsonData);
     
-    
-    
     this.printer_id = ko.dependentObservable( function(){
         var prod = this.Producto();
         if ( prod ) {
@@ -64,11 +62,24 @@ Risto.Adition.detalleComanda.prototype = {
     /**
      *Es el valor del producto sumandole los sabores
      */
-    precio: function(){
-        var total = parseFloat( this.Producto().precio );
-        for (var s in this.DetalleSabor() ){
-            total += parseFloat( this.DetalleSabor()[s].precio );
+    precio: function(){        
+
+        var precioSabor;
+        var total;
+        if ( typeof this.Producto().precio == 'function') {
+            total = this.Producto().precio();
+        } else {
+            total = this.Producto().precio;
         }
+
+        $.each( this.DetalleSabor(), function( index, sabor ){
+            if ( sabor.Sabor && sabor.Sabor.precio) {
+                precioSabor = sabor.Sabor.precio;
+            } else {
+                precioSabor = sabor.precio;
+            }
+            total += parseFloat( precioSabor );
+        });
         return total;
     },
     

@@ -645,7 +645,8 @@
                     'data-rel' => 'dialog',
                 )) ?>
 
-                <a href="#mesa-view" data-role="button" id="mesa-eliminar-cliente" data-inline="true" data-theme="" data-direction="reverse" data-bind="visible: adn().currentMesa().Cliente()">
+                <a href="#mesa-view" data-role="button" id="mesa-eliminar-cliente" data-inline="true" data-theme="" 
+                    data-direction="reverse" data-bind="visible: adn().currentMesa().Cliente()">
                         Borrar</span>
                 </a>
 

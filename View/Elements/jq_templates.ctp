@@ -258,20 +258,16 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
         
         <button type="button" data-bind="click: seleccionar, attr: {value: id}"  class="adicion-mozo-title">
             <span data-bind="visible: tieneMediaId()">
-                <img data-bind="visible: media_id =! null, attr:{src: full_image_url()}" />
+                <img data-bind="attr:{src: full_image_url()}" />
             </span>
-
-            <span data-bind="visible: !tieneMediaId(), text: numero">
-            </span>
-
+            <span data-bind="visible: !tieneMediaId(), text: numero"></span>
         </button>
-
                
         <ul class="listado-adicion" data-role="listview"
                data-bind="template: {name: 'listaMesas', foreach: mesasOrdenadas}"
                style="margin: 0px;">
 
-        </ul>     
+        </ul>
     </li>
 </script>
 

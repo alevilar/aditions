@@ -166,10 +166,10 @@ Mozo.prototype = {
 
     full_image_url: function () {
         var mediaId;
-        if (typeof this.media == 'function' ) {
-            mediaId = this.media();
+        if (typeof this.media_id == 'function' ) {
+            mediaId = this.media_id();
         } else {
-            mediaId = this.media;
+            mediaId = this.media_id;
         }
         return URL_DOMAIN + TENANT + "/risto/medias/thumb/" + mediaId + "/88/88";
     },
@@ -177,10 +177,10 @@ Mozo.prototype = {
 
     tieneMediaId: function () {
         var mediaId;
-        if (typeof this.media == 'function' ) {
-            mediaId = this.media();
+        if (typeof this.media_id == 'function' ) {
+            mediaId = this.media_id();
         } else {
-            mediaId = this.media;
+            mediaId = this.media_id;
         }
 
         if ( parseInt( mediaId ) && mediaId != null ) {

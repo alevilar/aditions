@@ -523,6 +523,9 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
     width: 130px;
     height: 50px
 }
+#ul-categorias a.sin-imagen img{
+    display: none;
+}
 
 #ul-categorias a.con-imagen{
     width: 70px;

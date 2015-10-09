@@ -138,15 +138,25 @@ ul.listado-adicion .mesa-mozo,ul.listado-adicion .mozo-cant-mesas {
 }
 
 .mesa-descuento{
-    padding: 10px 0px 7px 0px;
-    width: 15px;
     text-align: center;
     font-size: small;
-    position: absolute;
-    left: 28px;
-    top: -10px;
     text-shadow: none !important;
-    font-weight:bold;
+    display: block;
+    font-weight: normal;
+}
+
+.mesa-total-sin-dto{
+    color: #A76F6F;
+    text-decoration: line-through;
+    display: block;
+}
+
+.precio-sign::before {
+    content: "$ ";
+}
+
+.mesa-descuento::before { 
+    content: "dto. ";
 }
 
 .mesa {
@@ -172,6 +182,13 @@ ul.listado-adicion .mesa-mozo,ul.listado-adicion .mozo-cant-mesas {
 
 .content_mesas, .content_mozos {
     background: none !important;
+}
+
+.content_mesas.scroll-exists .mesa-tipofactura
+    ,.content_mesas.scroll-exists .mesa-tipofactura
+    ,.content_mesas.scroll-exists .mesa-time    
+    {
+    display: none;
 }
 
 #listado-mozos, #listado-mesas  {

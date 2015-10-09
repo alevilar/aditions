@@ -228,7 +228,7 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
             data-icon="none"
             href="#mesa-cobrar" 
             class="ui-btn ui-btn-up-c">
-                <span  class="mesa-tipofactura" data-bind="visible: clienteTipoFacturaText()">
+                <span  class="mesa-tipofactura" data-bind="visible: clienteTipoFacturaText()">                    
                     <span data-bind="text: clienteTipoFacturaText()"></span>
                     <span data-bind="text: clienteNameData()"></span>
                 </span>
@@ -239,9 +239,12 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
                           <span class="mesa-numero" data-bind="text: numero"></span>
                           <hr />
                           
-                          <span class="mesa-total">$ <span data-bind="text: totalCalculado()"></span></span>
+                          <span class="mesa-descuento" data-bind="visible: clienteDescuentoText(),text: clienteDescuentoText()"></span>
+                          
+                          <span class="mesa-total-sin-dto precio-sign" data-bind="visible: clienteDescuentoText(),text: totalCalculadoNeto()"></span>
 
-                          <span class="mesa-descuento" data-bind="visible: clienteDescuentoText(),text: clienteDescuentoText()"></span><br>
+                          <span class="mesa-total precio-sign"  data-bind="text: totalCalculado()"></span>
+                          <br>
 
                           <span class="mesa-time" data-bind="text: textoHora()"></span>
                 </span>

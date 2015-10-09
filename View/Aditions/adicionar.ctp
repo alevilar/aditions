@@ -134,7 +134,17 @@
             
              <div class="ui-grid-a">
                 <div class="ui-block-a"><a href="#" data-rel="back" data-role="button">Cancelar</a></div>
-                <div class="ui-block-b"><a data-icon="home" data-role="button" href="<?php echo $this->Html->url(array('plugin'=>'risto', 'controller'=>'pages', 'action'=>'display', 'dashboard'));?>" rel="external" data-theme="b">Ir a Página Principal</a></div>
+                <div class="ui-block-b">
+
+                    <a
+                     href="<?php echo $this->Html->url(array('plugin'=>'risto', 'controller'=>'pages', 'action'=>'display', 'dashboard'));?>" 
+                     data-ajax="false"
+                    data-theme="b" class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b">
+                    <span class="ui-btn-inner ui-btn-corner-all">
+                    <span class="ui-btn-text">Ir a Página Principal</span></span>
+                    </a>
+
+                    </div>
             </div>
             
     </div>

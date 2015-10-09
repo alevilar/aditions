@@ -13916,7 +13916,25 @@ $(document).bind("mobileinit", function(){
 
     $('#listado-mesas').live('pageshow',function(event, ui){
 
-      
+      function hasVerticalScroll(node){
+          if(node == undefined){
+              if(window.innerHeight){
+                  return document.body.offsetHeight> innerHeight;
+              }
+              else {
+                  return  document.documentElement.scrollHeight > 
+                      document.documentElement.offsetHeight ||
+                      document.body.scrollHeight>document.body.offsetHeight;
+              }
+          }
+          else {
+              return node.scrollHeight> node.offsetHeight;
+          }
+      }
+
+      if ( hasVerticalScroll() ) {
+        $('.content_mesas', '#listado-mesas').addClass("scroll-exists");
+      }
                 
         $(document).bind(MOZOS_POSIBLES_ESTADOS.seleccionado.event, function(e){
             var mesaNumero = window.prompt(PROMPT_DESCRIPCION_DE_MESA);

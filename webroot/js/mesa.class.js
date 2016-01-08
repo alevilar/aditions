@@ -615,12 +615,12 @@ Mesa.prototype = {
             c = 0;
         for (c in this.Comanda()){
             for (dc in this.Comanda()[c].DetalleComanda() ){
-                precio = this.Comanda()[c].DetalleComanda()[dc].precio()
-                total += parseFloat( precio * this.Comanda()[c].DetalleComanda()[dc].realCant() );
+                precio = this.Comanda()[c].DetalleComanda()[dc].precio();
+                total = parseFloat(total) + parseFloat( precio * this.Comanda()[c].DetalleComanda()[dc].realCant() );
             }
         }
 
-        return Math.round( total*100)/100;
+        return ristoRound(total);
     },
         
         

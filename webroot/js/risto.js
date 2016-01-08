@@ -90,3 +90,9 @@ function jsToMySqlTimestamp( dateobj )
  
     return mysqlDateTime;
 }
+
+
+
+function ristoRound(number) {
+    return Math.round( number * 10000 )/10000;
+}

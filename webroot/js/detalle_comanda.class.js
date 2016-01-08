@@ -64,23 +64,23 @@ Risto.Adition.detalleComanda.prototype = {
      */
     precio: function(){        
 
-        var precioSabor;
+        var precioSabor = 0;
         var total;
         if ( typeof this.Producto().precio == 'function') {
             total = this.Producto().precio();
         } else {
             total = this.Producto().precio;
         }
-
         $.each( this.DetalleSabor(), function( index, sabor ){
+            precioSabor = 0;
             if ( sabor.Sabor && sabor.Sabor.precio) {
                 precioSabor = sabor.Sabor.precio;
             } else {
                 precioSabor = sabor.precio;
             }
-            total += parseFloat( precioSabor );
+            total = parseFloat(total) + parseFloat( precioSabor );
         });
-        return total;
+        return ristoRound( total );
     },
     
     
@@ -94,7 +94,7 @@ Risto.Adition.detalleComanda.prototype = {
             cant = 0;
         }
 
-        return (Math.floor(cant * 10000) / 10000);
+        return ristoRound(cant);
     },
     
     

@@ -10336,6 +10336,12 @@ function jsToMySqlTimestamp( dateobj )
 	var mysqlDateTime = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + ss;
  
     return mysqlDateTime;
+}
+
+
+
+function ristoRound(number) {
+    return Math.round( number * 10000 )/10000;
 }/*--------------------------------------------------------------------------------------------------- PKG:Risto.Adicion
  *
  *
@@ -11447,12 +11453,12 @@ Mesa.prototype = {
             c = 0;
         for (c in this.Comanda()){
             for (dc in this.Comanda()[c].DetalleComanda() ){
-                precio = this.Comanda()[c].DetalleComanda()[dc].precio()
-                total += parseFloat( precio * this.Comanda()[c].DetalleComanda()[dc].realCant() );
+                precio = this.Comanda()[c].DetalleComanda()[dc].precio();
+                total = parseFloat(total) + parseFloat( precio * this.Comanda()[c].DetalleComanda()[dc].realCant() );
             }
         }
 
-        return Math.round( total*100)/100;
+        return ristoRound(total);
     },
         
         
@@ -12928,23 +12934,23 @@ Risto.Adition.detalleComanda.prototype = {
      */
     precio: function(){        
 
-        var precioSabor;
+        var precioSabor = 0;
         var total;
         if ( typeof this.Producto().precio == 'function') {
             total = this.Producto().precio();
         } else {
             total = this.Producto().precio;
         }
-
         $.each( this.DetalleSabor(), function( index, sabor ){
+            precioSabor = 0;
             if ( sabor.Sabor && sabor.Sabor.precio) {
                 precioSabor = sabor.Sabor.precio;
             } else {
                 precioSabor = sabor.precio;
             }
-            total += parseFloat( precioSabor );
+            total = parseFloat(total) + parseFloat( precioSabor );
         });
-        return total;
+        return ristoRound( total );
     },
     
     
@@ -12958,7 +12964,7 @@ Risto.Adition.detalleComanda.prototype = {
             cant = 0;
         }
 
-        return (Math.floor(cant * 10000) / 10000);
+        return ristoRound(cant);
     },
     
     

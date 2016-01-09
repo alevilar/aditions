@@ -11396,6 +11396,17 @@ Mesa.prototype = {
         }
     },
     
+
+    /**
+    *   Setea un cliente basandose en la cariable globarl dataClientes
+    *   instanciada en jqm_result para dar de alta rapidamente un clicnte JSON
+    *   @param string clientStrNameId nombre de la clave del ID del cliente
+    **/
+    setDataCliente: function ( clientStrNameId ) {
+        if ( dataClientes && dataClientes.hasOwnProperty(clientStrNameId) ) {
+            return this.setCliente( new Risto.Adition.cliente( dataClientes[clientStrNameId]) );
+        }
+    },
     
     /**
      * Dado un objeto cliente se setea el mismo a la mesa
@@ -11469,8 +11480,8 @@ Mesa.prototype = {
          */
        porcentajeDescuento : function(){
             var porcentaje = 0;
-            if (this.Cliente() && !this.Cliente().hasOwnProperty('length') &&  this.Cliente().Descuento()){
-                if ( typeof this.Cliente().Descuento().porcentaje == 'function') {
+            if (this.Cliente() && !this.Cliente().hasOwnProperty('length') &&  this.Cliente().Descuento && this.Cliente().Descuento()){
+                if ( this.Cliente().Descuento() && typeof this.Cliente().Descuento().porcentaje == 'function') {
                     porcentaje = this.Cliente().Descuento().porcentaje();
                 }
             }
@@ -11557,15 +11568,16 @@ Mesa.prototype = {
          *@return string
          */
         clienteNameData : function() {
-            var cliente = this.Cliente();
-            if (cliente){
-                if (typeof cliente == 'function') {
-                    return cliente.nombre();
+            var nombre = '';
+            if ( this.hasOwnProperty('Cliente') && this.Cliente() ){
+                var cliente = this.Cliente();
+                if ( typeof cliente.nombre == 'function' ) {
+                    nombre = cliente.nombre();
                 } else {
-                    return cliente.nombre;
+                    nombre = cliente.nombre;
                 }
             }
-            return '';
+            return nombre;
         },
         
         

@@ -245,7 +245,10 @@
                         <a  href="#listado_de_clientes" data-rel="dialog">
                                 <?php echo $this->Html->image('/aditions/css/img/customers.png')?>
                             <span data-bind="visible: !adn().currentMesa().Cliente()"><?php echo __('Agregar %s', Configure::read('Mesa.tituloCliente')) ?></span>
-                            <span data-bind="visible: adn().currentMesa().Cliente()" style="white-space: normal"><span data-bind="text: adn().currentMesa().clienteNameData()"></span></span>
+                            <span data-bind="visible: adn().currentMesa().Cliente()" style="white-space: normal">
+                                <span data-bind="text: adn().currentMesa().clienteTipoFacturaText()"></span> 
+                                <span data-bind="text: adn().currentMesa().clienteNameData()"></span>
+                            </span>
                         </a>
                     </li>
                     

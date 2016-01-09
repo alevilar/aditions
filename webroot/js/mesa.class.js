@@ -644,10 +644,10 @@ Mesa.prototype = {
             var porcentaje = 0;
             if (this.Cliente() && !this.Cliente().hasOwnProperty('length') &&  this.Cliente().Descuento && this.Cliente().Descuento()){
                 if ( this.Cliente().Descuento() && typeof this.Cliente().Descuento().porcentaje == 'function') {
-                    porcentaje = this.Cliente().Descuento().porcentaje();
+                    porcentaje = parseFloat( this.Cliente().Descuento().porcentaje() );
                 }
             }
-            return parseFloat( porcentaje );
+            return porcentaje;
         },
         
         /**
@@ -656,7 +656,7 @@ Mesa.prototype = {
          */
         totalCalculado : function(){
             var total = parseFloat( this.total() );
-            if ( total ) {
+            if ( !this.porcentajeDescuento() ) {
                 return total;
             }
             

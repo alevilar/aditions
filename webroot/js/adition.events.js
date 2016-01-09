@@ -423,8 +423,13 @@ $(document).bind("mobileinit", function(){
             }, function (e) {
               clientesNuevos = [];
               if ( e.clientes ) {
+                var cliCha;
                 $.each(e.clientes, function( index, cliente ) {
-                  cli = new Risto.Adition.cliente( cliente );
+                  cliCha = cliente.Cliente;
+                  cliCha.IvaResponsabilidad = cliente.IvaResponsabilidad;
+                  cliCha.TipoDocumento = cliente.TipoDocumento;
+                  cliCha.Descuento = cliente.Descuento;
+                  cli = new Risto.Adition.cliente( cliCha );
                   clientesNuevos.push( cli );
                 });
                 Risto.Adition.adicionar.clientes( clientesNuevos );
@@ -448,7 +453,10 @@ $(document).bind("mobileinit", function(){
     $('#listado_de_clientes').live('pagebeforehide',function(event, ui){
         Risto.Adition.adicionar.clientes([]);
         $('#mesa-eliminar-cliente').unbind('click');
-        $('input', '#contenedor-listado-clientes').val('').unbind('keypress');
+        $('input', '#contenedor-listado-clientes')
+            .val('')
+            .unbind('keypress')
+            .unbind('keyup');
     });
 
 

@@ -11482,10 +11482,10 @@ Mesa.prototype = {
             var porcentaje = 0;
             if (this.Cliente() && !this.Cliente().hasOwnProperty('length') &&  this.Cliente().Descuento && this.Cliente().Descuento()){
                 if ( this.Cliente().Descuento() && typeof this.Cliente().Descuento().porcentaje == 'function') {
-                    porcentaje = this.Cliente().Descuento().porcentaje();
+                    porcentaje = parseFloat( this.Cliente().Descuento().porcentaje() );
                 }
             }
-            return parseFloat( porcentaje );
+            return porcentaje;
         },
         
         /**
@@ -11494,7 +11494,7 @@ Mesa.prototype = {
          */
         totalCalculado : function(){
             var total = parseFloat( this.total() );
-            if ( total ) {
+            if ( !this.porcentajeDescuento() ) {
                 return total;
             }
             
@@ -12775,12 +12775,16 @@ Risto.Adition.sabor.prototype = {
 
 Risto.Adition.cliente = function(jsonMap){   
     
+    this.Descuento = ko.observable(null);
+    this.IvaResponsabilidad = ko.observable(null);
+    this.TipoDocumento = ko.observable(null);
+    this.porcentaje = ko.observable( undefined );
+
     return this.initialize(jsonMap);
 }
 
 Risto.Adition.cliente.prototype = {
-    Descuento: ko.observable(null),
-    porcentaje: ko.observable( undefined ),
+   
     
     tieneDescuento: function() {
         var porcentaje = undefined;
@@ -12801,9 +12805,20 @@ Risto.Adition.cliente.prototype = {
     
     getTipoFactura: function(){
         var tipo = '';
-        if ( this.IvaResponsabilidad && this.IvaResponsabilidad.TipoFactura && typeof this.IvaResponsabilidad.TipoFactura != 'function' ) {
+        if ( this.IvaResponsabilidad && this.IvaResponsabilidad.TipoFactura && typeof this.IvaResponsabilidad.TipoFactura != 'function'&& this.IvaResponsabilidad.TipoFactura.name && typeof(this.IvaResponsabilidad.TipoFactura.name) == 'function') {
             tipo = this.IvaResponsabilidad.TipoFactura.name();    
         }
+
+
+        if (    this.IvaResponsabilidad 
+                && typeof this.IvaResponsabilidad == 'function' 
+                && this.IvaResponsabilidad().TipoFactura 
+                && typeof this.IvaResponsabilidad().TipoFactura != 'function'
+                && this.IvaResponsabilidad().TipoFactura.name 
+                && typeof(this.IvaResponsabilidad().TipoFactura.name) == 'function') {
+            tipo = this.IvaResponsabilidad().TipoFactura.name();    
+        }
+
         return tipo;
     },
     
@@ -12816,12 +12831,12 @@ Risto.Adition.cliente.prototype = {
         }
         
         this.Descuento  = ko.observable( null );
-        this.porcentaje = ko.observable( undefined );
         
         if (jsonMap.Descuento && jsonMap.Descuento.id) {
             this.Descuento( new Risto.Adition.descuento(jsonMap.Descuento) );
         }
         delete jsonMap.Descuento;
+
         
         ko.mapping.fromJS(jsonMap, {}, this);
         return this;
@@ -13623,8 +13638,13 @@ $(document).bind("mobileinit", function(){
             }, function (e) {
               clientesNuevos = [];
               if ( e.clientes ) {
+                var cliCha;
                 $.each(e.clientes, function( index, cliente ) {
-                  cli = new Risto.Adition.cliente( cliente );
+                  cliCha = cliente.Cliente;
+                  cliCha.IvaResponsabilidad = cliente.IvaResponsabilidad;
+                  cliCha.TipoDocumento = cliente.TipoDocumento;
+                  cliCha.Descuento = cliente.Descuento;
+                  cli = new Risto.Adition.cliente( cliCha );
                   clientesNuevos.push( cli );
                 });
                 Risto.Adition.adicionar.clientes( clientesNuevos );
@@ -13648,7 +13668,10 @@ $(document).bind("mobileinit", function(){
     $('#listado_de_clientes').live('pagebeforehide',function(event, ui){
         Risto.Adition.adicionar.clientes([]);
         $('#mesa-eliminar-cliente').unbind('click');
-        $('input', '#contenedor-listado-clientes').val('').unbind('keypress');
+        $('input', '#contenedor-listado-clientes')
+            .val('')
+            .unbind('keypress')
+            .unbind('keyup');
     });
 
 

@@ -6,12 +6,16 @@
 
 Risto.Adition.cliente = function(jsonMap){   
     
+    this.Descuento = ko.observable(null);
+    this.IvaResponsabilidad = ko.observable(null);
+    this.TipoDocumento = ko.observable(null);
+    this.porcentaje = ko.observable( undefined );
+
     return this.initialize(jsonMap);
 }
 
 Risto.Adition.cliente.prototype = {
-    Descuento: ko.observable(null),
-    porcentaje: ko.observable( undefined ),
+   
     
     tieneDescuento: function() {
         var porcentaje = undefined;
@@ -32,9 +36,20 @@ Risto.Adition.cliente.prototype = {
     
     getTipoFactura: function(){
         var tipo = '';
-        if ( this.IvaResponsabilidad && this.IvaResponsabilidad.TipoFactura && typeof this.IvaResponsabilidad.TipoFactura != 'function' ) {
+        if ( this.IvaResponsabilidad && this.IvaResponsabilidad.TipoFactura && typeof this.IvaResponsabilidad.TipoFactura != 'function'&& this.IvaResponsabilidad.TipoFactura.name && typeof(this.IvaResponsabilidad.TipoFactura.name) == 'function') {
             tipo = this.IvaResponsabilidad.TipoFactura.name();    
         }
+
+
+        if (    this.IvaResponsabilidad 
+                && typeof this.IvaResponsabilidad == 'function' 
+                && this.IvaResponsabilidad().TipoFactura 
+                && typeof this.IvaResponsabilidad().TipoFactura != 'function'
+                && this.IvaResponsabilidad().TipoFactura.name 
+                && typeof(this.IvaResponsabilidad().TipoFactura.name) == 'function') {
+            tipo = this.IvaResponsabilidad().TipoFactura.name();    
+        }
+
         return tipo;
     },
     
@@ -47,12 +62,12 @@ Risto.Adition.cliente.prototype = {
         }
         
         this.Descuento  = ko.observable( null );
-        this.porcentaje = ko.observable( undefined );
         
         if (jsonMap.Descuento && jsonMap.Descuento.id) {
             this.Descuento( new Risto.Adition.descuento(jsonMap.Descuento) );
         }
         delete jsonMap.Descuento;
+
         
         ko.mapping.fromJS(jsonMap, {}, this);
         return this;

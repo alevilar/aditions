@@ -253,7 +253,16 @@
                     </li>
                     
                     <li id="mesa-action-cerrar" data-bind="attr: {'estado': 'mesa-cerrar_'+adn().currentMesa().estado().icon}">
-                        <a href="#listado-mesas" id="mesa-cerrar" data-direction="reverse"><?php echo $this->Html->image('/aditions/css/img/cerrarmesa.png')?>Facturar</a>
+                        <a href="#listado-mesas" id="mesa-cerrar" data-direction="reverse">
+                            <?php echo $this->Html->image('/aditions/css/img/cerrarmesa.png')?>
+                            <?php
+                            if ( Configure::read('Site.type') == SITE_TYPE_RESTAURANTE ) {
+                                echo "Cerrar";
+                            } else {
+                                echo "Facturar";
+                            }
+                            ?>
+                            </a>
                     </li>
                     
                     

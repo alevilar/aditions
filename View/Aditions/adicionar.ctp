@@ -42,15 +42,13 @@
             <div class="controll control-header">
                 <div class="col-header btn-controls">
                     <?php
-                    if ( Configure::check('Site.logo_path') ) {
-                                    $imgLogo = $this->Html->image(Configure::read('Site.logo_path'));
-                                    echo $this->Html->link($imgLogo, '#adicion-opciones' , array(
-                                           // 'data-ajax' => 'false',
-                                            'data-rel' => 'dialog',
-                                            'class' => 'navbar-brand', 
-                                            'escape'=>false
-                                            )); 
-                    }
+                        $imgLogo = $this->Html->image('/paxapos/img/isologo_rojo.png');
+                        echo $this->Html->link($imgLogo, '#adicion-opciones' , array(
+                               // 'data-ajax' => 'false',
+                                'data-rel' => 'dialog',
+                                'class' => 'navbar-brand', 
+                                'escape'=>false
+                                )); 
                     ?>
 
                     <div class="control-actions">                            

@@ -59,6 +59,28 @@ Risto.Adition.comanda.prototype = {
         }
         return name;
     },
+
+
+    productsJSONListing: function(){
+        var prods = [],
+            prodName;        
+        for (var dc in this.DetalleComanda() ){
+            if ( this.DetalleComanda()[dc].realCant() ) {
+                
+                prodName = this.DetalleComanda()[dc].nameConSabores();
+                prodPrecio = this.DetalleComanda()[dc].precio();
+                prodCant = this.DetalleComanda()[dc].realCant();
+                
+
+                prods.push({
+                    "name": prodName,
+                    "precio": prodPrecio,
+                    "qty": prodCant
+                });                
+            }
+        }
+        return prods;
+    },
     
     imprimirComanda: function() {
         if (window.confirm("¿Seguro desea reimprimir comanda?")) {

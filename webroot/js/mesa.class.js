@@ -434,14 +434,11 @@ Mesa.prototype = {
      * Envia un ajax con la peticion de imprimir el ticket para esta mesa
      */
     reimprimir : function(){
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/imprimirTicket';
-        var id;
-        if (typeof this.id == 'function') {
-            id = this.id();
-        } else {
-            id = this.id;
-        }
-        $.get( url+"/"+id);
+        console.log("reimprimir");
+        PrinterDriver.printTicket( this );        
+
+        var url = this.urlReimprimirTicket();
+        $.get(url);    
     },
 
 
@@ -824,6 +821,25 @@ Mesa.prototype = {
            totMesa = Risto.Adition.adicionar.currentMesa().totalCalculado();
        
         return pagos - totMesa;
+    },
+
+
+
+    /**
+    *   Devuelve un listado de los productos de cada comanda
+    *   con el detalle de los sabores y el precio sumado del producto al de los sabores.
+    *
+    **/
+    listadoProductos: function() {
+        productos = [];
+        console.debug(this.Comanda());
+        for (var c in this.Comanda()){
+
+            var prodList = this.Comanda()[c].productsJSONListing();
+            console.info(prodList);
+            productos = productos.concat(prodList);
+        }
+        return productos;
     },
 
 

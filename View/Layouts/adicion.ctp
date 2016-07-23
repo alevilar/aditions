@@ -2,6 +2,9 @@
 <!DOCTYPE HTML>
 <html xml:lang="es-ES" lang="es-ES" dir="ltr">    
 <head>
+
+    <link rel="manifest" href="<?php echo $this->Html->url('/aditions/manifest.json')?>">
+
         <meta charset="utf-8">
         <script type="text/javascript">
         <!--
@@ -72,6 +75,8 @@
                         '/aditions/js/moment-with-locales.min',
                         '/aditions/js/moment-range',
                         '/aditions/js/cake_saver',
+                        '/aditions/js/fiscalberry',
+                        '/aditions/js/printer_driver',
                         '/aditions/js/risto',
                         '/aditions/js/adition.package',
                         '/aditions/js/mozo.class',

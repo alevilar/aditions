@@ -1,0 +1,46 @@
+{
+  "name": "PaxaPos Adition",
+  "description": "Adicion para PaxaPos",
+  "version": "0.1",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+
+  "icons": [
+    {
+      "src": "img/adicion-16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "density": 1.0
+    },  
+    {
+      "src": "img/adicion-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "density": 2.0
+    },
+    {
+      "src": "img/adicion-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "density": 3.0
+    }
+  ],
+
+  "display": "fullscreen",
+
+
+  "default_locale": "es",
+
+  "kiosk_enabled": true,
+  "kiosk_only": true,
+
+
+  "offline_enabled": true,
+  "optional_permissions": ["tabs"],
+  "permissions": ["tabs"],
+  "short_name": "PxAdn"
+}

@@ -14,6 +14,8 @@ cat js/knockout.mapping-2.0.debug.js >> $SCRIPT_NAME
 cat js/moment-with-locales.min.js >> $SCRIPT_NAME
 cat js/moment-range.js >> $SCRIPT_NAME
 cat js/cake_saver.js >> $SCRIPT_NAME
+cat js/fiscalberry.js >> $SCRIPT_NAME
+cat js/printer_driver.js >> $SCRIPT_NAME
 cat js/risto.js >> $SCRIPT_NAME
 cat js/adition.package.js >> $SCRIPT_NAME
 cat js/mozo.class.js >> $SCRIPT_NAME

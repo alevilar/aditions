@@ -263,8 +263,7 @@ $(document).bind("mobileinit", function(){
 
         $('#mesa-action-reimprimir').bind('click', function(){
             var mesa = Risto.Adition.adicionar.currentMesa();
-            var url = mesa.urlReimprimirTicket();
-            $.get(url);
+            mesa.reimprimir();
         });
 
 
@@ -532,8 +531,7 @@ $(document).bind("mobileinit", function(){
         });
         $('.mesa-reimprimir', '#mesa-cobrar').bind('click', function(){
             var mesa = Risto.Adition.adicionar.currentMesa();
-            var url = mesa.urlReimprimirTicket();
-            $.get(url);
+            mesa.reimprimir();
         });
 
 

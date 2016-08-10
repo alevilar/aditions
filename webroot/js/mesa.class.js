@@ -434,13 +434,15 @@ Mesa.prototype = {
      * Envia un ajax con la peticion de imprimir el ticket para esta mesa
      */
     reimprimir : function(){
-        if (fbrry && fbrry.isConnected() ) {
+        if (PrinterDriver.isConnected() ) {
         	console.log("reimprimir con fiscalberry");
         	PrinterDriver.printTicket( this );        
+        } else {
+            // imprimir usando ajax
+            var url = this.urlReimprimirTicket();
+            $.get(url);    
         }
 
-        var url = this.urlReimprimirTicket();
-        $.get(url);    
     },
 
 

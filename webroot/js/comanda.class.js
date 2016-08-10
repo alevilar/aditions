@@ -84,7 +84,7 @@ Risto.Adition.comanda.prototype = {
     
     imprimirComanda: function() {
         if (window.confirm("¿Seguro desea reimprimir comanda?")) {
-            if ( Risto.printerComanderaPPal && fbrry && fbrry.isConnected() ) {
+            if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
                 PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this, Risto.printerComanderaPPal.Printer.alias);
             }
             

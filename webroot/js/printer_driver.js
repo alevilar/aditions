@@ -14,34 +14,11 @@ if (typeof(Storage) !== "undefined") {
 
 
 
-var fbrry = new Fiscalberry(fiscalberryHost);
-
-var maxRetry = 3;
-var reconectandoTimeoput;
-
-
-fbrry.promise.done(function(){
-	console.info("me conecte con el fiscalberry");
-});
-
-
-fbrry.promise.fail(function(){
-	console.error("no se pudo conectar con el fiscalberry");
-});
-
-fbrry.bind('close', function(){
-    $.error("Conexion con fiscalberry cerrada. Deberá refrescar pantalla si quiere reconectar");
-    });
-fbrry.bind('open', function(){
-    if ( reconectandoTimeoput ) {
-        clearInterval(reconectandoTimeoput);
-        reconectandoTimeoput = null;
-    }
-});
-
 
 PrinterDriver = {
     $printerDriverContainer: null, // 
+
+    fbrry:null,
     
     _setUI: function(){
         $(function(){
@@ -81,7 +58,7 @@ PrinterDriver = {
                 'font-size': '8pt'
             });
 
-            if ( fbrry.isConnected() ) {
+            if ( PrinterDriver.fbrry.isConnected() ) {
                 $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'green');
             } else {
                 $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
@@ -89,16 +66,16 @@ PrinterDriver = {
             PrinterDriver.$printerDriverContainer.appendTo( $("#listado-mesas") );
 
             // al conectar poner en verde
-            fbrry.bind('open', function(){
+            PrinterDriver.fbrry.bind('open', function(){
                 $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'green');
             });
 
             // al desconectar poner en rojo nuevDataamente
-            fbrry.bind('close', function(){
+            PrinterDriver.fbrry.bind('close', function(){
                 $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
             });
 
-            fbrry.bind('message', function( ev, evData ){
+            PrinterDriver.fbrry.bind('message', function( ev, evData ){
 
                 var msg = '';
                 if ( evData.data.hasOwnProperty('msg')) {
@@ -113,6 +90,7 @@ PrinterDriver = {
 
     /* Inicializa valores en el localstorage */
     init: function () {
+        PrinterDriver.__initFbrry();
         PrinterDriver._setUI();
         var mapTipoFactura = JSON.parse( localStorage.getItem("mapTipoFactura") );
         if ( !mapTipoFactura ) {
@@ -161,6 +139,42 @@ PrinterDriver = {
             };
             localStorage.setItem("mapTipodoc", JSON.stringify(mapTipodoc));
         }
+    },
+
+    __initFbrry: function() {
+
+
+        PrinterDriver.fbrry = new Fiscalberry(fiscalberryHost);
+
+        var maxRetry = 3;
+        var reconectandoTimeoput;
+
+
+        PrinterDriver.fbrry.promise.done(function(){
+            console.info("me conecte con el fiscalberry");
+        });
+
+
+        PrinterDriver.fbrry.promise.fail(function(){
+            console.error("no se pudo conectar con el fiscalberry");
+            $(function(){
+                $("#printer-driver-container").hide();
+            });
+        });
+
+        PrinterDriver.fbrry.bind('close', function(){
+            $.error("Conexion con fiscalberry cerrada. Deberá refrescar pantalla si quiere reconectar");
+            });
+        PrinterDriver.fbrry.bind('open', function(){
+            if ( reconectandoTimeoput ) {
+                clearInterval(reconectandoTimeoput);
+                reconectandoTimeoput = null;
+            }
+        });
+    },
+
+    isConnected: function(){
+        return PrinterDriver.fbrry.isConnected();
     },
 
 
@@ -238,7 +252,7 @@ PrinterDriver = {
                 ];
         
         jsonRet = JSON.stringify(jsonRet);
-        return  fbrry.send( jsonRet );
+        return  PrinterDriver.fbrry.send( jsonRet );
     },
 
     printComanda: function( mesa, comanda, printerName ) {
@@ -304,7 +318,7 @@ PrinterDriver = {
                 "printerName": Risto.printerFiscal.Printer.alias,
                 "dailyClose" : type
             });
-            return  fbrry.send( jsonRet );
+            return  PrinterDriver.fbrry.send( jsonRet );
         } else {
             $.error("no hay impresora fiscal configurada");
         }
@@ -448,7 +462,7 @@ PrinterDriver = {
 
 
         jsonRet = JSON.stringify(jsonRet);
-        fbrry.send( jsonRet );
+        PrinterDriver.fbrry.send( jsonRet );
         return jsonRet;
     }
     

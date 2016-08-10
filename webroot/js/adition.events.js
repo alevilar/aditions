@@ -262,7 +262,7 @@ $(document).bind("mobileinit", function(){
 
 
             // imprimir offline usando fiscalberry
-            if (fbrry && fbrry.isConnected() ) {
+            if (PrinterDriver.isConnected() ) {
               // imprimio remito con comandera
               if ( Risto.IMPRIME_REMITO_PRIMERO && Risto.printerComanderaPPal ) {
                 PrinterDriver.printRemito(mesa);

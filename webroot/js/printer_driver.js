@@ -19,27 +19,6 @@ var fbrry = new Fiscalberry(fiscalberryHost);
 var maxRetry = 3;
 var reconectandoTimeoput;
 
-function reconectarFbrry(){
-    
-    if ( maxRetry > 0) {
-        if ( !reconectandoTimeoput ) {
-            console.info("reconectando fiscalberry, quedan %s intentos", maxRetry);
-            fbrry.connect(fiscalberryHost);
-            reconectandoTimeoput = setTimeout(function(){
-                clearTimeout(reconectandoTimeoput);
-                reconectandoTimeoput = null;
-                reconectarFbrry();
-            }, 5000);
-            maxRetry--;
-        }
-    } else {
-        clearInterval(reconectandoTimeoput);
-        reconectandoTimeoput = null;
-        $.error("Se agotaron la cantidad maxima de reintentos para conectar con fiscalberry");
-    }
-
-
-}
 
 fbrry.promise.done(function(){
 	console.info("me conecte con el fiscalberry");
@@ -51,8 +30,7 @@ fbrry.promise.fail(function(){
 });
 
 fbrry.bind('close', function(){
-    maxRetry = 3;
-    reconectarFbrry();
+    $.error("Conexion con fiscalberry cerrada. Deberá refrescar pantalla si quiere reconectar");
     });
 fbrry.bind('open', function(){
     if ( reconectandoTimeoput ) {

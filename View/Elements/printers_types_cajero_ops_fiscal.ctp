@@ -4,6 +4,7 @@
 <div class="ui-grid-a">
     <div class="ui-block-a">
         <a href="#listado-mesas-cerradas" 
+           id="cajero-ops-cierre-fiscal-x"
            data-role="button" 
            data-href="<?php echo $this->Html->url(array('plugin'=>'printers', 'controller'=>'printers', 'action'=>'cierre', 'x'));?>" 
            data-direction="reverse">
@@ -12,6 +13,7 @@
     </div>
     <div class="ui-block-b">
         <a href="#listado-mesas-cerradas" 
+           id="cajero-ops-cierre-fiscal-z"
            data-role="button" 
            data-href="<?php echo $this->Html->url(array('plugin'=>'printers', 'controller'=>'printers', 'action'=>'cierre', 'z'));?>" 
            data-direction="reverse">

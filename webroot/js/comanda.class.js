@@ -84,6 +84,10 @@ Risto.Adition.comanda.prototype = {
     
     imprimirComanda: function() {
         if (window.confirm("¿Seguro desea reimprimir comanda?")) {
+            if ( Risto.printerComanderaPPal && fbrry && fbrry.isConnected() ) {
+                PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this, Risto.printerComanderaPPal.Printer.alias);
+            }
+            
             $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
         }
     },

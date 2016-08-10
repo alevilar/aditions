@@ -141,6 +141,15 @@ Risto.Adition.comandaFabrica.prototype = {
         
         this.__generarComanda(comandaJsonCopy, comanderas);
         
+
+        console.debug("enviando comanda nueva");
+        // imprimir comanda con fiscalberry
+        if ( Risto.printerComanderaPPal && fbrry && fbrry.isConnected() ) {
+            console.info("imprimiendo con fiscalberry");
+            PrinterDriver.printComanda(this.mesa, this.comanda, Risto.printerComanderaPPal.Printer.alias);
+        }
+
+
         return this.comanda;
     },
     

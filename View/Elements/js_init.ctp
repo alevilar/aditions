@@ -61,6 +61,18 @@
         Risto.Adition.cubiertosObligatorios   = <?php echo Configure::read('Adicion.cantidadCubiertosObligatorio')?'true':'false'?>;
 
 
+        Risto.printerFiscal = <?php echo json_encode( $printer, JSON_NUMERIC_CHECK )?>;
+        Risto.printerComanderaPPal = <?php echo json_encode( $comanderaPpal, JSON_NUMERIC_CHECK )?>;
+        Risto.printers = <?php echo json_encode( $printers, JSON_NUMERIC_CHECK )?>;
+        Risto.getPrinterId = function( id ) {
+            for(var i=0;i<Risto.printers.length;i++){
+                if ( Risto.printers[i].Printer.id == id ) {
+                    return Risto.printers[i];
+                }
+            }
+            return null;
+        }
+
       
 
 

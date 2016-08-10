@@ -259,6 +259,20 @@ $(document).bind("mobileinit", function(){
         $('#mesa-cerrar').bind('click', function(){
             var mesa = Risto.Adition.adicionar.currentMesa();
             mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.cerrada );
+
+
+            // imprimir offline usando fiscalberry
+            if (fbrry && fbrry.isConnected() ) {
+              // imprimio remito con comandera
+              if ( Risto.IMPRIME_REMITO_PRIMERO && Risto.printerComanderaPPal ) {
+                PrinterDriver.printRemito(mesa);
+              }
+
+              // imprimio ticket con fiscal
+              if ( !Risto.IMPRIME_REMITO_PRIMERO && Risto.printer ) {
+                PrinterDriver.printTicket(mesa);
+              }
+            }
         });
 
         $('#mesa-action-reimprimir').bind('click', function(){
@@ -516,6 +530,30 @@ $(document).bind("mobileinit", function(){
      $('#mesas-edit').live('pagehide', function( e ) {
         $('form', e.target).unbind('submit');
     });
+
+
+     /**
+     *
+     *
+     *          Page COBRAR
+     *
+     */
+    $('#cajero-opciones').live('pageshow',function(event, ui){
+        $('#cajero-ops-cierre-fiscal-x').bind('click',function(){
+            PrinterDriver.dailyClose("x");
+        });
+
+        $('#cajero-ops-cierre-fiscal-z').bind('click',function(){
+            PrinterDriver.dailyClose("z");
+        });
+    });
+
+
+    $('#cajero-opciones').live('pagebeforehide',function(event, ui){
+        $('#cajero-ops-cierre-fiscal-x').unbind('click');
+        $('#cajero-ops-cierre-fiscal-z').unbind('click');
+    });
+
 
 
     /**

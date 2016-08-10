@@ -434,8 +434,10 @@ Mesa.prototype = {
      * Envia un ajax con la peticion de imprimir el ticket para esta mesa
      */
     reimprimir : function(){
-        console.log("reimprimir");
-        PrinterDriver.printTicket( this );        
+        if (fbrry && fbrry.isConnected() ) {
+        	console.log("reimprimir con fiscalberry");
+        	PrinterDriver.printTicket( this );        
+        }
 
         var url = this.urlReimprimirTicket();
         $.get(url);    
@@ -832,11 +834,8 @@ Mesa.prototype = {
     **/
     listadoProductos: function() {
         productos = [];
-        console.debug(this.Comanda());
         for (var c in this.Comanda()){
-
             var prodList = this.Comanda()[c].productsJSONListing();
-            console.info(prodList);
             productos = productos.concat(prodList);
         }
         return productos;

@@ -10245,7 +10245,693 @@ var $cakeSaver = {
         return $.param( aa );
     }
     
-}/*--------------------------------------------------------------------------------------------------- Risto
+}// Polyfill isArray()
+if (!Array.isArray) {
+  Array.isArray = function(arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  };
+}
+
+
+
+
+(function($){
+
+	var $fb, // singleton object
+		__def, // deferred obect
+		__conected = false;
+
+	/** Singleton, devuelve siempre la instancia $fb **/
+	Fiscalberry = function ( host, port, uri  ) {
+		// WebSocket instance
+		var ws;
+
+		if ( typeof port == 'undefined' ) {
+			port = 12000; // default fiscalberry port
+		}
+
+
+		// real Fiscalberry object that will be returned as instance
+		if ( !$fb ) {
+			$fb = $({});
+			__def = new $.Deferred();
+			$fb.promise = __def.promise();
+		}
+
+	
+		/**
+		*	Indica si esta conectado o no con el websocket
+		*	@return Boolean true si esta conectado, false si no lo esta
+		**/
+		$fb.isConnected = function() {
+			return __conected;
+		}
+		
+
+
+
+
+		/**
+		*
+		*	Maneja todos los mensajes del webcocket
+		* 	envia un evento
+		*	Evento "message"
+		* 	@param json response es el objeto que viene del websocket
+		**/
+		function handleWSMessage( response ){
+			var evName = "message";
+			var e = jQuery.Event( evName, { data: response } );
+			$fb.trigger( evName, e ) ;
+		}
+
+
+		/**
+		*
+		*	Maneja los mensajes que vienen del websocket 
+		* 	y cuando es del tipo msg envia un trigger
+		*	Evento "fb:msg"
+		* 	@param json response es el objeto que viene del websocket
+		**/
+		function handleFbMsg( response ){
+			var evName = "fb:msg";
+			if ( response.hasOwnProperty("msg") ) {
+				var data = { "data": response['msg'] };
+				var e = jQuery.Event( evName, data );
+				$fb.trigger(evName, e ) ;
+
+				for ( key in response['msg']) {
+					evName = "fb:msg:"+key;
+					data = { "data": response['msg'][key] };
+					e = jQuery.Event( evName, data );
+
+					$fb.trigger(evName, e ) ;
+				}
+			}
+		}
+
+
+		/**
+		*
+		*	Maneja los mensajes que vienen del websocket 
+		* 	y cuando es del tipo msg envia un trigger
+		*	Evento "fb:msg"
+		* 	@param json response es el objeto que viene del websocket
+		**/
+		function handleFbErr( response ){
+			var evName = "fb:err";
+			if ( response.hasOwnProperty("err") ) {
+				var data = { "data": response['err'] };
+				var e = jQuery.Event( evName, data );
+				$fb.trigger(evName, e ) ;
+			}
+		}
+
+
+		/**
+		*
+		*	Maneja los mensajes que vienen del websocket 
+		* 	y cuando es del tipo rta envia un trigger
+		*	Evento "fb:rta"
+		* 	@param json response es el objeto que viene del websocket
+		**/
+		function handleFbRta( response ){
+			var evName = "fb:rta";
+			var actionName;
+			if ( response.hasOwnProperty("rta") ) {
+				var data = { "data": response['rta'] };
+				var e = jQuery.Event( evName, data );
+				$fb.trigger(evName, e ) ;
+
+				function logRta( rtarespo ){
+					if ( rtarespo.hasOwnProperty("action") ) {
+						actionName = rtarespo['action'];
+						evName = "fb:rta:"+actionName;
+						data = { "data": rtarespo['rta'] };
+						e = jQuery.Event( evName, data );
+
+						$fb.trigger(evName, e ) ;
+					}
+				}
+
+				if ( Array.isArray(response['rta']) ) {
+					for (var i = response['rta'].length - 1; i >= 0; i--) {
+						logRta( response['rta'][i] );
+					}
+				} else {
+					logRta( response['rta'] );
+				}
+			}
+		}
+
+		/**
+		*
+		*	Conecta con el web socket
+		*	creando una nueva instancia ws
+		*	@return WebSocket instance
+		**/
+		$fb.connect = function( host, port, uri ) {
+			if ( typeof port == 'undefined' ) {
+				port = 12000; // default fiscalberry server port
+			}
+
+			if ( typeof uri == 'undefined' ) {
+				uri = "/ws";
+			}
+
+			var url = "ws://" + host + ":" + port + uri;
+		
+			ws = new WebSocket(url);
+			ws.onopen = function(e) {
+				__def.resolve(ws);
+				$fb.trigger('open');
+				__conected = true;
+			}
+			ws.onerror = function(e) {
+				__def.reject(e);
+				$fb.trigger('error');
+				__conected = false;
+			}
+			ws.onclose = function() {
+				$fb.trigger('close');
+				__conected = false;
+			}
+
+			// solo responde si me vino un JSON válido, caso contrario lo omite
+			ws.onmessage = function(ev) {
+				var response=jQuery.parseJSON(ev.data);
+				var action;
+
+				if(typeof response =='object')
+				{
+					
+					handleWSMessage( response );
+					handleFbMsg( response );
+					handleFbRta( response );
+					handleFbErr( response );
+					
+				}
+				
+			}
+			
+
+			return ws;
+		}
+
+		
+
+		/**
+		*
+		*	Envia mensaje por medio del web socket conectado
+		*
+		**/
+		$fb.send = function() {
+			var fnargs = arguments;
+			try {
+		        JSON.parse(fnargs[0]);
+				return ws.send.apply(ws, fnargs);
+		    } catch (e) {
+		        return $.error("se debe enviar un JSON VALIDO");
+		    }
+		}
+
+
+		if ( arguments.length > 0 ) {
+			ws = $fb.connect(host, port, uri);
+		}
+
+		
+		return $fb;
+
+	}
+		 
+})(jQuery);
+
+
+if (typeof(Storage) !== "undefined") {
+    // Code for localStorage/sessionStorage.
+    var fiscalberryHost = localStorage.getItem("fiscalberryHost");
+    if ( !fiscalberryHost ) {
+    	fiscalberryHost = "fiscalberry.local";
+    	localStorage.setItem("fiscalberryHost", fiscalberryHost);
+    }
+} else {
+    // Sorry! No Web Storage support..
+    var fiscalberryHost = "fiscalberry.local";
+}
+
+
+
+
+PrinterDriver = {
+    $printerDriverContainer: null, // 
+
+    fbrry:null,
+    
+    _setUI: function(){
+        $(function(){
+            PrinterDriver.$printerDriverContainer = 
+                            $('<div id="printer-driver-container">\
+                                <div class="icon"></div>\
+                                <ul class="printer-driver-msg"></ul>\
+                               </div>');
+            PrinterDriver.$printerDriverContainer.css({
+                'position': 'fixed',
+                'top': '10px',
+                'left': '10px',
+                'width': '300px',
+                'height': '20px',
+                'padding': '3px'
+            });
+
+            $(".icon", PrinterDriver.$printerDriverContainer).css({
+                'position': 'absolute',
+                'top': '10px',
+                'left': '10px',
+                'width': '20px',
+                'height': '20px',
+                '-webkit-border-radius': '50px',
+                '-moz-border-radius': '50px',
+                'border-radius': '50px'
+            });
+
+
+            $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).css({
+                'padding': '0px',
+                'position': 'absolute',
+                'top': '-10px',
+                'left': '50px',
+                'width': '300px',
+                'color': '#AEFFAE',
+                'font-size': '8pt'
+            });
+
+            if ( PrinterDriver.fbrry.isConnected() ) {
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'green');
+            } else {
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
+            }
+            PrinterDriver.$printerDriverContainer.appendTo( $("#listado-mesas") );
+
+            // al conectar poner en verde
+            PrinterDriver.fbrry.bind('open', function(){
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'green');
+            });
+
+            // al desconectar poner en rojo nuevDataamente
+            PrinterDriver.fbrry.bind('close', function(){
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
+            });
+
+            PrinterDriver.fbrry.bind('message', function( ev, evData ){
+
+                var msg = '';
+                if ( evData.data.hasOwnProperty('msg')) {
+                    for (var i = 0; i < evData.data['msg'].length; i++ ){
+                        msg += "<li>"+evData.data['msg'][i]+"</li>";
+                    }
+                }
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html(msg);
+            });
+        });
+    },
+
+    /* Inicializa valores en el localstorage */
+    init: function () {
+        PrinterDriver.__initFbrry();
+        PrinterDriver._setUI();
+        var mapTipoFactura = JSON.parse( localStorage.getItem("mapTipoFactura") );
+        if ( !mapTipoFactura ) {
+            /* MAP con tabla tipo_facturas */
+            mapTipoFactura = {
+                1: "FA",
+                2: "T",
+                5: "FC"
+            };
+            localStorage.setItem("mapTipoFactura", JSON.stringify(mapTipoFactura));
+        }
+
+
+
+        // map con tabla iva_responsabilidades
+        var mapResponsabilidad = JSON.parse( localStorage.getItem("mapResponsabilidad"));
+        if ( !mapResponsabilidad ) {
+            /* MAP con tabla tipo_facturas */
+            mapResponsabilidad = {
+                1: "RESPONSABLE_INSCRIPTO",
+                2: "EXENTO",
+                3: "NO_RESPONSABLE",
+                4: "CONSUMIDOR_FINAL",
+                5: "NO_CATEGORIZADO",
+                6: "RESPONSABLE_MONOTRIBUTO"
+            };
+            localStorage.setItem("mapResponsabilidad", JSON.stringify(mapResponsabilidad));
+        }
+
+
+
+
+        // map con tabla tipo_documentos
+        var mapTipodoc = JSON.parse( localStorage.getItem("mapTipodoc") );
+        if ( !mapTipodoc ) {
+            /* MAP con tabla tipo_facturas */
+            mapTipodoc = {
+                1: "CUIT",
+                2: "CUIT",
+                3: "LIBRETA_ENROLAMIENTO",
+                4: "LIBRETA_CIVICA",
+                5: "DNI",
+                6: "PASAPORTE",
+                7: "CEDULA",
+                8: "SIN_CALIFICADOR"
+            };
+            localStorage.setItem("mapTipodoc", JSON.stringify(mapTipodoc));
+        }
+    },
+
+    __initFbrry: function() {
+
+
+        PrinterDriver.fbrry = new Fiscalberry(fiscalberryHost);
+
+        var maxRetry = 3;
+        var reconectandoTimeoput;
+
+
+        PrinterDriver.fbrry.promise.done(function(){
+            // console.info("me conecte con el fiscalberry");
+        });
+
+
+        PrinterDriver.fbrry.promise.fail(function(){
+            console.error("no se pudo conectar con el fiscalberry");
+            $(function(){
+                $("#printer-driver-container").hide();
+            });
+        });
+
+        PrinterDriver.fbrry.bind('close', function(){
+            $.error("Conexion con fiscalberry cerrada. Deberá refrescar pantalla si quiere reconectar");
+            });
+        PrinterDriver.fbrry.bind('open', function(){
+            if ( reconectandoTimeoput ) {
+                clearInterval(reconectandoTimeoput);
+                reconectandoTimeoput = null;
+            }
+        });
+    },
+
+    isConnected: function(){
+        return PrinterDriver.fbrry.isConnected();
+    },
+
+
+    __doPrintComanda: function( mesa, comanda, printerName ) {
+        var actionname = "printComanda";
+
+        var jsonRet = {
+            "printerName": printerName,
+        };
+
+        jsonRet[actionname] = {"comanda":{}};
+
+
+        if (comanda.id()) {
+            jsonRet[actionname]['comanda']['id'] = comanda.id();
+        }
+
+        if (comanda.observacion()) {
+            jsonRet[actionname]['comanda']['observacion'] = comanda.observacion();
+        }
+
+        if (comanda.created()) {
+            jsonRet[actionname]['comanda']['created'] = comanda.created();
+        }
+
+
+        function prodList (entradasList) {
+
+            var entradas = [];
+            var ptoAux = {};
+            for (var i = 0; i < entradasList.length; i++ ) {
+                dc = entradasList[i];
+                ptoAux = {
+                    "cant": dc.realCant(),
+                    "nombre": dc.nameConSabores()
+                };
+
+                if ( dc.observacion() ) {
+                    ptoAux['observacion'] = dc.observacion();
+                }
+                entradas.push( ptoAux ); 
+            }
+            return entradas;
+        }
+        
+
+        var entradasList = [];
+        var platosList = [];
+
+        var dc;
+        for (var i = 0; i < comanda.DetalleComanda().length; i++ ){
+            dc = comanda.DetalleComanda()[i];
+            if ( dc.esEntrada() ) {
+                entradasList.push(dc);
+            } else {
+                platosList.push(dc);
+            }
+        }
+
+        if ( entradasList.length > 0 ) {
+            jsonRet[actionname]["comanda"]["entradas"] = prodList(entradasList);
+        }
+
+        if ( platosList.length > 0 ) {
+            jsonRet[actionname]["comanda"]["platos"] = prodList(platosList);
+        }
+        
+        
+        jsonRet[actionname]["setTrailer"] = [
+                    "",
+                    "MOZO: "+mesa.mozo().numero(),
+                    "MESA: "+mesa.numero(),
+                    ""
+                ];
+        
+        jsonRet = JSON.stringify(jsonRet);
+        return  PrinterDriver.fbrry.send( jsonRet );
+    },
+
+    printComanda: function( mesa, comanda, printerName ) {
+
+        var comanderasInvolucradas = [];
+        var printId, prod;
+        for( var i=0;i<comanda.DetalleComanda().length; i++) {
+            prod = comanda.DetalleComanda()[i].Producto();
+            if ( typeof prod.printer_id === 'function') {
+                printId = prod.printer_id();
+            } else {
+                printId = prod.printer_id;
+            }
+            printId = Risto.getPrinterId(printId);
+            if (printId) {
+                if ( comanderasInvolucradas.indexOf(printId) === -1 ) {
+                    // si no estaba la agrego
+                    comanderasInvolucradas.push(printId);
+                }
+            }
+        }
+        for(var i=0; i<comanderasInvolucradas.length;i++) {
+            var printerName = comanderasInvolucradas[i].Printer.alias;
+            PrinterDriver.__doPrintComanda(mesa, comanda, printerName);
+        }
+        
+    },
+
+
+    printRemito: function( mesa ) {
+        if ( Risto.printerComanderaPPal ) {
+            var ret = PrinterDriver.__printGenericTicket(mesa, "printRemito", Risto.printerComanderaPPal.Printer.alias )
+            return ret;
+        } else {
+            $.error("no hay impresora de comandas configurada");
+        }
+    },
+
+
+    printTicket: function( mesa ) {
+        if ( Risto.printerFiscal.Printer.alias) {
+
+            var ret = PrinterDriver.__printGenericTicket(mesa, "printTicket", Risto.printerFiscal.Printer.alias);
+            return ret;
+        } else {
+            $.error("no hay impresora fiscal configurada");
+        }
+    },
+
+
+    dailyClose: function( type ) {
+        if ( typeof type === 'undefined' ) {
+            type = "x";
+        }
+
+        if ( Risto.printerFiscal.Printer.alias) {
+
+            jsonRet = JSON.stringify({
+                "printerName": Risto.printerFiscal.Printer.alias,
+                "dailyClose" : type
+            });
+            return  PrinterDriver.fbrry.send( jsonRet );
+        } else {
+            $.error("no hay impresora fiscal configurada");
+        }
+
+    },
+
+
+    /**
+    *
+    *   @param mesa Mesa.class.js
+    *   @param actionName string "printTicket" o "printRemito"
+    *   @param printerName string nombre de la impresora segun fiscaleberry config.ini file
+    **/
+    __printGenericTicket: function( mesa, actionName , printerName) {
+
+        /**
+        *   {
+        *       "tipo_cbte": "FA",
+        *       "nro_doc": "20267565393",
+        *       "domicilio_cliente": "Rua 76 km 34.5 Alagoas",
+        *       "tipo_doc": "DNI",
+        *       "nombre_cliente": "Joao Da Silva",
+        *       "tipo_responsable": "RESPONSABLE_INSCRIPTO"
+        *   },
+        *
+        **/
+        function generarEncabezado( mesa ) {
+            var jsonRet = {};
+
+            jsonRet["tipo_cbte"] = "T"; // tiquet pr defecto
+
+            if ( mesa.Cliente() &&  mesa.Cliente().nrodocumento() ) {
+                
+                var tipo_factura_id = mesa.Cliente().IvaResponsabilidad().tipo_factura_id()
+                var mapTipoFactura = JSON.parse( localStorage.getItem("mapTipoFactura") );
+                jsonRet["tipo_cbte"] = mapTipoFactura[tipo_factura_id];
+
+                var iva_responsabilidad_id = mesa.Cliente().iva_responsabilidad_id();
+                var mapResponsabilidad = JSON.parse( localStorage.getItem("mapResponsabilidad") );
+                jsonRet["tipo_responsable"] = mapResponsabilidad[iva_responsabilidad_id];
+
+                var tipo_doc_id = mesa.Cliente().tipo_documento_id();
+                var mapTipodoc = JSON.parse( localStorage.getItem("mapTipodoc") );
+                jsonRet["tipo_doc"] = mapTipodoc[tipo_doc_id];
+                
+                jsonRet["nro_doc"]  = mesa.Cliente().nrodocumento();
+                jsonRet["domicilio_cliente"]  = mesa.Cliente().domicilio();
+                jsonRet["nombre_cliente"]  = mesa.Cliente().nombre();
+            }
+            
+
+            return jsonRet;
+        }
+
+
+
+        /**
+        * @return array de items
+        *
+        *   {
+        *       "alic_iva": 21.0,
+        *       "importe": 0.01,
+        *       "ds": "PIPI",
+        *       "qty": 1.0
+        *   },
+        **/
+        function generarItems ( mesa ) {
+            var jsonRet = [];
+
+            var prods = mesa.listadoProductos();
+
+            // Risto.IVA_PORCENTAJE
+            for (var i = 0; i < prods.length; i++) {
+                jsonRet.push({
+                    "alic_iva": Risto.IVA_PORCENTAJE,
+                    "importe": prods[i]["precio"],
+                    "ds": prods[i]["name"],
+                    "qty": prods[i]["qty"]
+                });
+            }
+            return jsonRet;
+        }
+
+
+        /**
+        *  {
+        *      "ds": "efectivo",
+        *      "importe": 1.0
+        *  }
+        *
+        **/
+        function generarPagos( mesa ) {
+            var jsonRet = [];
+            var pagos = mesa.Pago();
+            for (var i = 0; i < pagos.length; i++) {
+                jsonRet.push({
+                    "ds": pagos[i].TipoDePago().name(),
+                    "importe": pagos[i].valor()
+                });
+            }
+            return jsonRet;
+        }
+
+        var encabezado = generarEncabezado( mesa );
+        var items = generarItems( mesa );
+
+
+        if (typeof printerName == 'undefined') {
+            jsonRet = {};
+        } else {
+            jsonRet = {"printerName": printerName};
+        }
+        jsonRet[actionName] = {            
+            "encabezado": encabezado,
+            "items": items
+        };
+
+        // agregar descripcion de pagos si es que los hay
+        var pagos = generarPagos( mesa );
+        if ( pagos.length ) {
+            jsonRet[actionName]['pagos'] = pagos;
+        }
+
+
+
+        if ( mesa.porcentajeDescuento() ) {
+            var dto = mesa.totalCalculadoNeto() - mesa.totalCalculado()
+            jsonRet[actionName]["addAdditional"] = {
+                        "description": mesa.Cliente().Descuento().description(),
+                        "amount": dto,
+                        "iva": Risto.IVA_PORCENTAJE
+                    };
+        }
+
+        jsonRet[actionName]["setTrailer"] = [
+                    " ",
+                    "MOZO: "+mesa.mozo().numero(),
+                    "MESA: "+mesa.numero(),
+                    " "
+                ];
+
+
+        jsonRet = JSON.stringify(jsonRet);
+        PrinterDriver.fbrry.send( jsonRet );
+        return jsonRet;
+    }
+    
+}
+
+
+PrinterDriver.init();/*--------------------------------------------------------------------------------------------------- Risto
  *
  *
  * Paquete Risto
@@ -11272,14 +11958,15 @@ Mesa.prototype = {
      * Envia un ajax con la peticion de imprimir el ticket para esta mesa
      */
     reimprimir : function(){
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/imprimirTicket';
-        var id;
-        if (typeof this.id == 'function') {
-            id = this.id();
+        if (PrinterDriver.isConnected() ) {
+        	console.log("reimprimir con fiscalberry");
+        	PrinterDriver.printTicket( this );        
         } else {
-            id = this.id;
+            // imprimir usando ajax
+            var url = this.urlReimprimirTicket();
+            $.get(url);    
         }
-        $.get( url+"/"+id);
+
     },
 
 
@@ -11666,6 +12353,22 @@ Mesa.prototype = {
 
 
 
+    /**
+    *   Devuelve un listado de los productos de cada comanda
+    *   con el detalle de los sabores y el precio sumado del producto al de los sabores.
+    *
+    **/
+    listadoProductos: function() {
+        productos = [];
+        for (var c in this.Comanda()){
+            var prodList = this.Comanda()[c].productsJSONListing();
+            productos = productos.concat(prodList);
+        }
+        return productos;
+    },
+
+
+
     savePagos: function () {
     	var m = this;
     	var mes = {
@@ -11761,10 +12464,39 @@ Risto.Adition.comanda.prototype = {
         }
         return name;
     },
+
+
+    productsJSONListing: function(){
+        var prods = [],
+            prodName;        
+        for (var dc in this.DetalleComanda() ){
+            if ( this.DetalleComanda()[dc].realCant() ) {
+                
+                prodName = this.DetalleComanda()[dc].nameConSabores();
+                prodPrecio = this.DetalleComanda()[dc].precio();
+                prodCant = this.DetalleComanda()[dc].realCant();
+                
+
+                prods.push({
+                    "name": prodName,
+                    "precio": prodPrecio,
+                    "qty": prodCant
+                });                
+            }
+        }
+        return prods;
+    },
     
     imprimirComanda: function() {
         if (window.confirm("¿Seguro desea reimprimir comanda?")) {
-            $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
+            if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
+                // imprimir local fiscalberry
+                PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this, Risto.printerComanderaPPal.Printer.alias);
+            } else {
+                // imprimir con server
+                $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
+            }
+            
         }
     },
     
@@ -11943,6 +12675,13 @@ Risto.Adition.comandaFabrica.prototype = {
         
         this.__generarComanda(comandaJsonCopy, comanderas);
         
+
+        // imprimir comanda con fiscalberry
+        if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
+            PrinterDriver.printComanda(this.mesa, this.comanda, Risto.printerComanderaPPal.Printer.alias);
+        }
+
+
         return this.comanda;
     },
     
@@ -13474,12 +14213,25 @@ $(document).bind("mobileinit", function(){
         $('#mesa-cerrar').bind('click', function(){
             var mesa = Risto.Adition.adicionar.currentMesa();
             mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.cerrada );
+
+
+            // imprimir offline usando fiscalberry
+            if (PrinterDriver.isConnected() ) {
+              // imprimio remito con comandera
+              if ( Risto.IMPRIME_REMITO_PRIMERO && Risto.printerComanderaPPal ) {
+                PrinterDriver.printRemito(mesa);
+              }
+
+              // imprimio ticket con fiscal
+              if ( !Risto.IMPRIME_REMITO_PRIMERO && Risto.printer ) {
+                PrinterDriver.printTicket(mesa);
+              }
+            }
         });
 
         $('#mesa-action-reimprimir').bind('click', function(){
             var mesa = Risto.Adition.adicionar.currentMesa();
-            var url = mesa.urlReimprimirTicket();
-            $.get(url);
+            mesa.reimprimir();
         });
 
 
@@ -13734,6 +14486,30 @@ $(document).bind("mobileinit", function(){
     });
 
 
+     /**
+     *
+     *
+     *          Page COBRAR
+     *
+     */
+    $('#cajero-opciones').live('pageshow',function(event, ui){
+        $('#cajero-ops-cierre-fiscal-x').bind('click',function(){
+            PrinterDriver.dailyClose("x");
+        });
+
+        $('#cajero-ops-cierre-fiscal-z').bind('click',function(){
+            PrinterDriver.dailyClose("z");
+        });
+    });
+
+
+    $('#cajero-opciones').live('pagebeforehide',function(event, ui){
+        $('#cajero-ops-cierre-fiscal-x').unbind('click');
+        $('#cajero-ops-cierre-fiscal-z').unbind('click');
+    });
+
+
+
     /**
      *
      *
@@ -13747,8 +14523,7 @@ $(document).bind("mobileinit", function(){
         });
         $('.mesa-reimprimir', '#mesa-cobrar').bind('click', function(){
             var mesa = Risto.Adition.adicionar.currentMesa();
-            var url = mesa.urlReimprimirTicket();
-            $.get(url);
+            mesa.reimprimir();
         });
 
 

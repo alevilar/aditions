@@ -151,7 +151,7 @@ PrinterDriver = {
 
 
         PrinterDriver.fbrry.promise.done(function(){
-            console.info("me conecte con el fiscalberry");
+            // console.info("me conecte con el fiscalberry");
         });
 
 
@@ -185,7 +185,6 @@ PrinterDriver = {
             "printerName": printerName,
         };
 
-        console.debug(jsonRet);
         jsonRet[actionname] = {"comanda":{}};
 
 
@@ -256,13 +255,11 @@ PrinterDriver = {
     },
 
     printComanda: function( mesa, comanda, printerName ) {
-        console.info("estoy imprimiendo una comanda %o", comanda);
 
         var comanderasInvolucradas = [];
         var printId, prod;
         for( var i=0;i<comanda.DetalleComanda().length; i++) {
             prod = comanda.DetalleComanda()[i].Producto();
-            console.log("el producto de dc es %o", prod.name);
             if ( typeof prod.printer_id === 'function') {
                 printId = prod.printer_id();
             } else {
@@ -270,10 +267,12 @@ PrinterDriver = {
             }
             printId = Risto.getPrinterId(printId);
             if (printId) {
-                comanderasInvolucradas.push(printId);
+                if ( comanderasInvolucradas.indexOf(printId) === -1 ) {
+                    // si no estaba la agrego
+                    comanderasInvolucradas.push(printId);
+                }
             }
         }
-        console.info("comanderas involucradas %o", comanderasInvolucradas);
         for(var i=0; i<comanderasInvolucradas.length;i++) {
             var printerName = comanderasInvolucradas[i].Printer.alias;
             PrinterDriver.__doPrintComanda(mesa, comanda, printerName);
@@ -283,10 +282,8 @@ PrinterDriver = {
 
 
     printRemito: function( mesa ) {
-        console.info("estoy imprimiendo un remito de la mesa %o", mesa);
         if ( Risto.printerComanderaPPal ) {
             var ret = PrinterDriver.__printGenericTicket(mesa, "printRemito", Risto.printerComanderaPPal.Printer.alias )
-            console.info("se va a mandae el printTicket %o", ret);
             return ret;
         } else {
             $.error("no hay impresora de comandas configurada");
@@ -295,11 +292,9 @@ PrinterDriver = {
 
 
     printTicket: function( mesa ) {
-        console.info("estoy imprimiendo un ticket de la mesa %o", mesa);
         if ( Risto.printerFiscal.Printer.alias) {
 
             var ret = PrinterDriver.__printGenericTicket(mesa, "printTicket", Risto.printerFiscal.Printer.alias);
-            console.info("se va a mandae el printTicket %o", ret);
             return ret;
         } else {
             $.error("no hay impresora fiscal configurada");

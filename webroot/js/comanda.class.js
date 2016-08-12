@@ -85,10 +85,13 @@ Risto.Adition.comanda.prototype = {
     imprimirComanda: function() {
         if (window.confirm("¿Seguro desea reimprimir comanda?")) {
             if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
+                // imprimir local fiscalberry
                 PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this, Risto.printerComanderaPPal.Printer.alias);
+            } else {
+                // imprimir con server
+                $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
             }
             
-            $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
         }
     },
     

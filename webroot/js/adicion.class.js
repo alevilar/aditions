@@ -1,4 +1,4 @@
-/**
+    /**
  *
  *  Este objeto maneja las mesas recibidas con el json mozos/mesas_abiertas.json
  *  
@@ -394,8 +394,6 @@ Risto.Adition.adicionar = {
     crearNuevaMesa: function( mesaJSON ){
         var mozo = this.findMozoById(mesaJSON.mozo_id),
             mesa = new Mesa(mozo, mesaJSON);
-        
-        $cakeSaver.send({url:URL_DOMAIN + TENANT + '/mesa/mesas/add.json', obj: mesa});
         return mesa;
     },
     

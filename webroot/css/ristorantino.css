@@ -70,6 +70,22 @@ ul.listado-adicion li a {
 }
 
 
+#listado-mesas .btn-create-mesa-ok{
+    font-size: 16px;
+    background: blue;
+}
+
+#listado-mesas .btn-create-mesa-cancel{
+    font-size: 16px;
+    background: red;
+}
+
+#listado-mesas .input-create-mesa-numero{
+    height: 19px;
+    font-size: 16px;
+    width: 95%;
+}
+
 ul.listado-adicion .mesa-cobrada A{
     border: 1px solid #AEB1AF;
     background: #BFDCC9;
@@ -707,6 +723,12 @@ ul.adicion-lista-mozo {
     display: flex;
     justify-content: space-around;
     align-items: stretch;
+}
+
+ul.adicion-lista-mozo  .mozo-numero-txt{
+    font-size:10px;
+    color: #444;
+    padding-bottom: 3px;
 }
 
 ul.adicion-lista-mozo > li{

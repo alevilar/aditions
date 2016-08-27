@@ -40,7 +40,7 @@ var Mesa = function(mozo, jsonData) {
 
 
         this.total          = ko.observable( 0 );
-        this.numero         = ko.observable( 0 );
+        this.numero         = ko.observable( );
         this.menu           = ko.observable( 0 );
         this.mozo           = ko.observable( new Mozo() );
         this.currentComanda = ko.observable( new Risto.Adition.comandaFabrica() );
@@ -96,6 +96,15 @@ Mesa.prototype = {
         
         return this;
     },
+
+
+
+    /**
+     *  crea una nueva mesa guardandola en el server
+     */
+    create: function( ) {
+        return $cakeSaver.send({url: this.urlAdd(), obj: this});
+    },
     
     /**
      *  Actualiza el estado de la mesa con el json pasado
@@ -105,6 +114,11 @@ Mesa.prototype = {
         // mapea el objeto this usando ko.mapping
         return this.__koMapp( jsonData, mozo );
 //        this.setEstadoById();  
+    },
+
+
+    remove: function () {
+        this.mozo().sacarMesa(this);
     },
     
     
@@ -216,6 +230,7 @@ Mesa.prototype = {
     urlGetData: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/ticket_view/'+this.id() },
     urlView: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/view/'+this.id() },
     urlEdit: function() { return URL_DOMAIN + TENANT + '/mesas/ajax_edit/'+this.id() },
+    urlAdd: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/add.json' },
     urlFullEdit: function() { return URL_DOMAIN + TENANT + '/mesas/edit/'+this.id() },
     urlDelete: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/delete/'+this.id() },
     urlComandaAdd: function() { return URL_DOMAIN + TENANT +'/mesa/comandas/add/'+this.id() },

@@ -204,6 +204,7 @@ el ajax que verifica el estado de las mesas (si fue abierta o cerrada alguna. --
                 </span>
 
                 <span class="mesa-span ui-btn-inner">
+
                       <span class="ui-btn-text">
                           <span class="mesa-numero" data-bind="text: numero"></span>
                           <hr />                         
@@ -211,6 +212,12 @@ el ajax que verifica el estado de las mesas (si fue abierta o cerrada alguna. --
                 </span>
             </span>
         </a>
+
+         <div class="mesa-numero-input" data-bind="visible: !numero()" >
+            <input class="input-create-mesa-numero"  data-bind="value: numero" placeholder="Describir" />
+            <br/>
+            <button class="btn-create-mesa-cancel" data-bind="click: remove">Cancelar</button>
+          </div>
     </li>
 </script>
 
@@ -258,7 +265,7 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
 
 <script id="listaMozos" type="text/x-jquery-tmpl">
     <li  style="width: <?php echo floor( 100/ count($mozos) ); ?>%" class="<?php echo ( count($mozos) > 8 )?'adicion-listado-mozos-mesa-small':'adicion-listado-mozos-mesa-big'; ?>">
-        
+        <div class="mozo-numero-txt" data-bind="text: numero"></div>
         <button type="button" data-bind="click: seleccionar, attr: {value: id}"  class="adicion-mozo-title">
             <span data-bind="visible: tieneMediaId()">
                 <img data-bind="attr:{src: full_image_url()}" />

@@ -345,6 +345,45 @@ $(document).bind("mobileinit", function(){
 
 
     $('#listado-mesas').live('pageshow',function(event, ui){
+      var mesa;
+      function activarBuscadorDeMesas() {
+        $(document).bind( "keydown", onKeyDown);
+        $(document).bind( "keypress", onKeyPress);
+      }
+
+      $("input",'#listado-mesas').live('focusin', function() {
+          $(document).unbind( "keydown");
+          $(document).unbind( "keypress");
+      });
+
+      $(".btn-create-mesa-cancel", document).live("click",function(){
+        mesa = undefined;
+      });
+
+      $("input",'#listado-mesas').live('focusout', function(e){
+
+        activarBuscadorDeMesas();
+
+          if (mesa && e.target.value) {
+            var cubiertos = 0;
+            if (RISTO_CUBIERTOS_OBLIGATORIOS) {
+              cubiertos = window.prompt("Ingresar Cantiad de Cubiertos");
+              mesa.cant_comensales(cubiertos);
+            }
+            mesa.create(); // guarda a DB
+            mesa.seleccionar();
+            $.mobile.changePage('#mesa-view');
+            mesa = undefined;
+          }
+
+
+        } );
+
+
+
+      
+
+      activarBuscadorDeMesas();
 
       function hasVerticalScroll(node){
           if(node == undefined){
@@ -367,36 +406,31 @@ $(document).bind("mobileinit", function(){
       }
                 
         $(document).bind(MOZOS_POSIBLES_ESTADOS.seleccionado.event, function(e){
-            var mesaNumero = window.prompt(PROMPT_DESCRIPCION_DE_MESA);
-            var cubiertos = null;
-            if (RISTO_CUBIERTOS_OBLIGATORIOS) {
-              cubiertos = window.prompt(PROMPT_CANT_CUBIERTOS);
-            }
-            if ( mesaNumero ) {
-                abrirMesa( mesaNumero, e.mozo.id(), cubiertos );
-                $.mobile.changePage("#mesa-view");
-            }
+           
+              abrirMesa( e.mozo.id(), e );
+              
 
         });
 
         $("#mesa-abrir-mesa-generica-btn").bind( 'click', function(e) {
-            abrirMesa(  $(this).attr('data-numero'), $(this).attr('data-mozo-id'), 1 );
+            abrirMesa( $(this).attr('data-mozo-id'), e );
         });
 
 
-        function abrirMesa( numero, mozoId, cubiertos ) {
-            if ( cubiertos === null || cubiertos === undefined) {
-                cubiertos = 1; //default
-            }
+  
 
+        function abrirMesa( mozoId, event ) {
+          if ( typeof mesa === 'undefined' ) {
             var miniMesa = {
-                numero: numero,
-                mozo_id: mozoId,
-                cant_comensales: cubiertos
+                mozo_id: mozoId
             };
             mesa = Risto.Adition.adicionar.crearNuevaMesa( miniMesa );
-            Risto.Adition.EventHandler.mesaSeleccionada( {"mesa": mesa} );
-            Risto.Adition.adicionar.setCurrentMesa( mesa ); 
+            mesa.create_pendiente = true;
+          }
+
+
+            $('.input-create-mesa-numero:visible').focus();
+
         }
 
 
@@ -406,6 +440,8 @@ $(document).bind("mobileinit", function(){
     $('#listado-mesas').live('pagebeforehide',function(event, ui){
         $("#mesa-abrir-mesa-generica-btn").unbind( 'click');
         $(document).unbind(MOZOS_POSIBLES_ESTADOS.seleccionado.event);
+        $(document).unbind( "keydown");
+        $(document).unbind( "keypress");
     });
     
     
@@ -679,9 +715,7 @@ $(document).ready(function() {
   
    hacerQueNoFuncioneElClickEnPagina();
     
-    $(document).keydown(onKeyDown);
-    $(document).keypress(onKeyPress);
-    
+
     
      // Los botones que tengan la clase silent-click sirven para los dialogs
     // la idea es que al ser apretados el dialog se cierre, pero que se envie 

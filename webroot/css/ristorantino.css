@@ -70,21 +70,6 @@ ul.listado-adicion li a {
 }
 
 
-#listado-mesas .btn-create-mesa-ok{
-    font-size: 16px;
-    background: blue;
-}
-
-#listado-mesas .btn-create-mesa-cancel{
-    font-size: 16px;
-    background: red;
-}
-
-#listado-mesas .input-create-mesa-numero{
-    height: 19px;
-    font-size: 16px;
-    width: 95%;
-}
 
 ul.listado-adicion .mesa-cobrada A{
     border: 1px solid #AEB1AF;
@@ -728,7 +713,8 @@ ul.adicion-lista-mozo {
 ul.adicion-lista-mozo  .mozo-numero-txt{
     font-size:10px;
     color: #444;
-    padding-bottom: 3px;
+    padding-bottom: 8px;
+        margin-top: -14px;
 }
 
 ul.adicion-lista-mozo > li{
@@ -786,3 +772,88 @@ button.adicion-mozo-title img{
 } 
 
 
+
+#abrir-mesa-nueva .overlay-content{
+    /* some styles to position the modal at the center of the page */
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    width: 200px;
+    margin-left: -100px;
+    margin-top: auto;
+    text-align: center;
+    border-radius: 5px;
+  
+    /* needed styles for the overlay */
+    z-index: 10; /* keep on top of other elements on the page */
+    box-shadow: 0 0 40px 10px rgba(0,0,0,0.65);
+    background: #eee;
+
+}
+
+
+
+
+/* The Overlay (background) */
+.overlay {
+    display: none;
+    position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.75);
+
+    transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+
+#abrir-mesa-nueva h1{
+    font-size: 14px;
+    padding: 10px 0px;
+}
+
+#abrir-mesa-nueva label{
+font-size: 10px;
+    }
+
+
+#abrir-mesa-nueva .btn-create-mesa-ok{
+    font-size: 16px;
+}
+
+#abrir-mesa-nueva .btn-create-mesa-cancel{
+    font-size: 16px;
+}
+#abrir-mesa-nueva .numero-mensaje-error-vacio, #abrir-mesa-nueva .cubiertos-mensaje-error-vacio{
+    color: red;
+    display: none;
+    font-size: 10px;
+}
+
+#abrir-mesa-nueva  input{
+    width: 90%;
+    background-color: #fff;
+    margin-left: auto;
+    margin-right: auto;
+    height: 30px;
+    text-align: center;
+}
+
+#abrir-mesa-nueva  input:focus{
+    background-color: #f5f3b7;
+}
+
+#abrir-mesa-nueva .input-create-mesa-numero{
+    font-size: 16px;
+}
+
+
+/* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
+@media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+        font-size: 40px;
+        top: 15px;
+        right: 35px;
+    }

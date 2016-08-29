@@ -212,12 +212,6 @@ el ajax que verifica el estado de las mesas (si fue abierta o cerrada alguna. --
                 </span>
             </span>
         </a>
-
-         <div class="mesa-numero-input" data-bind="visible: !numero()" >
-            <input class="input-create-mesa-numero"  data-bind="value: numero" placeholder="Describir" />
-            <br/>
-            <button class="btn-create-mesa-cancel" data-bind="click: remove">Cancelar</button>
-          </div>
     </li>
 </script>
 
@@ -280,5 +274,4 @@ es igual al de las mesas de la adicion salvo que al hacer click tienen otro comp
         </ul>
     </li>
 </script>
-
 

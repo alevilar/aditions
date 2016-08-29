@@ -4,6 +4,10 @@
       
 <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL ) {  ?>
 
+
+
+
+
 <!--
                         LISTADO MESAS
 
@@ -11,7 +15,7 @@
 <!-- Pagina 1, Home Page por default segun JQM: Listado de Mesas -->
 <div data-role="page" id="listado-mesas">
 
-	<div  data-role="header">
+    <div  data-role="header">
 
             <h1><span style="color: #fcf0b5" data-bind="text: adn().mesas().length">0</span> <?php echo Inflector::pluralize( Configure::read('Mesa.tituloMesa') )?></h1>
 
@@ -20,6 +24,34 @@
                     
     <div  data-role="content" class="content_mesas">       
 
+<!--
+    MODAL PARA ABRIR NUEVAS MESAS
+
+-->
+<div id="abrir-mesa-nueva" class="overlay">
+    
+  <div class="overlay-content">
+        <div class="mesa-abierta ui-btn-up-c">
+            <h1><?php echo __("Abriendo Nueva %s", Configure::read("Mesa.tituloMesa") );?></h1>
+            <div class="mesa-numero-input" >
+                <input type="text" class="input-create-mesa-numero" placeholder="Descripción de <?php echo Configure::read("Mesa.tituloMesa")?>" />
+                <div class="numero-mensaje-error-vacio"><br>Debe ingresar un valor aquí</div>
+            </div>
+
+            <div class="mesa-cubiertos-input" >
+            <br>
+                <input type="number" class="input-create-mesa-cubiertos" placeholder="Cant. <?php echo Inflector::pluralize( Configure::read("Mesa.tituloCubierto") )?>" />
+                <div class="cubiertos-mensaje-error-vacio"><br>Debe ingresar un valor aquí</div>
+            </div>
+        <br>
+      </div>
+
+
+      <div>
+            <button  data-role="button"  data-theme="d"   class="btn-create-mesa-ok">Guardar</button>
+      </div>
+  </div>
+</div>
             <ul id="mozos22_container" class="adicion-lista-mozo" data-bind='template: { name: "listaMozos", foreach: adn().mozos }'>
             </ul>
         

@@ -345,43 +345,16 @@ $(document).bind("mobileinit", function(){
 
 
     $('#listado-mesas').live('pageshow',function(event, ui){
-      var mesa;
       function activarBuscadorDeMesas() {
         $(document).bind( "keydown", onKeyDown);
         $(document).bind( "keypress", onKeyPress);
       }
 
-      $("input",'#listado-mesas').live('focusin', function() {
-          $(document).unbind( "keydown");
+      function desactivarBuscadorDeMesas() {
+        $(document).unbind( "keydown");
           $(document).unbind( "keypress");
-      });
+      }
 
-      $(".btn-create-mesa-cancel", document).live("click",function(){
-        mesa = undefined;
-      });
-
-      $("input",'#listado-mesas').live('focusout', function(e){
-
-        activarBuscadorDeMesas();
-
-          if (mesa && e.target.value) {
-            var cubiertos = 0;
-            if (RISTO_CUBIERTOS_OBLIGATORIOS) {
-              cubiertos = window.prompt("Ingresar Cantiad de Cubiertos");
-              mesa.cant_comensales(cubiertos);
-            }
-            mesa.create(); // guarda a DB
-            mesa.seleccionar();
-            $.mobile.changePage('#mesa-view');
-            mesa = undefined;
-          }
-
-
-        } );
-
-
-
-      
 
       activarBuscadorDeMesas();
 
@@ -406,10 +379,7 @@ $(document).bind("mobileinit", function(){
       }
                 
         $(document).bind(MOZOS_POSIBLES_ESTADOS.seleccionado.event, function(e){
-           
-              abrirMesa( e.mozo.id(), e );
-              
-
+            abrirMesa( e.mozo.id(), e );
         });
 
         $("#mesa-abrir-mesa-generica-btn").bind( 'click', function(e) {
@@ -417,19 +387,141 @@ $(document).bind("mobileinit", function(){
         });
 
 
-  
 
         function abrirMesa( mozoId, event ) {
-          if ( typeof mesa === 'undefined' ) {
-            var miniMesa = {
-                mozo_id: mozoId
-            };
-            mesa = Risto.Adition.adicionar.crearNuevaMesa( miniMesa );
-            mesa.create_pendiente = true;
+          function cancelarAperturaAlApretarESC(e){
+             var code = e.which;
+                  if ( code == 27){ // ESC
+                      cancelarApertura();                   
+                  }
           }
 
 
-            $('.input-create-mesa-numero:visible').focus();
+          function __cleanup( ) {
+            $("#abrir-mesa-nueva").hide();         
+            activarBuscadorDeMesas();
+            
+            $("input", "#abrir-mesa-nueva").each(function(){
+              // limpiar cada input
+              $(this).val('');
+            });
+            $(".numero-mensaje-error-vacio", "#abrir-mesa-nueva").hide();
+            $(".cubiertos-mensaje-error-vacio", "#abrir-mesa-nueva").hide();
+
+             // para el overlay
+            $(".overlay-content","#abrir-mesa-nueva").unbind("click", stopPropagationForContextClick);
+
+
+            // cancelar si se clickea el overlay
+            $("#abrir-mesa-nueva").unbind('click', cancelarSiSeClickeaOverlay);
+
+            $("#abrir-mesa-nueva").unbind('keydown', cancelarAperturaAlApretarESC);
+
+            // al hacer enter en el input de NUMERO DE MESA
+            $(".input-create-mesa-numero", "#abrir-mesa-nueva").unbind('keydown', seleccionarNumeroDeMesa);
+
+            // al hacer enter en el input de CUBIERTOS
+            $(".input-create-mesa-cubiertos").unbind('keydown', seleccionarCubiertos );
+
+
+          }
+
+
+          function cancelarApertura(){
+            __cleanup();
+          }
+
+          function hacerApertura(){
+            $(".numero-mensaje-error-vacio", "#abrir-mesa-nueva").hide();
+            $(".cubiertos-mensaje-error-vacio", "#abrir-mesa-nueva").hide();
+            
+            var numero = $(".input-create-mesa-numero", "#abrir-mesa-nueva").val(),
+                cubiertos = $(".input-create-mesa-cubiertos", "#abrir-mesa-nueva").val();
+              
+              var error = false; 
+              if ( !numero ) {
+                $(".numero-mensaje-error-vacio", "#abrir-mesa-nueva").show();
+                error = true;
+              }
+
+              if ( !cubiertos && Risto.Adition.cubiertosObligatorios) {
+                $(".cubiertos-mensaje-error-vacio", "#abrir-mesa-nueva").show();
+                error = true;
+              }
+
+              if ( error ) {
+                return;
+              }
+
+            __cleanup();
+              var miniMesa = {
+                mozo_id: mozoId,
+                numero: numero,
+                cant_comensales: cubiertos
+              };
+              mesa = Risto.Adition.adicionar.crearNuevaMesa( miniMesa );
+              mesa.create(); // guarda a DB
+              mesa.seleccionar();
+              $.mobile.changePage('#mesa-view');
+          }
+
+          function stopPropagationForContextClick( event ){
+             event.stopPropagation();
+          }
+
+          function cancelarSiSeClickeaOverlay( event ) {
+            event.preventDefault();
+            cancelarApertura();
+          }
+
+          function seleccionarNumeroDeMesa( event ) {
+             var code = event.which;
+              if ( code == 13){ // ENTER
+                  if ( $(".input-create-mesa-cubiertos").is(":visible") ) {
+                    //configurar cubiertos
+                    $(".input-create-mesa-cubiertos").focus();        
+                  } else {
+                    if ( this.value ) {
+                      hacerApertura(mozoId);
+                    }
+                  }
+              }
+          }
+
+          function seleccionarCubiertos (  event) {
+                var code = event.which;
+              if ( code == 13){ // ENTER
+                hacerApertura(mozoId);
+              }
+          }
+
+          if ( Risto.Adition.cubiertosObligatorios ) {
+            $(".mesa-cubiertos-input").show();
+          } else {
+            $(".mesa-cubiertos-input").hide();
+          }
+          desactivarBuscadorDeMesas();
+
+          $("#abrir-mesa-nueva").show();
+
+
+          // para el overlay
+          $(".overlay-content","#abrir-mesa-nueva").bind("click", stopPropagationForContextClick);
+
+          $('.btn-create-mesa-ok',"#abrir-mesa-nueva").bind("click", hacerApertura);
+
+          // cancelar si se clickea el overlay
+          $("#abrir-mesa-nueva").bind('click', cancelarSiSeClickeaOverlay);
+
+          $("#abrir-mesa-nueva").bind('keydown', cancelarAperturaAlApretarESC);
+
+          // al hacer enter en el input de NUMERO DE MESA
+          $(".input-create-mesa-numero", "#abrir-mesa-nueva").bind('keydown', seleccionarNumeroDeMesa);
+
+          // al hacer enter en el input de CUBIERTOS
+          $(".input-create-mesa-cubiertos").bind('keydown', seleccionarCubiertos );
+
+          $('.input-create-mesa-numero', "#abrir-mesa-nueva").focus();
 
         }
 

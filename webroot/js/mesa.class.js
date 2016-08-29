@@ -116,10 +116,6 @@ Mesa.prototype = {
 //        this.setEstadoById();  
     },
 
-
-    remove: function () {
-        this.mozo().sacarMesa(this);
-    },
     
     
     __koMapp: function( jsonData, mozo ) {
@@ -495,9 +491,13 @@ Mesa.prototype = {
     borrar : function(){
         var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/delete/' +this.id,
             self = this;
-        $.get(url, {}, function(){
-            self.setEstadoBorrada()
-        });
+        if (this.id() ) {
+            $.get(url, {}, function(){
+               // se borro ok
+            });
+        }
+
+        self.setEstadoBorrada();
         return this;
     },
 

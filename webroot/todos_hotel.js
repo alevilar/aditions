@@ -14015,6 +14015,7 @@ Risto.Adition.detalleComanda.prototype = {
 					checkout: dayCout
 				}
 				var mesa = Risto.Adition.adicionar.crearNuevaMesa( miniMesa );
+				mesa.create();
                 Risto.Adition.EventHandler.mesaSeleccionada( {"mesa": mesa} );
                 Risto.Adition.adicionar.setCurrentMesa( mesa );
                 $.mobile.changePage('#mesa-view');

@@ -161,9 +161,16 @@
             <a href="#" onclick="window.location.reload(true);" data-ajax="false" data-role="button" data-icon="refresh">
                 Refrescar Adición</a>
             
+
+            <div class="div-input-fiscalberry-ip">
+                <label for="input-fiscalberry-ip">PaxaPrinter Modo-Offline</label>
+                <input name="fiscalberry-ip" id="input-fiscalberry-ip" placeholder="Ingresar IP aquí" />
+            </div>
+
+
             
              <div class="ui-grid-a">
-                <div class="ui-block-a"><a href="#" data-rel="back" data-role="button">Cancelar</a></div>
+                <div class="ui-block-a"><a href="#" data-rel="back" data-role="button">Volver</a></div>
                 <div class="ui-block-b">
 
                     <a

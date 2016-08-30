@@ -684,6 +684,28 @@ $(document).bind("mobileinit", function(){
 
 
 
+
+     /**
+     *
+     *
+     *          Page opciones adicion
+     *
+     */
+    $('#adicion-opciones').live('pageshow',function(event, ui){
+        $('#input-fiscalberry-ip').bind('keyup',function(e){
+          var el = e.target;
+            localStorage.setItem("fiscalberryHost", el.value);
+        });
+    });
+
+
+    $('#adicion-opciones').live('pagebeforehide',function(event, ui){
+      $('#input-fiscalberry-ip').unbind('keyup');
+    });
+
+
+
+
     /**
      *
      *

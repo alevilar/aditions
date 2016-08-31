@@ -692,6 +692,9 @@ $(document).bind("mobileinit", function(){
      *
      */
     $('#adicion-opciones').live('pageshow',function(event, ui){
+
+        $('#input-fiscalberry-ip').val( localStorage.getItem("fiscalberryHost") );
+
         $('#input-fiscalberry-ip').bind('keyup',function(e){
           var el = e.target;
             localStorage.setItem("fiscalberryHost", el.value);

@@ -383,7 +383,27 @@ PrinterDriver = {
         function generarItems ( mesa ) {
             var jsonRet = [];
 
-            var prods = mesa.listadoProductos();
+            var menu = parseInt( mesa.menu() );
+            if ( menu ) {
+                // en caso que no se quiera imprimir el detalle
+                // de los platos
+                var menuName = window.prompt("Ingresar descripción del Ìtem para los '"+menu+" Menú'\nEj: Menu, Cena, ALmuerzo, Comida, Evento, etc.");
+                var totalCalculado = mesa.totalCalculado();
+                totalCalculado = totalCalculado / menu;
+                totalCalculado = Math.floor(totalCalculado * 10000) / 10000;
+                if ( !menuName ) {
+                    return;
+                }
+                var prods = [
+                    {
+                        "precio": totalCalculado,
+                        "name": menuName,
+                        "qty": menu
+                    }
+                ];
+            } else {
+                var prods = mesa.listadoProductos();
+            }
 
             // Risto.IVA_PORCENTAJE
             for (var i = 0; i < prods.length; i++) {

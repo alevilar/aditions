@@ -10850,7 +10850,27 @@ PrinterDriver = {
         function generarItems ( mesa ) {
             var jsonRet = [];
 
-            var prods = mesa.listadoProductos();
+            var menu = parseInt( mesa.menu() );
+            if ( menu ) {
+                // en caso que no se quiera imprimir el detalle
+                // de los platos
+                var menuName = window.prompt("Ingresar descripción del Ìtem para los '"+menu+" Menú'\nEj: Menu, Cena, ALmuerzo, Comida, Evento, etc.");
+                var totalCalculado = mesa.totalCalculado();
+                totalCalculado = totalCalculado / menu;
+                totalCalculado = Math.floor(totalCalculado * 10000) / 10000;
+                if ( !menuName ) {
+                    return;
+                }
+                var prods = [
+                    {
+                        "precio": totalCalculado,
+                        "name": menuName,
+                        "qty": menu
+                    }
+                ];
+            } else {
+                var prods = mesa.listadoProductos();
+            }
 
             // Risto.IVA_PORCENTAJE
             for (var i = 0; i < prods.length; i++) {
@@ -11972,11 +11992,10 @@ Mesa.prototype = {
         if (PrinterDriver.isConnected() ) {
         	console.log("reimprimir con fiscalberry");
         	PrinterDriver.printTicket( this );        
-        } else {
-            // imprimir usando ajax
-            var url = this.urlReimprimirTicket();
-            $.get(url);    
         }
+        // imprimir usando ajax
+        var url = this.urlReimprimirTicket();
+        $.get(url);    
 
     },
 
@@ -12507,10 +12526,10 @@ Risto.Adition.comanda.prototype = {
             if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
                 // imprimir local fiscalberry
                 PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this, Risto.printerComanderaPPal.Printer.alias);
-            } else {
-                // imprimir con server
-                $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
             }
+            
+            // imprimir con server
+            $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
             
         }
     },
@@ -14635,11 +14654,11 @@ $(document).bind("mobileinit", function(){
      */
     $('#cajero-opciones').live('pageshow',function(event, ui){
         $('#cajero-ops-cierre-fiscal-x').bind('click',function(){
-            PrinterDriver.dailyClose("x");
+            PrinterDriver.dailyClose("X");
         });
 
         $('#cajero-ops-cierre-fiscal-z').bind('click',function(){
-            PrinterDriver.dailyClose("z");
+            PrinterDriver.dailyClose("Z");
         });
     });
 

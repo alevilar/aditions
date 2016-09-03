@@ -668,11 +668,11 @@ $(document).bind("mobileinit", function(){
      */
     $('#cajero-opciones').live('pageshow',function(event, ui){
         $('#cajero-ops-cierre-fiscal-x').bind('click',function(){
-            PrinterDriver.dailyClose("x");
+            PrinterDriver.dailyClose("X");
         });
 
         $('#cajero-ops-cierre-fiscal-z').bind('click',function(){
-            PrinterDriver.dailyClose("z");
+            PrinterDriver.dailyClose("Z");
         });
     });
 

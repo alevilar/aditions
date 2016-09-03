@@ -448,11 +448,10 @@ Mesa.prototype = {
         if (PrinterDriver.isConnected() ) {
         	console.log("reimprimir con fiscalberry");
         	PrinterDriver.printTicket( this );        
-        } else {
-            // imprimir usando ajax
-            var url = this.urlReimprimirTicket();
-            $.get(url);    
         }
+        // imprimir usando ajax
+        var url = this.urlReimprimirTicket();
+        $.get(url);    
 
     },
 

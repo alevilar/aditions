@@ -29,6 +29,7 @@
         <?php }} ?>
             
         Risto.IVA_PORCENTAJE = "<?php echo Configure::read('Afip.default_iva_porcentaje')?>";
+        Risto.PRECISION_COMA = "<?php echo Configure::read('Restaurante.precision')?>";
         Risto.TITULO_MESA = "<?php echo Configure::read('Mesa.tituloMesa')?>";
         Risto.TITULO_MOZO = "<?php echo Configure::read('Mesa.tituloMozo')?>";
         Risto.TITULO_CUBIERTO = "<?php echo Inflector::pluralize( Configure::read('Mesa.tituloCubierto') )?>";

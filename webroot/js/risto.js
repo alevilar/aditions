@@ -94,5 +94,7 @@ function jsToMySqlTimestamp( dateobj )
 
 
 function ristoRound(number) {
-    return Math.round( number * 10000 )/10000;
+    var cantCeros = Risto.PRECISION_COMA;
+    var multiplicador = Math.pow(10, cantCeros);
+    return Math.round( number * multiplicador )/multiplicador;
 }

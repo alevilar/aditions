@@ -446,7 +446,6 @@ Mesa.prototype = {
      */
     reimprimir : function(){
         if (PrinterDriver.isConnected() ) {
-        	console.log("reimprimir con fiscalberry");
         	PrinterDriver.printTicket( this );        
         }
         // imprimir usando ajax
@@ -678,11 +677,9 @@ Mesa.prototype = {
             total = this.totalCalculadoNeto();
             
             var dto = 0;
-               
-            dto = Math.floor(total * this.porcentajeDescuento() / 100);
-            total = total - dto;
-            
-            return total;
+            dto = total * this.porcentajeDescuento() / 100;
+            total = ristoRound( total - dto );
+            return ( total );
         },
         
         
@@ -696,7 +693,7 @@ Mesa.prototype = {
                 totalText = '$'+total ;
             
             if ( this.porcentajeDescuento() ) {
-                dto = Math.round( Math.floor( total * this.porcentajeDescuento()  / 100 ) *100 ) /100;
+                dto = ristoRound( total * this.porcentajeDescuento() / 100 );
                 totalText = totalText+' - [Dto '+this.porcentajeDescuento()+'%] $'+dto+' = $'+ this.totalCalculado();
             }
             

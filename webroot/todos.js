@@ -10483,6 +10483,8 @@ if (typeof(Storage) !== "undefined") {
 
 
 PrinterDriver = {
+    version: 20160904,
+
     $printerDriverContainer: null, // 
 
     fbrry:null,
@@ -10559,13 +10561,29 @@ PrinterDriver = {
     init: function () {
         PrinterDriver.__initFbrry();
         PrinterDriver._setUI();
+
+         
+
+        var printerLocalVersion = JSON.parse( localStorage.getItem("PrinterDriver.version") );
+        var newVersion = false;
+        if ( printerLocalVersion != PrinterDriver.version ) {
+            localStorage.setItem("PrinterDriver.version", PrinterDriver.version );
+            newVersion = true;
+        }
+
         var mapTipoFactura = JSON.parse( localStorage.getItem("mapTipoFactura") );
-        if ( !mapTipoFactura ) {
+        if ( !mapTipoFactura || newVersion) {
             /* MAP con tabla tipo_facturas */
             mapTipoFactura = {
                 1: "FA",
                 2: "T",
-                5: "FC"
+                5: "FC",
+                8: "NCB",
+                9: "NCC",
+                10: "NCA",
+                11: "NDB",
+                12: "NDC",
+                13: "NDA"
             };
             localStorage.setItem("mapTipoFactura", JSON.stringify(mapTipoFactura));
         }
@@ -10574,7 +10592,7 @@ PrinterDriver = {
 
         // map con tabla iva_responsabilidades
         var mapResponsabilidad = JSON.parse( localStorage.getItem("mapResponsabilidad"));
-        if ( !mapResponsabilidad ) {
+        if ( !mapResponsabilidad || newVersion ) {
             /* MAP con tabla tipo_facturas */
             mapResponsabilidad = {
                 1: "RESPONSABLE_INSCRIPTO",
@@ -10592,7 +10610,7 @@ PrinterDriver = {
 
         // map con tabla tipo_documentos
         var mapTipodoc = JSON.parse( localStorage.getItem("mapTipodoc") );
-        if ( !mapTipodoc ) {
+        if ( !mapTipodoc || newVersion ) {
             /* MAP con tabla tipo_facturas */
             mapTipodoc = {
                 1: "CUIT",
@@ -10812,12 +10830,21 @@ PrinterDriver = {
 
             jsonRet["tipo_cbte"] = "T"; // tiquet pr defecto
 
-            if ( mesa.Cliente() &&  mesa.Cliente().nrodocumento() ) {
-                
-                var tipo_factura_id = mesa.Cliente().IvaResponsabilidad().tipo_factura_id()
+
+            if ( mesa.Cliente() &&  mesa.Cliente().IvaResponsabilidad() ) {
+                var tipo_factura_id = mesa.Cliente().IvaResponsabilidad().tipo_factura_id();
                 var mapTipoFactura = JSON.parse( localStorage.getItem("mapTipoFactura") );
                 jsonRet["tipo_cbte"] = mapTipoFactura[tipo_factura_id];
+            }
 
+            if ( mesa.tipo_factura_id ) {
+                var tipo_factura_id = mesa.tipo_factura_id ;
+                var mapTipoFactura = JSON.parse( localStorage.getItem("mapTipoFactura") );
+                jsonRet["tipo_cbte"] = mapTipoFactura[tipo_factura_id];
+            }
+
+            if ( mesa.Cliente() &&  mesa.Cliente().nrodocumento() ) {
+                
                 var iva_responsabilidad_id = mesa.Cliente().iva_responsabilidad_id();
                 var mapResponsabilidad = JSON.parse( localStorage.getItem("mapResponsabilidad") );
                 jsonRet["tipo_responsable"] = mapResponsabilidad[iva_responsabilidad_id];
@@ -10927,11 +10954,17 @@ PrinterDriver = {
 
 
         if ( mesa.porcentajeDescuento() ) {
-            var dto = mesa.totalCalculadoNeto() - mesa.totalCalculado()
+            var dto = mesa.totalCalculadoNeto() - mesa.totalCalculado();
+            // indica si es un descuento (false) o es un recargo (true)
+            var descuento=false; // por defecto es un recargo
+            if (dto >= 0){
+                descuento = true;
+            }
             jsonRet[actionName]["addAdditional"] = {
                         "description": mesa.Cliente().Descuento().description(),
-                        "amount": dto,
-                        "iva": Risto.IVA_PORCENTAJE
+                        "amount": ristoRound( dto ),
+                        "iva": Risto.IVA_PORCENTAJE,
+                        "negative": descuento
                     };
         }
 
@@ -11047,7 +11080,9 @@ function jsToMySqlTimestamp( dateobj )
 
 
 function ristoRound(number) {
-    return Math.round( number * 10000 )/10000;
+    var cantCeros = Risto.PRECISION_COMA;
+    var multiplicador = Math.pow(10, cantCeros);
+    return Math.round( number * multiplicador )/multiplicador;
 }/*--------------------------------------------------------------------------------------------------- PKG:Risto.Adicion
  *
  *
@@ -11990,7 +12025,6 @@ Mesa.prototype = {
      */
     reimprimir : function(){
         if (PrinterDriver.isConnected() ) {
-        	console.log("reimprimir con fiscalberry");
         	PrinterDriver.printTicket( this );        
         }
         // imprimir usando ajax
@@ -12222,11 +12256,9 @@ Mesa.prototype = {
             total = this.totalCalculadoNeto();
             
             var dto = 0;
-               
-            dto = Math.floor(total * this.porcentajeDescuento() / 100);
-            total = total - dto;
-            
-            return total;
+            dto = total * this.porcentajeDescuento() / 100;
+            total = ristoRound( total - dto );
+            return ( total );
         },
         
         
@@ -12240,7 +12272,7 @@ Mesa.prototype = {
                 totalText = '$'+total ;
             
             if ( this.porcentajeDescuento() ) {
-                dto = Math.round( Math.floor( total * this.porcentajeDescuento()  / 100 ) *100 ) /100;
+                dto = ristoRound( total * this.porcentajeDescuento() / 100 );
                 totalText = totalText+' - [Dto '+this.porcentajeDescuento()+'%] $'+dto+' = $'+ this.totalCalculado();
             }
             

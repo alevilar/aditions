@@ -10480,6 +10480,13 @@ if (typeof(Storage) !== "undefined") {
 }
 
 
+var maxRetry = 8;
+var reconectandoTimeoput;        
+
+
+setInterval(function(){ 
+    maxRetry = 8;            
+}, 60000 );
 
 
 PrinterDriver = {
@@ -10626,36 +10633,52 @@ PrinterDriver = {
         }
     },
 
-    __initFbrry: function() {
+    reconnect: function(){
+        
+        if (  maxRetry && !reconectandoTimeoput ) {
+            reconectandoTimeoput = setInterval(function(){ 
+                maxRetry--;
+                if (  maxRetry ) {
+                    PrinterDriver.fbrry = new Fiscalberry(fiscalberryHost);
+                    PrinterDriver.__bindEvents( PrinterDriver.fbrry, reconectandoTimeoput );
+                }
+             }, parseInt(1000*maxRetry/2));
+        }
+    },
 
+    __bindEvents: function( fbrry, reconectandoTimeoput ){
 
-        PrinterDriver.fbrry = new Fiscalberry(fiscalberryHost);
-
-        var maxRetry = 3;
-        var reconectandoTimeoput;
-
-
-        PrinterDriver.fbrry.promise.done(function(){
+        fbrry.promise.done(function(){
             // console.info("me conecte con el fiscalberry");
         });
 
 
-        PrinterDriver.fbrry.promise.fail(function(){
+        fbrry.promise.fail(function(){
             console.error("no se pudo conectar con el fiscalberry");
             $(function(){
                 $("#printer-driver-container").hide();
             });
         });
 
-        PrinterDriver.fbrry.bind('close', function(){
-            $.error("Conexion con fiscalberry cerrada. Deberá refrescar pantalla si quiere reconectar");
-            });
-        PrinterDriver.fbrry.bind('open', function(){
+        fbrry.bind('close', function(){
+            console.info("cerro conexion");
+            $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
+            PrinterDriver.reconnect();
+        });
+
+        fbrry.bind('open', function(){
             if ( reconectandoTimeoput ) {
                 clearInterval(reconectandoTimeoput);
                 reconectandoTimeoput = null;
             }
         });
+    },
+
+    __initFbrry: function() {
+
+        PrinterDriver.fbrry = new Fiscalberry(fiscalberryHost);
+
+        PrinterDriver.__bindEvents(PrinterDriver.fbrry);
     },
 
     isConnected: function(){

@@ -183,6 +183,16 @@ PrinterDriver = {
 
         fbrry.promise.done(function(){
             // console.info("me conecte con el fiscalberry");
+            $("#printer-driver-container").show();
+            fbrry.bind('close', function(){
+                // si se conecto al menos una vez
+                // al desconectarse intentar reconectar
+                // esto sirve porque si yo no me conecte nunca
+                // entonces para que quiero reconectar?
+                // si no me conecte nunca, probablemente
+                // no tenga el fiscaberry activo
+                PrinterDriver.reconnect();
+            });
         });
 
 
@@ -194,9 +204,7 @@ PrinterDriver = {
         });
 
         fbrry.bind('close', function(){
-            console.info("cerro conexion");
             $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
-            PrinterDriver.reconnect();
         });
 
         fbrry.bind('open', function(){
@@ -208,9 +216,7 @@ PrinterDriver = {
     },
 
     __initFbrry: function() {
-
         PrinterDriver.fbrry = new Fiscalberry(fiscalberryHost);
-
         PrinterDriver.__bindEvents(PrinterDriver.fbrry);
     },
 

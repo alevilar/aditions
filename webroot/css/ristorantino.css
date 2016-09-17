@@ -765,6 +765,8 @@ button.adicion-mozo-title {
     text-align: center;
     padding: 0px;
     overflow: hidden;
+    cursor: pointer; 
+    cursor: hand;
 }
 
 button.adicion-mozo-title img{

@@ -14825,13 +14825,17 @@ $(document).bind("mobileinit", function(){
             abrirMesa( e.mozo.id(), e );
         });
 
-        $("#mesa-abrir-mesa-generica-btn").bind( 'click', function(e) {
+        $("#mesa-abrir-mesa-generica-btn").bind( 'click', function(e) {          
             abrirMesa( $(this).attr('data-mozo-id'), e );
         });
 
 
 
         function abrirMesa( mozoId, event ) {
+          mozoId = event.mozo.id();
+
+          $('.mesa-abierta-mozo-alias',"#abrir-mesa-nueva").text(event.mozo.numero());
+
           function cancelarAperturaAlApretarESC(e){
              var code = e.which;
                   if ( code == 27){ // ESC
@@ -14896,7 +14900,9 @@ $(document).bind("mobileinit", function(){
                 return;
               }
 
+
             __cleanup();
+            console.debug("EL MODO IZ A PUNTO DE GUARDAR %o", mozoId);
               var miniMesa = {
                 mozo_id: mozoId,
                 numero: numero,

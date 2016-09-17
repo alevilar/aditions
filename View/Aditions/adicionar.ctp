@@ -32,7 +32,11 @@
     
   <div class="overlay-content">
         <div class="mesa-abierta ui-btn-up-c">
-            <h1><?php echo __("Abriendo Nueva %s", Configure::read("Mesa.tituloMesa") );?></h1>
+            <h1>
+                <?php echo __("Abriendo Nueva %s", Configure::read("Mesa.tituloMesa") );?>
+                <br/>de<br/>
+                <span class="mesa-abierta-mozo-alias"></span>
+            </h1>
             <div class="mesa-numero-input" >
                 <input type="text" class="input-create-mesa-numero" placeholder="Descripción de <?php echo Configure::read("Mesa.tituloMesa")?>" />
                 <div class="numero-mensaje-error-vacio"><br>Debe ingresar un valor aquí</div>

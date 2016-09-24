@@ -1,5 +1,6 @@
 
 
+
 if (typeof(Storage) !== "undefined") {
     // Code for localStorage/sessionStorage.
     var fiscalberryHost = localStorage.getItem("fiscalberryHost");
@@ -84,12 +85,13 @@ PrinterDriver = {
                 $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
             });
 
-            PrinterDriver.fbrry.bind('message', function( ev, evData ){
-
+            PrinterDriver.fbrry.bind('fb:msg', function( ev, evData ){
                 var msg = '';
-                if ( evData.data.hasOwnProperty('msg')) {
-                    for (var i = 0; i < evData.data['msg'].length; i++ ){
-                        msg += "<li>"+evData.data['msg'][i]+"</li>";
+                if ( evData && evData.data !== null && typeof evData.data == 'object' ) {
+                    for (printer in evData.data) {
+                        for (var i = 0; i < evData.data[printer].length; i++ ){
+                            msg += "<li>("+printer+") "+evData.data[printer][i]+"</li>";
+                        }
                     }
                 }
                 $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html(msg);
@@ -248,12 +250,12 @@ PrinterDriver = {
         }
 
 
-        function prodList (entradasList) {
+        function prodList ( productos ) {
 
-            var entradas = [];
+            var itemsList = [];
             var ptoAux = {};
-            for (var i = 0; i < entradasList.length; i++ ) {
-                dc = entradasList[i];
+            for (var i = 0; i < productos .length; i++ ) {
+                dc = productos [i];
                 ptoAux = {
                     "cant": dc.realCant(),
                     "nombre": dc.nameConSabores()
@@ -262,9 +264,11 @@ PrinterDriver = {
                 if ( dc.observacion() ) {
                     ptoAux['observacion'] = dc.observacion();
                 }
-                entradas.push( ptoAux ); 
+                if ( ptoAux.cant != 0 ) {
+                    itemsList.push( ptoAux ); 
+                }
             }
-            return entradas;
+            return itemsList;
         }
         
 
@@ -440,16 +444,18 @@ PrinterDriver = {
             var jsonRet = [];
 
             var menu = parseInt( mesa.menu() );
-            if ( menu ) {
+            if ( menu == 0 ) {
+                var prods = mesa.listadoProductos();
+            } else {
                 // en caso que no se quiera imprimir el detalle
                 // de los platos
                 var menuName = window.prompt("Ingresar descripción del Ìtem para los '"+menu+" Menú'\nEj: Menu, Cena, ALmuerzo, Comida, Evento, etc.");
+                if ( !menuName ) {
+                    return false;
+                }
                 var totalCalculado = mesa.totalCalculado();
                 totalCalculado = totalCalculado / menu;
-                totalCalculado = Math.floor(totalCalculado * 10000) / 10000;
-                if ( !menuName ) {
-                    return;
-                }
+                totalCalculado = ristoRound(totalCalculado);
                 var prods = [
                     {
                         "precio": totalCalculado,
@@ -457,18 +463,18 @@ PrinterDriver = {
                         "qty": menu
                     }
                 ];
-            } else {
-                var prods = mesa.listadoProductos();
             }
 
             // Risto.IVA_PORCENTAJE
             for (var i = 0; i < prods.length; i++) {
-                jsonRet.push({
-                    "alic_iva": Risto.IVA_PORCENTAJE,
-                    "importe": prods[i]["precio"],
-                    "ds": prods[i]["name"],
-                    "qty": prods[i]["qty"]
-                });
+                if ( prods[i]["qty"] != 0 ) {
+                    jsonRet.push({
+                        "alic_iva": Risto.IVA_PORCENTAJE,
+                        "importe": prods[i]["precio"],
+                        "ds": prods[i]["name"],
+                        "qty": prods[i]["qty"]
+                    });
+                }
             }
             return jsonRet;
         }
@@ -496,6 +502,9 @@ PrinterDriver = {
         var encabezado = generarEncabezado( mesa );
         var items = generarItems( mesa );
 
+        if ( items === false ) {
+            return;
+        }
 
         if (typeof printerName == 'undefined') {
             jsonRet = {};
@@ -519,7 +528,7 @@ PrinterDriver = {
             var dto = mesa.totalCalculadoNeto() - mesa.totalCalculado();
             // indica si es un descuento (false) o es un recargo (true)
             var descuento=false; // por defecto es un recargo
-            if (dto >= 0){
+            if (dto > 0){
                 descuento = true;
             }
             jsonRet[actionName]["addAdditional"] = {

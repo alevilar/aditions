@@ -10423,7 +10423,6 @@ if (!Array.isArray) {
 
 				if(typeof response =='object')
 				{
-					
 					handleWSMessage( response );
 					handleFbMsg( response );
 					handleFbRta( response );
@@ -10465,6 +10464,7 @@ if (!Array.isArray) {
 	}
 		 
 })(jQuery);
+
 
 
 if (typeof(Storage) !== "undefined") {
@@ -10551,12 +10551,13 @@ PrinterDriver = {
                 $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
             });
 
-            PrinterDriver.fbrry.bind('message', function( ev, evData ){
-
+            PrinterDriver.fbrry.bind('fb:msg', function( ev, evData ){
                 var msg = '';
-                if ( evData.data.hasOwnProperty('msg')) {
-                    for (var i = 0; i < evData.data['msg'].length; i++ ){
-                        msg += "<li>"+evData.data['msg'][i]+"</li>";
+                if ( evData && evData.data !== null && typeof evData.data == 'object' ) {
+                    for (printer in evData.data) {
+                        for (var i = 0; i < evData.data[printer].length; i++ ){
+                            msg += "<li>("+printer+") "+evData.data[printer][i]+"</li>";
+                        }
                     }
                 }
                 $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html(msg);
@@ -10715,12 +10716,12 @@ PrinterDriver = {
         }
 
 
-        function prodList (entradasList) {
+        function prodList ( productos ) {
 
-            var entradas = [];
+            var itemsList = [];
             var ptoAux = {};
-            for (var i = 0; i < entradasList.length; i++ ) {
-                dc = entradasList[i];
+            for (var i = 0; i < productos .length; i++ ) {
+                dc = productos [i];
                 ptoAux = {
                     "cant": dc.realCant(),
                     "nombre": dc.nameConSabores()
@@ -10729,9 +10730,11 @@ PrinterDriver = {
                 if ( dc.observacion() ) {
                     ptoAux['observacion'] = dc.observacion();
                 }
-                entradas.push( ptoAux ); 
+                if ( ptoAux.cant != 0 ) {
+                    itemsList.push( ptoAux ); 
+                }
             }
-            return entradas;
+            return itemsList;
         }
         
 
@@ -10907,16 +10910,18 @@ PrinterDriver = {
             var jsonRet = [];
 
             var menu = parseInt( mesa.menu() );
-            if ( menu ) {
+            if ( menu == 0 ) {
+                var prods = mesa.listadoProductos();
+            } else {
                 // en caso que no se quiera imprimir el detalle
                 // de los platos
                 var menuName = window.prompt("Ingresar descripción del Ìtem para los '"+menu+" Menú'\nEj: Menu, Cena, ALmuerzo, Comida, Evento, etc.");
+                if ( !menuName ) {
+                    return false;
+                }
                 var totalCalculado = mesa.totalCalculado();
                 totalCalculado = totalCalculado / menu;
-                totalCalculado = Math.floor(totalCalculado * 10000) / 10000;
-                if ( !menuName ) {
-                    return;
-                }
+                totalCalculado = ristoRound(totalCalculado);
                 var prods = [
                     {
                         "precio": totalCalculado,
@@ -10924,18 +10929,18 @@ PrinterDriver = {
                         "qty": menu
                     }
                 ];
-            } else {
-                var prods = mesa.listadoProductos();
             }
 
             // Risto.IVA_PORCENTAJE
             for (var i = 0; i < prods.length; i++) {
-                jsonRet.push({
-                    "alic_iva": Risto.IVA_PORCENTAJE,
-                    "importe": prods[i]["precio"],
-                    "ds": prods[i]["name"],
-                    "qty": prods[i]["qty"]
-                });
+                if ( prods[i]["qty"] != 0 ) {
+                    jsonRet.push({
+                        "alic_iva": Risto.IVA_PORCENTAJE,
+                        "importe": prods[i]["precio"],
+                        "ds": prods[i]["name"],
+                        "qty": prods[i]["qty"]
+                    });
+                }
             }
             return jsonRet;
         }
@@ -10963,6 +10968,9 @@ PrinterDriver = {
         var encabezado = generarEncabezado( mesa );
         var items = generarItems( mesa );
 
+        if ( items === false ) {
+            return;
+        }
 
         if (typeof printerName == 'undefined') {
             jsonRet = {};
@@ -10986,7 +10994,7 @@ PrinterDriver = {
             var dto = mesa.totalCalculadoNeto() - mesa.totalCalculado();
             // indica si es un descuento (false) o es un recargo (true)
             var descuento=false; // por defecto es un recargo
-            if (dto >= 0){
+            if (dto > 0){
                 descuento = true;
             }
             jsonRet[actionName]["addAdditional"] = {
@@ -11108,11 +11116,71 @@ function jsToMySqlTimestamp( dateobj )
 
 
 
+
+
+
+// Conclusión
+(function() {
+  /**
+   * Ajuste decimal de un número.
+   *
+   * @param {String}  tipo  El tipo de ajuste.
+   * @param {Number}  valor El numero.
+   * @param {Integer} exp   El exponente (el logaritmo 10 del ajuste base).
+   * @returns {Number} El valor ajustado.
+   */
+  function decimalAdjust(type, value, exp) {
+    // Si el exp no está definido o es cero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // Si el valor no es un número o el exp no es un entero...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+  }
+
+  // Decimal round
+  if (!Math.round10) {
+    Math.round10 = function(value, exp) {
+      return decimalAdjust('round', value, exp);
+    };
+  }
+  // Decimal floor
+  if (!Math.floor10) {
+    Math.floor10 = function(value, exp) {
+      return decimalAdjust('floor', value, exp);
+    };
+  }
+  // Decimal ceil
+  if (!Math.ceil10) {
+    Math.ceil10 = function(value, exp) {
+      return decimalAdjust('ceil', value, exp);
+    };
+  }
+})();
+
+
 function ristoRound(number) {
-    var cantCeros = Risto.PRECISION_COMA;
-    var multiplicador = Math.pow(10, cantCeros);
-    return Math.round( number * multiplicador )/multiplicador;
-}/*--------------------------------------------------------------------------------------------------- PKG:Risto.Adicion
+    if (typeof Risto.PRECISION_COMA == 'undefined') {
+        // por defecto se colocan 2 decimales despues de la coma
+        var cantDecimales = 2;
+    } else {
+        // tomar la variable definida previamente
+        var cantDecimales = Risto.PRECISION_COMA;
+    }
+    var cantCeros = parseInt( cantDecimales ) * -1;
+    return Math.round10( number, cantCeros);
+}
+/*--------------------------------------------------------------------------------------------------- PKG:Risto.Adicion
  *
  *
  * Package Adition

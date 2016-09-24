@@ -176,7 +176,6 @@ if (!Array.isArray) {
 
 				if(typeof response =='object')
 				{
-					
 					handleWSMessage( response );
 					handleFbMsg( response );
 					handleFbRta( response );

@@ -14876,7 +14876,7 @@ $(document).bind("mobileinit", function(){
       activarBuscadorDeMesas();
 
       function hasVerticalScroll(node){
-          if(node == undefined){
+          if(typeof node == "undefined"){
               if(window.innerHeight){
                   return document.body.offsetHeight> innerHeight;
               }
@@ -14896,18 +14896,19 @@ $(document).bind("mobileinit", function(){
       }
                 
         $(document).bind(MOZOS_POSIBLES_ESTADOS.seleccionado.event, function(e){
-            abrirMesa( e.mozo.id(), e );
+            abrirMesa( e );
         });
 
         $("#mesa-abrir-mesa-generica-btn").bind( 'click', function(e) {          
-            abrirMesa( $(this).attr('data-mozo-id'), e );
+            abrirMesa( e );
         });
 
 
 
-        function abrirMesa( mozoId, event ) {
+        function abrirMesa( event ) {
           mozoId = event.mozo.id();
-
+          
+          $('.input-create-mozo-id',"#abrir-mesa-nueva").val(mozoId);
           $('.mesa-abierta-mozo-alias',"#abrir-mesa-nueva").text(event.mozo.numero());
 
           function cancelarAperturaAlApretarESC(e){
@@ -14957,6 +14958,7 @@ $(document).bind("mobileinit", function(){
             $(".cubiertos-mensaje-error-vacio", "#abrir-mesa-nueva").hide();
             
             var numero = $(".input-create-mesa-numero", "#abrir-mesa-nueva").val(),
+                mozoId = $(".input-create-mozo-id", "#abrir-mesa-nueva").val(),
                 cubiertos = $(".input-create-mesa-cubiertos", "#abrir-mesa-nueva").val();
               
               var error = false; 
@@ -14976,7 +14978,6 @@ $(document).bind("mobileinit", function(){
 
 
             __cleanup();
-            console.debug("EL MODO IZ A PUNTO DE GUARDAR %o", mozoId);
               var miniMesa = {
                 mozo_id: mozoId,
                 numero: numero,
@@ -15005,7 +15006,7 @@ $(document).bind("mobileinit", function(){
                     $(".input-create-mesa-cubiertos").focus();        
                   } else {
                     if ( this.value ) {
-                      hacerApertura(mozoId);
+                      hacerApertura();
                     }
                   }
               }
@@ -15014,7 +15015,7 @@ $(document).bind("mobileinit", function(){
           function seleccionarCubiertos (  event) {
                 var code = event.which;
               if ( code == 13){ // ENTER
-                hacerApertura(mozoId);
+                hacerApertura();
               }
           }
 

@@ -36,6 +36,8 @@
                 <?php echo __("Abriendo Nueva %s", Configure::read("Mesa.tituloMesa") );?>
                 <br/>de<br/>
                 <span class="mesa-abierta-mozo-alias"></span>
+
+                <input type="hidden" class="input-create-mozo-id" />
             </h1>
             <div class="mesa-numero-input" >
                 <input type="text" class="input-create-mesa-numero" placeholder="Descripción de <?php echo Configure::read("Mesa.tituloMesa")?>" />

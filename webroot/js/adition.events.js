@@ -122,7 +122,11 @@ $(document).bind("mobileinit", function(){
             $(this).addClass('active');
             if (context) {
                 // $data es es el objeto producto
-                context.$data.seleccionar();
+                if ( !context.$data.sin_stock ) {
+                  // si tine stock seleccionar
+                  context.$data.seleccionar();
+                }
+
             }
         }
 

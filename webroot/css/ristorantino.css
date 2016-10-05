@@ -485,6 +485,18 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
     background-color: #4F4F4F;
 }
 
+#ul-productos .sin-stock::before { 
+    content: "(Sin Stock)";
+    display: block;
+    clear: both;
+    font-size: 12px;
+}
+#ul-productos .sin-stock{
+    opacity: 0.5;
+    cursor: default;
+    background: #fff;
+}
+
 #comanda-add-observacion TEXTAREA{
     width: 100%;
 }

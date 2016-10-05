@@ -129,7 +129,7 @@
 
 <!-- Template: Caomanda add: listado de productos -->
 <script id="categorias-productos" type="text/x-jquery-tmpl">
-     <a data-bind="attr: { href: tieneSabores() ? '#page-sabores' : '#'}, css: {'producto-con-sabor': tieneSabores()}" 
+     <a data-bind="attr: { href: tieneSabores() ? '#page-sabores' : '#'}, css: {'producto-con-sabor': tieneSabores(), 'sin-stock': sin_stock}" 
         data-rel="dialog"
         data-icon="none"
         class="">

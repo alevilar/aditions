@@ -10,6 +10,7 @@ Risto.Adition.producto = function(data, categoria) {
 
 Risto.Adition.producto.prototype = {
     Categoria: {},
+    sin_stock: 0,
     
     initialize: function(jsonData, categoria){
         this.id = ko.observable( 0 );
@@ -30,7 +31,7 @@ Risto.Adition.producto.prototype = {
     },
     
     tieneSabores: function(){
-        if ( this.Categoria.Sabor.length > 0 ){
+        if ( !this.sin_stock && this.Categoria.Sabor.length > 0 ){
             return true;
         }
         return false;

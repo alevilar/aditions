@@ -164,8 +164,12 @@
         
             <a href="#listado-mesas-cerradas" data-role="button">Modo Cajero</a>
             
-            <a href="#" onclick="window.location.reload(true);" data-ajax="false" data-role="button" data-icon="refresh">
+            <a href="#" onclick='window.location.reload(true);' data-ajax="false" data-role="button" data-icon="refresh">
                 Refrescar Adición</a>
+
+
+            <a href="#" onclick='PrinterDriver.fbrry.send(JSON.stringify({"restart": 1})); jQuery(".icon", "#printer-driver-container").css({"background": "red"})' data-ajax="false" data-role="button" data-icon="print" data-rel="back">
+                Reiniciar PaxaPrinter</a>
             
 
             <div class="div-input-fiscalberry-ip">

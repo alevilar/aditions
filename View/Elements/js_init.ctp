@@ -75,7 +75,7 @@
         }
 
       
-
+        localStorage.setItem("fiscalberryHost", "<?php echo Configure::read('Printer.fiscalberry-ip'); ?>");
 
         <?php
         // $vec['mesas'] = array('created'=> $mesas);

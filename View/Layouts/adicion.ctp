@@ -14,6 +14,19 @@
             var RISTO_CUBIERTOS_OBLIGATORIOS = JSON.parse( '<?php echo json_encode( Configure::read('Adicion.cantidadCubiertosObligatorio'), JSON_NUMERIC_CHECK );?>');
             var RISTO_CONFIGURE_SITE = JSON.parse( '<?php echo json_encode( Configure::read('Site'), JSON_NUMERIC_CHECK );?>');
             var RISTO_CONFIGURE_ADICION = JSON.parse( '<?php echo json_encode( Configure::read('Adicion'), JSON_NUMERIC_CHECK );?>');
+
+
+
+       
+       
+        <?php if (Configure::check('Printer.fiscalberry_ip') ) { ?>
+            var FISCALBERRYHOST = "<?php echo Configure::read('Printer.fiscalberry_ip');?>";
+        <?php } else { ?>
+            var FISCALBERRYHOST = "paxaprinter.local";
+        <?php } ?> 
+       
+
+
         -->
         </script>
     

@@ -173,7 +173,8 @@
             
 
             <div class="div-input-fiscalberry-ip">
-                <label for="input-fiscalberry-ip">PaxaPrinter Modo-Offline Hostname: <?php echo configure::read('Printer.fiscalberry-ip'); ?></label>
+                <label for="input-fiscalberry-ip">PaxaPrinter Modo-Offline</label>
+                <input name="fiscalberry-ip" id="input-fiscalberry-ip" placeholder="Ingresar IP aquí" />
             </div>
 
 

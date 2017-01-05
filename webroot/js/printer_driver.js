@@ -5,12 +5,12 @@ if (typeof(Storage) !== "undefined") {
     // Code for localStorage/sessionStorage.
     var fiscalberryHost = localStorage.getItem("fiscalberryHost");
     if ( !fiscalberryHost ) {
-    	fiscalberryHost = "fiscalberry.local";
+    	fiscalberryHost = FISCALBERRYHOST;
     	localStorage.setItem("fiscalberryHost", fiscalberryHost);
     }
 } else {
     // Sorry! No Web Storage support..
-    var fiscalberryHost = "fiscalberry.local";
+    var fiscalberryHost = FISCALBERRYHOST;
 }
 
 

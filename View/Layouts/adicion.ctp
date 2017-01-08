@@ -77,6 +77,9 @@
                 echo $this->element('Risto.per_role_style');
                
 
+                echo $this->Html->script( array(
+                        FULL_BASE_URL.':8085/socket.io/socket.io.js',
+                        ));
                
 
                 if ( Configure::read('debug') > 0 ) {

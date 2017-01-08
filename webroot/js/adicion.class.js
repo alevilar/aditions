@@ -207,48 +207,44 @@ Risto.Adition.adicionar = {
         // inicializacion de las mesas
         Risto.Adition.handleMesasRecibidas.created.call( Risto.Adition.adicionar, mesas );
 
-            
-        if ( Worker && useWorker ) {  
-            
-            // Crea el Web Worker
-            worker = new Worker(URL_DOMAIN + "aditions/js/adicion.model.js");
 
-            worker.onmessage = function ( evt ) {
-                // si tiene mesas las proceso
-                if ( evt.data && evt.data.mesas && typeof evt.data.mesas == 'object') { 
-                    for ( cbk in evt.data.mesas ) {                       
-                        if ( typeof Risto.Adition.handleMesasRecibidas[cbk] == 'function' ) {
-                            Risto.Adition.handleMesasRecibidas[cbk].call( Risto.Adition.adicionar, evt.data.mesas[cbk] );
-                        } else {
-                            throw cbk + ' vino como opción en el arrar de mesas, pero no es una función válida que pueda manejar el handleMesasRecibidas';
-                            Error('no es una funcion');
-                        }
-                    }
-                }
-
-                if ( evt.data.time ) {
-                    Risto.Adition.adicionar.mesasLastUpdatedTime( evt.data.time );
-                }
-            }        
+        var tenantIo = io(URL_DOMAIN.slice(0,-1)+":8085/"+TENANT);
 
 
-            // inicializacion y parametros de configuracion del worker
-            worker.postMessage( {updateInterval: Risto.MESAS_RELOAD_INTERVAL} );
+        function updateMesa(data) {
+            var mozo = Risto.Adition.adicionar.findMozoById( data.Mozo.id );
 
-            $(window).bind("online", function(){
-                 worker.postMessage( {onLine: true} );
-            });
-            $(window).bind("offline", function(){
-                 worker.postMessage( {onLine: false} );
-            });
-
-            time = this.mesasLastUpdatedTime();
-            worker.postMessage( {
-                urlDomain: URL_DOMAIN, 
-                timeText: time, 
-                tenant: TENANT
-            } );
+            var mesaEncontrada = Risto.Adition.adicionar.findMesaById( data.id );
+            if ( mesaEncontrada ) {
+                mesaEncontrada.update( mozo, data );
+            } else {
+                new Mesa(mozo, data );
+            }
         }
+
+        tenantIo.on('mesa:add', function(data){
+            updateMesa(data);
+            $raeh.adicionMesasActualizadas();
+        });
+
+        tenantIo.on('mesa:edit', function(data){
+            updateMesa(data);
+            $raeh.adicionMesasActualizadas();
+        });
+
+        tenantIo.on('mesa:delete', function(data){
+
+            var mesaEncontrada = Risto.Adition.adicionar.findMesaById( data.id );
+                    
+            if ( mesaEncontrada ) {  
+                mesaEncontrada.mozo().sacarMesa( mesaEncontrada );
+            }
+            // reinicializar vistas
+            $raeh.adicionMesasActualizadas();
+
+        });
+
+        
     },    
     
     

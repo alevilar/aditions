@@ -159,7 +159,6 @@ Mesa.prototype = {
                 }
             }
         }
-        
         if ( mozo ) {
             // meto al mozo sin agregarle la mesa al listado porque seguramente vino en el json
             this.setMozo(mozo, false);

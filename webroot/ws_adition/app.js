@@ -4,7 +4,7 @@ var fs = require('fs');
 
 
 var net = require('net');
-var HOST = 'www.fray.alevilar.com';
+var HOST = 'localhost';
 var PORT = 8084;
 
 var WS_PORT = 8085;

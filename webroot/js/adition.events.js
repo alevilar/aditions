@@ -471,7 +471,11 @@ $(document).bind("mobileinit", function(){
                 cant_comensales: cubiertos
               };
               mesa = Risto.Adition.adicionar.crearNuevaMesa( miniMesa );
-              mesa.create(); // guarda a DB
+              Risto.Adition.tenantIoNuevaMesaPendiente = mesa;
+              var ajaxReq = mesa.create(); // guarda a DB
+              ajaxReq.done(function(){
+                Risto.Adition.tenantIoNuevaMesaPendiente = false;
+              }); 
               mesa.seleccionar();
               $.mobile.changePage('#mesa-view');
           }

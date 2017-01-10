@@ -17,7 +17,8 @@ Risto.Adition = {
      */
     mesaBuscarAccessKey: '',
     mesaCurrentIndex: null,
-    mesaCurrentContainer: null
+    mesaCurrentContainer: null,
+    tenantIo: null // socket IO tenant
 
 };
 

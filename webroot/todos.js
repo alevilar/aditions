@@ -11199,7 +11199,8 @@ Risto.Adition = {
      */
     mesaBuscarAccessKey: '',
     mesaCurrentIndex: null,
-    mesaCurrentContainer: null
+    mesaCurrentContainer: null,
+    tenantIo: null // socket IO tenant
 
 };
 
@@ -13159,7 +13160,7 @@ Risto.Adition.adicionar = {
     // listado de clientes que generalmente son buscador y cargados mediajnte ajax
     clientes: ko.observableArray( [] ),
     
-    
+
     /**
      *  Inicializacion para cargar una nueva comanda, es el que activa las variables
      *  creando un nuevo objeto mediante la Fabrica de Comandas. ComandaFabrica
@@ -13194,7 +13195,7 @@ Risto.Adition.adicionar = {
         Risto.Adition.handleMesasRecibidas.created.call( Risto.Adition.adicionar, mesas );
 
 
-        var tenantIo = io(URL_DOMAIN.slice(0,-1)+":8085/"+TENANT);
+        Risto.Adition.tenantIo = io(URL_DOMAIN.slice(0,-1)+":8085/"+TENANT);
 
 
         function updateMesa(data) {
@@ -13208,17 +13209,25 @@ Risto.Adition.adicionar = {
             }
         }
 
-        tenantIo.on('mesa:add', function(data){
+        Risto.Adition.tenantIo.on('mesa:add', function(data){
+            console.info("mesa add %o", data);
+            if ( Risto.Adition.tenantIoNuevaMesaPendiente ) {
+                var mozo = Risto.Adition.adicionar.findMozoById( data.Mozo.id );
+                Risto.Adition.tenantIoNuevaMesaPendiente.update( mozo, data );
+            } else {
+                updateMesa(data);
+            }
+            $raeh.adicionMesasActualizadas();
+        });
+
+        Risto.Adition.tenantIo.on('mesa:edit', function(data){
+            console.info("mesa edit %o", data);
             updateMesa(data);
             $raeh.adicionMesasActualizadas();
         });
 
-        tenantIo.on('mesa:edit', function(data){
-            updateMesa(data);
-            $raeh.adicionMesasActualizadas();
-        });
-
-        tenantIo.on('mesa:delete', function(data){
+        Risto.Adition.tenantIo.on('mesa:delete', function(data){
+            console.info("mesa deleted %o", data);
 
             var mesaEncontrada = Risto.Adition.adicionar.findMesaById( data.id );
                     
@@ -14582,7 +14591,11 @@ $(document).bind("mobileinit", function(){
                 cant_comensales: cubiertos
               };
               mesa = Risto.Adition.adicionar.crearNuevaMesa( miniMesa );
-              mesa.create(); // guarda a DB
+              Risto.Adition.tenantIoNuevaMesaPendiente = mesa;
+              var ajaxReq = mesa.create(); // guarda a DB
+              ajaxReq.done(function(){
+                Risto.Adition.tenantIoNuevaMesaPendiente = false;
+              }); 
               mesa.seleccionar();
               $.mobile.changePage('#mesa-view');
           }

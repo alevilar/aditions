@@ -13210,7 +13210,6 @@ Risto.Adition.adicionar = {
         }
 
         Risto.Adition.tenantIo.on('mesa:add', function(data){
-            console.info("mesa add %o", data);
             if ( Risto.Adition.tenantIoNuevaMesaPendiente ) {
                 var mozo = Risto.Adition.adicionar.findMozoById( data.Mozo.id );
                 Risto.Adition.tenantIoNuevaMesaPendiente.update( mozo, data );
@@ -13221,13 +13220,11 @@ Risto.Adition.adicionar = {
         });
 
         Risto.Adition.tenantIo.on('mesa:edit', function(data){
-            console.info("mesa edit %o", data);
             updateMesa(data);
             $raeh.adicionMesasActualizadas();
         });
 
         Risto.Adition.tenantIo.on('mesa:delete', function(data){
-            console.info("mesa deleted %o", data);
 
             var mesaEncontrada = Risto.Adition.adicionar.findMesaById( data.id );
                     

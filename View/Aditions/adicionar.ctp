@@ -131,9 +131,9 @@
     <div data-role="content">
         
             <a href="#listado-mesas" data-role="button">Modo Adicionista</a>
-            
-            <a href="<?php echo $this->Html->url(array('plugin'=>'aditions', 'controller'=>'adicionar', '#listado-mesas-cerradas'))?>" rel="external" data-role="button" data-icon="refresh">Refrescar Cajero</a>
-            
+
+            <a href="#" onclick='window.location.reload(true);' data-ajax="false" data-role="button" data-icon="refresh">
+                Refrescar Adición</a>
 
            
             <?php 

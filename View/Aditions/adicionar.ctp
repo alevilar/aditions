@@ -133,7 +133,7 @@
             <a href="#listado-mesas" data-role="button">Modo Adicionista</a>
 
             <a href="#" onclick='window.location.reload(true);' data-ajax="false" data-role="button" data-icon="refresh">
-                Refrescar Adición</a>
+                Refrescar Cajero</a>
 
            
             <?php 

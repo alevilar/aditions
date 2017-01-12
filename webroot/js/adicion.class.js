@@ -198,47 +198,26 @@ Risto.Adition.adicionar = {
      * @param mesas json de mesas abiertas por crear
      */
     initialize: function ( mesas ) {
-        var worker = null, // webWorker
-            cbk = 0, // contaddor para el for de mesas
-            time = '', // timestamp php que envia el server
-            useWorker = true; // si quiero usar el worker para ctualizar las mesas constantemente
+
 
 
         // inicializacion de las mesas
         Risto.Adition.handleMesasRecibidas.created.call( Risto.Adition.adicionar, mesas );
 
 
-        Risto.Adition.tenantIo = io(URL_DOMAIN.slice(0,-1)+":8085/"+TENANT);
+        Risto.Adition.tenantIo = io(URL_DOMAIN.slice(0,-1)+":8085");
 
 
-        function reconectarYPedirDataActualizada() {
-            /**
-             *  Esta funcion es la que ejecuta el ajax que va a devolver las mesas
-             */
-                var url = URL_DOMAIN + TENANT + "/";
-                
-                // traer todas
-                url = url + 'mesa/mozos/mesas_abiertas.json';
-                
-
-                $.ajax(url, {
-                    success: function( data ) {
-                        console.info("todo bieeenn");
-                        if ( data && data.mesas && data.mesas.created ) {
-                            Risto.Adition.handleMesasRecibidas.modified.call( Risto.Adition.adicionar, data.mesas.created );
-
-                        }
+        Risto.Adition.tenantIo.on('connect', function(){
+            console.info("CONNECT con socket de tenant ",  TENANT);
+            Risto.Adition.tenantIo.emit('join', TENANT);
+        });
 
 
-                    },
-                    error: function () {
-                        console.error("todo malll");
-                    }
-                });
-                    
-        }
+        Risto.Adition.tenantIo.on('mesa:add', alAgregarMesa);
+        Risto.Adition.tenantIo.on('mesa:edit', alEditarMesa);
+        Risto.Adition.tenantIo.on('mesa:delete', alBorrarMesa);
         Risto.Adition.tenantIo.on("reconnect", reconectarYPedirDataActualizada);
-
 
 
         function updateMesa(data) {
@@ -252,7 +231,8 @@ Risto.Adition.adicionar = {
             }
         }
 
-        Risto.Adition.tenantIo.on('mesa:add', function(data){
+
+        function alAgregarMesa( data ) {
             if ( Risto.Adition.tenantIoNuevaMesaPendiente ) {
                 var mozo = Risto.Adition.adicionar.findMozoById( data.Mozo.id );
                 Risto.Adition.tenantIoNuevaMesaPendiente.update( mozo, data );
@@ -260,15 +240,14 @@ Risto.Adition.adicionar = {
                 updateMesa(data);
             }
             $raeh.adicionMesasActualizadas();
-        });
+        }
 
-        Risto.Adition.tenantIo.on('mesa:edit', function(data){
+        function alEditarMesa( data ) {
             updateMesa(data);
             $raeh.adicionMesasActualizadas();
-        });
+        }
 
-        Risto.Adition.tenantIo.on('mesa:delete', function(data){
-
+        function alBorrarMesa( data ) {
             var mesaEncontrada = Risto.Adition.adicionar.findMesaById( data.id );
                     
             if ( mesaEncontrada ) {  
@@ -277,8 +256,38 @@ Risto.Adition.adicionar = {
             // reinicializar vistas
             $raeh.adicionMesasActualizadas();
 
-        });
+        }
 
+
+        function reconectarYPedirDataActualizada() {
+        /**
+         *  Esta funcion es la que ejecuta el ajax que va a devolver las mesas
+         */
+            var url = URL_DOMAIN + TENANT + "/";
+            
+            // traer todas
+            url = url + 'mesa/mozos/mesas_abiertas.json';
+            
+
+            $.ajax(url, {
+                success: function( data ) {
+                    if ( data && data.mesas && data.mesas.created ) {
+                        Risto.Adition.handleMesasRecibidas.modified.call( Risto.Adition.adicionar, data.mesas.created );
+
+                    }
+
+
+                },
+                error: function () {
+                    console.error("error al actualizar mesas en AJAX");
+                }
+            });
+                
+        }
+
+
+        
+     
         
     },    
     

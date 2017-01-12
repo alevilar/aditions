@@ -28,14 +28,24 @@ function handler (req, res) {
 
 
 
-io.on('connect', function(){
-  console.log("usuario conectado socket io");
+io.on('connection', function(socket) {
+
+  console.log("Conectado con Socket de "+socket.nsp.name);
+  socket.on('join', function(roomname){
+    console.log("se conecto al room "+roomname);
+    socket.join(roomname);
+  });
+
+  socket.on('disconnect', function(){
+    console.log("usuario DESconectado socket io");
+  });
+
+  socket.on('reconnect', function(data){
+    console.log("usuario reconnect socket io");
+    console.log(data);
+  });
 });
 
-
-io.on('disconnect', function(){
-  console.log("usuario DESconectado socket io");
-});
 
 net.createServer(function(sock) {
     
@@ -47,10 +57,14 @@ net.createServer(function(sock) {
     sock.on('data', function(data) {
       
         var jdata = JSON.parse(data);
-        console.log("se enviará data los clientes del tenant "+jdata.tenant);
+        if ( jdata.tenant ) {
+          console.log("se enviará data los clientes del tenant "+jdata.tenant);
+          io.to(jdata.tenant).emit(jdata.event, jdata.msg);          
+        } else {
+          console.log("se enviará data a TODOS los clientes");
+          io.emit(jdata.event, jdata.msg);
+        }
 
-        var tenantIo = io.of('/'+jdata.tenant);
-        tenantIo.emit(jdata.event, jdata.msg);
     });
 
 }).listen(PORT, HOST);

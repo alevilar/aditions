@@ -15,7 +15,7 @@
 #DIR current
 DIR=/var/www/html/Plugin/Aditions/webroot/ws_adition
 cd $DIR
-DAEMON=$DIR/app.js
+DAEMON=app.js
 DAEMON_NAME=wspaxapos
 
 # Add any command line options for your daemon here
@@ -32,12 +32,12 @@ PIDFILE=/var/run/$DAEMON_NAME.pid
 
 do_start () {
     log_daemon_msg "Starting system $DAEMON_NAME daemon $DAEMON"
-    start-stop-daemon --start --background --pidfile $PIDFILE --make-pidfile --user $DAEMON_USER --chuid $DAEMON_USER --startas $DAEMON -- $DAEMON_OPTS
+    forever start -o /tmp/wspaxapos.log -e /tmp/wspaxapos_err.log --sourceDir $DIR $DAEMON 
     log_end_msg $?
 }
 do_stop () {
     log_daemon_msg "Stopping system $DAEMON_NAME daemon"
-    start-stop-daemon --stop --pidfile $PIDFILE --retry 10
+    forever stop DAEMON
     log_end_msg $?
 }
 

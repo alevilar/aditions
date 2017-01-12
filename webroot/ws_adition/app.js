@@ -28,6 +28,15 @@ function handler (req, res) {
 
 
 
+io.on('connect', function(){
+  console.log("usuario conectado socket io");
+});
+
+
+io.on('disconnect', function(){
+  console.log("usuario DESconectado socket io");
+});
+
 net.createServer(function(sock) {
     
     // We have a connection - a socket object is assigned to the connection automatically
@@ -36,7 +45,9 @@ net.createServer(function(sock) {
     
     // Add a 'data' event handler to this instance of socket
     sock.on('data', function(data) {
+      
         var jdata = JSON.parse(data);
+        console.log("se enviará data los clientes del tenant "+jdata.tenant);
 
         var tenantIo = io.of('/'+jdata.tenant);
         tenantIo.emit(jdata.event, jdata.msg);

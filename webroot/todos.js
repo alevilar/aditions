@@ -13198,6 +13198,36 @@ Risto.Adition.adicionar = {
         Risto.Adition.tenantIo = io(URL_DOMAIN.slice(0,-1)+":8085/"+TENANT);
 
 
+        function reconectarYPedirDataActualizada() {
+            /**
+             *  Esta funcion es la que ejecuta el ajax que va a devolver las mesas
+             */
+                var url = URL_DOMAIN + TENANT + "/";
+                
+                // traer todas
+                url = url + 'mesa/mozos/mesas_abiertas.json';
+                
+
+                $.ajax(url, {
+                    success: function( data ) {
+                        console.info("todo bieeenn");
+                        if ( data && data.mesas && data.mesas.created ) {
+                            Risto.Adition.handleMesasRecibidas.modified.call( Risto.Adition.adicionar, data.mesas.created );
+
+                        }
+
+
+                    },
+                    error: function () {
+                        console.error("todo malll");
+                    }
+                });
+                    
+        }
+        Risto.Adition.tenantIo.on("reconnect", reconectarYPedirDataActualizada);
+
+
+
         function updateMesa(data) {
             var mozo = Risto.Adition.adicionar.findMozoById( data.Mozo.id );
 

@@ -126,9 +126,9 @@
                         }
                 } else {
                     if ( Configure::check('Site.type') && Configure::read('Site.type') == SITE_TYPE_HOTEL) {
-                        echo $this->Html->script('/aditions/todos_hotel.min');
+                        echo $this->Html->script('/aditions/todos_hotel20170112.min');
                     } else {
-                        echo $this->Html->script('/aditions/todos.min');
+                        echo $this->Html->script('/aditions/todos20170112.min');
                     }
                 }
 

@@ -13196,7 +13196,6 @@ Risto.Adition.adicionar = {
 
 
         Risto.Adition.tenantIo.on('connect', function(){
-            console.info("CONNECT con socket de tenant ",  TENANT);
             Risto.Adition.tenantIo.emit('join', TENANT);
         });
 
@@ -13255,15 +13254,57 @@ Risto.Adition.adicionar = {
             // traer todas
             url = url + 'mesa/mozos/mesas_abiertas.json';
             
+            function purgarMesasJSONQueNoEstanEnRistorantino( nuevasMesas ){
+                function mesaEncontrada (mesa, nuevasMesas) {
+                    for (var j = 0; j < nuevasMesas.length; j++) {
+                        if ( nuevasMesas[j].id == mesa.id() ) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                // por cada mesa de la adicion, la busco en el JSON que vino del ajax
+                for (var i = 0; i < Risto.Adition.adicionar.mesas().length; i++ ) {
+
+                    var mesa = Risto.Adition.adicionar.mesas()[i];
+                    if ( !mesaEncontrada(mesa, nuevasMesas) ) {
+                        mesa.mozo().sacarMesa( mesa );
+                    }
+                }
+            }
+
+
+            function purgarMesasRistorantinoQueNoEstanEnJSON( nuevasMesas ){
+                function mesaEncontrada (mesa) {
+                    var mesasristo = Risto.Adition.adicionar.mesas();
+                    for (var j = 0; j < mesasristo.length; j++) {
+                        if ( mesasristo[j].id() == mesa.id ) {
+                            return mesasristo[j];
+                        }
+                    }
+                    return false;
+                }
+
+                // por cada mesa del JSON, la busco en el listado de mesas de ristorantino adition
+                for (var i = 0; i < nuevasMesas.length; i++ ) {
+
+                    var mesa = nuevasMesas[i];
+                    var mesaRisto = mesaEncontrada(mesa);
+                    if ( !mesaEncontrada(mesa, nuevasMesas) ) {
+                        mesaRisto.mozo().sacarMesa( mesaRisto );
+                    }
+                }
+            }
 
             $.ajax(url, {
                 success: function( data ) {
                     if ( data && data.mesas && data.mesas.created ) {
                         Risto.Adition.handleMesasRecibidas.modified.call( Risto.Adition.adicionar, data.mesas.created );
 
+                        purgarMesasJSONQueNoEstanEnRistorantino( data.mesas.created );
+                        purgarMesasRistorantinoQueNoEstanEnJSON( data.mesas.created );
                     }
-
-
                 },
                 error: function () {
                     console.error("error al actualizar mesas en AJAX");

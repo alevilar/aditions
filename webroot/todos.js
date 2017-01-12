@@ -13254,27 +13254,7 @@ Risto.Adition.adicionar = {
             // traer todas
             url = url + 'mesa/mozos/mesas_abiertas.json';
             
-            function purgarMesasJSONQueNoEstanEnRistorantino( nuevasMesas ){
-                function mesaEncontrada (mesa, nuevasMesas) {
-                    for (var j = 0; j < nuevasMesas.length; j++) {
-                        if ( nuevasMesas[j].id == mesa.id() ) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-
-                // por cada mesa de la adicion, la busco en el JSON que vino del ajax
-                for (var i = 0; i < Risto.Adition.adicionar.mesas().length; i++ ) {
-
-                    var mesa = Risto.Adition.adicionar.mesas()[i];
-                    if ( !mesaEncontrada(mesa, nuevasMesas) ) {
-                        console.info("se quito porque no vino esta en el JSON");
-                        mesa.mozo().sacarMesa( mesa );
-                    }
-                }
-            }
-
+            
 
             function purgarMesasRistorantinoQueNoEstanEnJSON( nuevasMesas ){
                 function mesaEncontrada (mesa) {
@@ -13304,7 +13284,6 @@ Risto.Adition.adicionar = {
                     if ( data && data.mesas && data.mesas.created ) {
                         Risto.Adition.handleMesasRecibidas.modified.call( Risto.Adition.adicionar, data.mesas.created );
 
-                        purgarMesasJSONQueNoEstanEnRistorantino( data.mesas.created );
                         purgarMesasRistorantinoQueNoEstanEnJSON( data.mesas.created );
                     }
                 },

@@ -13269,6 +13269,7 @@ Risto.Adition.adicionar = {
 
                     var mesa = Risto.Adition.adicionar.mesas()[i];
                     if ( !mesaEncontrada(mesa, nuevasMesas) ) {
+                        console.info("se quito porque no vino esta en el JSON");
                         mesa.mozo().sacarMesa( mesa );
                     }
                 }
@@ -13292,6 +13293,7 @@ Risto.Adition.adicionar = {
                     var mesa = nuevasMesas[i];
                     var mesaRisto = mesaEncontrada(mesa);
                     if ( !mesaEncontrada(mesa, nuevasMesas) ) {
+                        console.info("se quito porque no esta en Adicion");
                         mesaRisto.mozo().sacarMesa( mesaRisto );
                     }
                 }

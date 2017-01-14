@@ -800,7 +800,7 @@ Mesa.prototype = {
 	                sumPagos += parseFloat(pagos[p].valor());
 	               }
 	           }
-	           vuelto = (totMesa - sumPagos);
+	           vuelto = ristoRound(totMesa - sumPagos);
 	           if (vuelto <= 0 ){
 	               retText = retText+'   -  Vuelto: $  '+Math.abs(vuelto);
 	           } else {
@@ -834,7 +834,7 @@ Mesa.prototype = {
        var pagos = this.totalPagos(),
            totMesa = Risto.Adition.adicionar.currentMesa().totalCalculado();
        
-        return pagos - totMesa;
+        return ristoRound( pagos - totMesa );
     },
 
 

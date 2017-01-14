@@ -12477,7 +12477,7 @@ Mesa.prototype = {
 	                sumPagos += parseFloat(pagos[p].valor());
 	               }
 	           }
-	           vuelto = (totMesa - sumPagos);
+	           vuelto = ristoRound(totMesa - sumPagos);
 	           if (vuelto <= 0 ){
 	               retText = retText+'   -  Vuelto: $  '+Math.abs(vuelto);
 	           } else {
@@ -12511,7 +12511,7 @@ Mesa.prototype = {
        var pagos = this.totalPagos(),
            totMesa = Risto.Adition.adicionar.currentMesa().totalCalculado();
        
-        return pagos - totMesa;
+        return ristoRound( pagos - totMesa );
     },
 
 
@@ -13850,13 +13850,29 @@ Risto.Adition.pago.prototype = {
     },
     
     image: function(){
-        if (this.TipoDePago() && typeof this.TipoDePago().media_id == 'function' ) {
+        if (this.TipoDePago() && typeof this.TipoDePago().media_id == 'function' && this.TipoDePago().media_id() ) {
             return URL_DOMAIN + TENANT + '/risto/medias/view/' + this.TipoDePago().media_id();
         } else {
             return URL_DOMAIN + TENANT + '/risto/medias/view/' + this.TipoDePago().media_id;
         }
 
         return '';
+    },
+
+
+    eliminar: function ( mesa ) {
+        if ( this.id() ) {
+            var url = URL_DOMAIN + TENANT + '/mesa/pagos/delete/' + this.id();
+            $.ajax({
+                url: url,
+                type: 'DELETE'
+            });
+        }
+        var encontrado = mesa.Pago().indexOf(this);
+        if ( encontrado > -1 ) {
+            mesa.Pago().splice(encontrado, 1);
+        }
+        delete this;
     }
 }/*--------------------------------------------------------------------------------------------------- Risto.Adicion.detalleComanda
  *
@@ -14514,7 +14530,20 @@ $(document).bind("mobileinit", function(){
 
 
 
+    /**
+    *
+    * MESAS CERRADAS  ---- CAJERO ----
+    *
+    **/
 
+    $('#listado-mesas-cerradas').live('pageshow',function(event, ui){
+        $(document).bind( "keydown", onKeyDown);
+    });
+
+
+    $('#listado-mesas-cerradas').live('pagebeforehide',function(event, ui){  
+        $(document).unbind( "keydown", onKeyDown);
+    });
 
 
 
@@ -14908,71 +14937,83 @@ $(document).bind("mobileinit", function(){
      *          Page COBRAR
      *
      */
-    $('#mesa-cobrar').live('pageshow',function(event, ui){
-        $('#mesa-cajero-reabrir').bind('click',function(){
-            var mesa = Risto.Adition.adicionar.currentMesa();
-            mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.reabierta );
-        });
-        $('.mesa-reimprimir', '#mesa-cobrar').bind('click', function(){
-            var mesa = Risto.Adition.adicionar.currentMesa();
-            mesa.reimprimir();
-        });
-
-
-        $('#mesa-cajero-checkout', '#mesa-cobrar').bind('click', function() {
-            var mesa = Risto.Adition.adicionar.currentMesa();
-            mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.checkout );
-        });
-
-        $('.mesa-cajero-clickeable', '#mesa-cobrar').bind('click', function() {
-            $(this).addClass('mesa-cajero-clickeable-apretado');
-        });
-    });
-
-    $('#mesa-cobrar').live('pagebeforehide',function(event, ui){
-        $('#mesa-cajero-reabrir').unbind('click');
-        $('.mesa-reimprimir', '#mesa-cobrar').unbind('click');      
-        $('#mesa-cajero-checkout', '#mesa-cobrar').unbind('click');
-        $('.mesa-cajero-clickeable', '#mesa-cobrar').unbind('click');
-        $('.mesa-cajero-clickeable-apretado', '#mesa-cobrar').removeClass('mesa-cajero-clickeable-apretado');
-    });
-
-
-
+ 
     $('#mesa-cobrar').live('pageshow', function(){
 
+
+      function eliminarCobro () {
+            var pago = ko.dataFor(this);
+            pago.eliminar( Risto.Adition.adicionar.currentMesa() );
+            $(this).parent().remove();
+      }
+
+
+      function reabrirMesa () {
+            var mesa = Risto.Adition.adicionar.currentMesa();
+            mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.reabierta );
+      }
+
+      function reimprimirMesa() {
+            var mesa = Risto.Adition.adicionar.currentMesa();
+            mesa.reimprimir();
+      }
+
+      function checkoutMesa () {
+            var mesa = Risto.Adition.adicionar.currentMesa();
+            mesa.cambioDeEstadoAjax( MESA_ESTADOS_POSIBLES.checkout );
+      }
+
+      function seleccionDePagosDisponibles () {
+          var json = $(this).data('pago-json');
+          var tipoDePago = eval("(function(){return " + json + ";})()");
+
+          var pagoObj = {
+            TipoDePago: tipoDePago
+          }
+
+          var nuevoPago = new Risto.Adition.pago( pagoObj );
+
+          Risto.Adition.adicionar.currentMesa().Pago.push( nuevoPago );
+
+          $('.pagos_creados li:last','#mesa-cobrar').find('input')
+              .focus()
+              .val( Risto.Adition.adicionar.currentMesa().total() - Risto.Adition.adicionar.currentMesa().totalPagos() )
+              .trigger('change');
+      }
+
+      function procesarGuardarCobros () {
+         Risto.Adition.adicionar.currentMesa().savePagos();      
+      }
+
+      $('.pagos_creados').delegate('.mesa-cobro-eliminar', 'click', eliminarCobro);
+      $('#mesa-cajero-reabrir').bind('click',reabrirMesa);
+      $('.mesa-reimprimir', '#mesa-cobrar').bind('click', reimprimirMesa);
+      $('#mesa-cajero-checkout', '#mesa-cobrar').bind('click', checkoutMesa);
+
+      // manejo de los pagos
+      $('.tipo-de-pagos-disponibles','#mesa-cobrar').delegate('a', 'click', seleccionDePagosDisponibles);
       
+      // Al apretar el boton de cobro de pago procesa los pagos correspondientes
+      $('#mesa-pagos-procesar').bind('click', procesarGuardarCobros);
 
-      $('.tipo-de-pagos-disponibles','#mesa-cobrar').delegate('a', 'click', function() {
-
-        var json = $(this).data('pago-json');
-        var tipoDePago = eval("(function(){return " + json + ";})()");
-
-        var pagoObj = {
-          TipoDePago: tipoDePago
-        }
-
-        var nuevoPago = new Risto.Adition.pago( pagoObj );
-
-        Risto.Adition.adicionar.currentMesa().Pago.push( nuevoPago );
-
-        $('.pagos_creados li:last','#mesa-cobrar').find('input')
-            .focus()
-            .val( Risto.Adition.adicionar.currentMesa().total() - Risto.Adition.adicionar.currentMesa().totalPagos() )
-            .trigger('change');
-      });
+      // marcar los botones que voy clickeando (son los que se usan arriba)
+      $('.mesa-cajero-clickeable', '#mesa-cobrar').bind('click', function() {
+            $(this).addClass('mesa-cajero-clickeable-apretado');
+      });       
       
-
-        // Al apretar el boton de cobro de pago procesa los pagos correspondientes
-        $('#mesa-pagos-procesar').bind('click', function(){
-            
-            Risto.Adition.adicionar.currentMesa().savePagos();            
-        });
     });
 
     $('#mesa-cobrar').live('pagebeforehide', function(){        
         $('#mesa-pagos-procesar').unbind('click');
         $('.tipo-de-pagos-disponibles','#mesa-cobrar').undelegate('a', 'click');
+
+        $('.pagos_creados').undelegate('.mesa-cobro-eliminar', 'click');
+
+        $('#mesa-cajero-reabrir').unbind('click');
+        $('.mesa-reimprimir', '#mesa-cobrar').unbind('click');      
+        $('#mesa-cajero-checkout', '#mesa-cobrar').unbind('click');
+        $('.mesa-cajero-clickeable', '#mesa-cobrar').unbind('click');
+        $('.mesa-cajero-clickeable-apretado', '#mesa-cobrar').removeClass('mesa-cajero-clickeable-apretado');    
     });
 
 

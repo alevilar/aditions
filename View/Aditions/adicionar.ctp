@@ -610,7 +610,7 @@
     </div>
 
     <div data-role="content">   
-        <h2>Seleccionar Tipos de Pago para Cobrar <span class="mesa-total" style="float: right; color: red;">Total $<span data-bind="text: adn().currentMesa().totalCalculado()"></span></span></h2>
+        <h3>Tipos de Pago Disponibles</h3><h2 class="mesa-total" style="float: right; color: red;">Total $<span data-bind="text: adn().currentMesa().totalCalculado()"></span></span></h2>
         
         <ul class="tipo_de_pagos tipo-de-pagos-disponibles">
         <?php 
@@ -642,9 +642,7 @@
                 <span class="vuelto-value"  data-bind="text: Math.abs(adn().currentMesa().vuelto())"></span>
             </div>
 
-            <h4>Pagos Seleccionados</h4>
-
-            
+            <h4>Cobros Seleccionados</h4>
 
             <ul class="pagos_creados"
                 data-bind='template: { name: "li-pagos-creados", foreach: adn().currentMesa().Pago }'>

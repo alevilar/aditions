@@ -27,12 +27,28 @@ Risto.Adition.pago.prototype = {
     },
     
     image: function(){
-        if (this.TipoDePago() && typeof this.TipoDePago().media_id == 'function' ) {
+        if (this.TipoDePago() && typeof this.TipoDePago().media_id == 'function' && this.TipoDePago().media_id() ) {
             return URL_DOMAIN + TENANT + '/risto/medias/view/' + this.TipoDePago().media_id();
         } else {
             return URL_DOMAIN + TENANT + '/risto/medias/view/' + this.TipoDePago().media_id;
         }
 
         return '';
+    },
+
+
+    eliminar: function ( mesa ) {
+        if ( this.id() ) {
+            var url = URL_DOMAIN + TENANT + '/mesa/pagos/delete/' + this.id();
+            $.ajax({
+                url: url,
+                type: 'DELETE'
+            });
+        }
+        var encontrado = mesa.Pago().indexOf(this);
+        if ( encontrado > -1 ) {
+            mesa.Pago().splice(encontrado, 1);
+        }
+        delete this;
     }
 }

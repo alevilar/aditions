@@ -336,7 +336,20 @@ $(document).bind("mobileinit", function(){
 
 
 
+    /**
+    *
+    * MESAS CERRADAS  ---- CAJERO ----
+    *
+    **/
 
+    $('#listado-mesas-cerradas').live('pageshow',function(event, ui){
+        $(document).bind( "keydown", onKeyDown);
+    });
+
+
+    $('#listado-mesas-cerradas').live('pagebeforehide',function(event, ui){  
+        $(document).unbind( "keydown", onKeyDown);
+    });
 
 
 
@@ -749,6 +762,11 @@ $(document).bind("mobileinit", function(){
         $('.mesa-cajero-clickeable', '#mesa-cobrar').bind('click', function() {
             $(this).addClass('mesa-cajero-clickeable-apretado');
         });
+
+
+        $(document).bind( "keydown", onKeyDown);
+
+
     });
 
     $('#mesa-cobrar').live('pagebeforehide',function(event, ui){
@@ -756,7 +774,7 @@ $(document).bind("mobileinit", function(){
         $('.mesa-reimprimir', '#mesa-cobrar').unbind('click');      
         $('#mesa-cajero-checkout', '#mesa-cobrar').unbind('click');
         $('.mesa-cajero-clickeable', '#mesa-cobrar').unbind('click');
-        $('.mesa-cajero-clickeable-apretado', '#mesa-cobrar').removeClass('mesa-cajero-clickeable-apretado');
+        $('.mesa-cajero-clickeable-apretado', '#mesa-cobrar').removeClass('mesa-cajero-clickeable-apretado');        
     });
 
 

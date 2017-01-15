@@ -8,6 +8,7 @@ var HOST = 'localhost';
 var PORT = 8084;
 
 var WS_PORT = 8085;
+var APPVERSION = 20170115
 
 app.listen(WS_PORT);
 
@@ -72,7 +73,7 @@ io.on('connection', function(socket) {
 });
 
 
-
+console.log("Version "+APPVERSION+" running...")
 console.log('CakePHP Server listening on ' + HOST +':'+ PORT);
 console.log('Websocket listening on ' + HOST +':'+ WS_PORT);
 

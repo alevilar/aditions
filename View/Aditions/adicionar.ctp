@@ -320,6 +320,9 @@
                     <li id="mesa-action-reimprimir" data-bind="attr: {'estado': 'mesa-re-print_'+adn().currentMesa().estado().icon}">
                         <a href="#listado-mesas" class="mesa-reimprimir"  data-rel="back"><?php echo $this->Html->image('/aditions/css/img/printer.png')?>Imprimir Ticket</a>
                     </li>
+                    <li id="mesa-action-imprimir-nc" data-bind="attr: {'estado': 'mesa-re-print_'+adn().currentMesa().estado().icon}">
+                        <a href="#listado-mesas" class="mesa-imprimir-nc"  data-rel="back"><?php echo $this->Html->image('/aditions/css/img/printernc.png')?>Imprimir NC</a>
+                    </li>
 
                     <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL) { ?>
                     <li id="mesa-action-checkout" data-bind="attr: {'estado': 'mesa-checkout_'+adn().currentMesa().estado().icon}">

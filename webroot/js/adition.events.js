@@ -56,13 +56,46 @@ $(document).bind("mobileinit", function(){
         $('#form-cambiar-mozo').unbind('submit');
     });
     
+
     
+
+    /**
+    *
+    * 
+    *
+    **/
+    $('#adition-nota-credito').live('pageshow',function(event, ui){ 
+        console.info("asaisjoa MOSTRANDOOO");
+
+        if ( PrinterDriver.isConnected() ) {
+          // esta conectado fiscalberry
+          $("#CajeroNotaCreditoForm").bind("submit", function(){
+            return false;
+          });
+
+
+          $("#adition-nota-credito-imprimir").bind("click", function(){
+
+          });
+        }
+    });
+
+    $('#adition-nota-credito').live('pagehide',function(event, ui){
+        console.info("asaisjoa OCULTANDOOOO");
+    });
+
+
+
     
     /**
      *  Observacion de los productos
      */
     $('#comanda-add-product-obss').live('pageshow',function(event, ui){    
         $('#obstext').focus();
+
+        if ( PrinterDriver.isConnected() ) {
+          $("#adition-nota-credito-imprimir").unbind("click");
+        }
     });
 
 
@@ -126,7 +159,6 @@ $(document).bind("mobileinit", function(){
                   // si tine stock seleccionar
                   context.$data.seleccionar();
                 }
-
             }
         }
 
@@ -285,6 +317,29 @@ $(document).bind("mobileinit", function(){
         });
 
 
+        $('#mesa-action-imprimir-nc').bind('click', function(){
+            var numeroTicket = window.prompt( "Ingresar número del ticket anterior" );
+
+            if ( numeroTicket ) {
+              var mesa = Risto.Adition.adicionar.currentMesa();
+
+              mesa.tipo_factura_id = 8; //"NCB";
+              if ( mesa.Cliente() &&  mesa.Cliente().IvaResponsabilidad() ) {
+                  var tipo_factura_id_cliente = mesa.Cliente().IvaResponsabilidad().tipo_factura_id();
+                  if ( tipo_factura_id_cliente == 1 ) { // FA
+                    mesa.tipo_factura_id = 10; // NCA
+                  }
+                  if ( tipo_factura_id_cliente == 5 ) { // FC
+                    mesa.tipo_factura_id = 9; // NCC 
+                  }
+              }
+
+              mesa.referencia = numeroTicket*1;
+              PrinterDriver.printTicket(mesa);
+            }
+        });
+
+
         $('#mesa-borrar').bind('click', function(){
             if (window.confirm('Seguro que desea borrar la mesa '+Risto.Adition.adicionar.currentMesa().numero())){
                 var mesa = Risto.Adition.adicionar.currentMesa();
@@ -332,6 +387,7 @@ $(document).bind("mobileinit", function(){
         $('#mesa-textarea-observation').unbind('focusout');
         $('#mesa-observacion-submit').unbind('click');
         $('#mesa-checkout').unbind('click');
+        $('#mesa-action-imprimir-nc').unbind('click');
     });
 
 

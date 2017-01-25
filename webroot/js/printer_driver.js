@@ -117,11 +117,11 @@ PrinterDriver = {
         if ( !mapTipoFactura || newVersion) {
             /* MAP con tabla tipo_facturas */
             mapTipoFactura = {
-                1: "FA",
-                2: "T",
-                5: "FC",
-                8: "NCB",
-                9: "NCC",
+                 1: "FA",
+                 2: "T",
+                 5: "FC",
+                 8: "NCB",
+                 9: "NCC",
                 10: "NCA",
                 11: "NDB",
                 12: "NDC",
@@ -423,8 +423,13 @@ PrinterDriver = {
                 jsonRet["domicilio_cliente"]  = mesa.Cliente().domicilio();
                 jsonRet["nombre_cliente"]  = mesa.Cliente().nombre();
             }
-            
 
+
+            if ( mesa.referencia ) {
+                // setteo numero de comprobante original para Nota de Credito
+                jsonRet["referencia"] = mesa.referencia;
+            }
+            
             return jsonRet;
         }
 
@@ -516,10 +521,12 @@ PrinterDriver = {
             "items": items
         };
 
-        // agregar descripcion de pagos si es que los hay
-        var pagos = generarPagos( mesa );
-        if ( pagos.length ) {
-            jsonRet[actionName]['pagos'] = pagos;
+        if ( encabezado.tipo_cbte != 'NCA' && encabezado.tipo_cbte != 'NCB' && encabezado.tipo_cbte != 'NCC'){
+            // agregar descripcion de pagos si es que los hay
+            var pagos = generarPagos( mesa );
+            if ( pagos.length ) {
+                jsonRet[actionName]['pagos'] = pagos;
+            }
         }
 
 
@@ -539,12 +546,17 @@ PrinterDriver = {
                     };
         }
 
-        jsonRet[actionName]["setTrailer"] = [
-                    " ",
-                    "MOZO: "+mesa.mozo().numero(),
-                    "MESA: "+mesa.numero(),
-                    " "
-                ];
+
+        if ( encabezado.tipo_cbte != 'NCA' && encabezado.tipo_cbte != 'NCB' && encabezado.tipo_cbte != 'NCC'){
+            jsonRet[actionName]["setTrailer"] = [
+                        " ",
+                        "MOZO: "+mesa.mozo().numero(),
+                        "MESA: "+mesa.numero(),
+                        " "
+                    ];
+        }
+
+console.info("el json ara imprimir es %o", jsonRet);
 
 
         jsonRet = JSON.stringify(jsonRet);

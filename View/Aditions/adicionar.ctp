@@ -299,7 +299,7 @@
                         </a>
                     </li>
                     
-                    <li id="mesa-action-cerrar" data-bind="attr: {'estado': 'mesa-cerrar_'+adn().currentMesa().estado().icon}">
+                    <li id="mesa-action-cerrar" data-bind="attr: {'estado': 'mesa-cerrar_'+adn().currentMesa().estado().icon}, visible: adn().currentMesa().sync() > 0">
                         <a href="#listado-mesas" id="mesa-cerrar" data-direction="reverse">
                             <?php echo $this->Html->image('/aditions/css/img/cerrarmesa.png')?>
                             <?php
@@ -313,19 +313,22 @@
                     </li>
                     
                     
-                    <li id="mesa-action-cobrar" data-bind="attr: {'estado': 'mesa-cobrar_'+adn().currentMesa().estado().icon}">
+                    <li id="mesa-action-cobrar" data-bind="attr: {'estado': 'mesa-cobrar_'+adn().currentMesa().estado().icon}, visible: adn().currentMesa().sync() > 0">
                         <a href="#mesa-cobrar" data-rel="dialog"><?php echo $this->Html->image('/aditions/css/img/cobrar.png')?>Cobrar</a>
                     </li>
                     
-                    <li id="mesa-action-reimprimir" data-bind="attr: {'estado': 'mesa-re-print_'+adn().currentMesa().estado().icon}">
+                    <li id="mesa-action-reimprimir" data-bind="attr: {'estado': 'mesa-re-print_'+adn().currentMesa().estado().icon}, visible: adn().currentMesa().sync() > 0">
                         <a href="#listado-mesas" class="mesa-reimprimir"  data-rel="back"><?php echo $this->Html->image('/aditions/css/img/printer.png')?>Imprimir Ticket</a>
                     </li>
+                    
+                    <!--
                     <li id="mesa-action-imprimir-nc" data-bind="attr: {'estado': 'mesa-re-print_'+adn().currentMesa().estado().icon}">
                         <a href="#listado-mesas" class="mesa-imprimir-nc"  data-rel="back"><?php echo $this->Html->image('/aditions/css/img/printernc.png')?>Imprimir NC</a>
                     </li>
+                    -->
 
                     <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL) { ?>
-                    <li id="mesa-action-checkout" data-bind="attr: {'estado': 'mesa-checkout_'+adn().currentMesa().estado().icon}">
+                    <li id="mesa-action-checkout" data-bind="attr: {'estado': 'mesa-checkout_'+adn().currentMesa().estado().icon}, visible: adn().currentMesa().sync() > 0">
                         <a href="#listado-mesas" id="mesa-checkout" data-direction="reverse"><?php echo $this->Html->image('/aditions/css/img/checkout.png')?>Checkout</a>
                     </li>
                     <?php } ?>
@@ -374,6 +377,22 @@
             </div>
 
             <div class="mesa-view">
+                    <div data-bind="{visible: adn().currentMesa().sync() == 0}" class="mesa-sync-status-syncing" style="font-size: 18pt; margin: 10px 10px; text-align: center;">
+                           ⇅ SINCRONIZANDO
+                    </div>
+
+
+                    <div class="mesa-sync-status-error" data-bind="{visible: adn().currentMesa().sync() < 0}" style="text-align: center; margin: 10px 10px">
+                        <div style="font-size: 18pt;">
+                            &#9888; ALERTA: <?php echo strtoupper( Configure::read("Mesa.tituloMesa") ); ?> NO SINCRONIZADA
+                        </div>
+                        <div style="font-size: 12pt;">
+                            Por un error en la conexión con el servidor, hay datos sin guardar.<br>
+                            Se reintentará guardar en <span id="mesas-time-reload"></span> segundos...
+                        </div>                       
+
+                    </div>
+
                     <div class="observaciones">
                         <textarea id="mesa-textarea-observation"  data-bind="value: adn().currentMesa().observation" placeholder="Agregar una Observación"></textarea>
 

@@ -1,4 +1,4 @@
-    /**
+/**
  *
  *  Este objeto maneja las mesas recibidas con el json mozos/mesas_abiertas.json
  *  
@@ -559,3 +559,11 @@ Risto.Adition.adicionar.mesasCerradas = ko.dependentObservable(function(){
     return mesas;
 
 }, Risto.Adition.adicionar);
+
+
+function showNotificacion ( title, texto ) {
+    $( '.titulo', '#notificaciones').html(title);
+    $.mobile.changePage('#notificaciones', {role: 'dialog'});
+    $( '.contenido > div', '#notificaciones').html( texto );
+}
+

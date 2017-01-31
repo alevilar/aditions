@@ -23,15 +23,8 @@ $(document).bind("mobileinit", function(){
 
 
 
-    $(this).ajaxError(function ( ev, data ) {
-        $( '.titulo', '#notificaciones').html(data.statusText);
-        
-        $.mobile.changePage('#notificaciones', {role: 'dialog'});
 
-        $( '.contenido > div', '#notificaciones').html( data.responseText );
 
-    });
-    
     /**
      *
      *
@@ -60,10 +53,10 @@ $(document).bind("mobileinit", function(){
     
 
     /**
-    *
+    * NOTAS DE CREDITO
     * 
     *
-    **/
+    
     $('#adition-nota-credito').live('pageshow',function(event, ui){ 
         console.info("asaisjoa MOSTRANDOOO");
 
@@ -84,7 +77,7 @@ $(document).bind("mobileinit", function(){
         console.info("asaisjoa OCULTANDOOOO");
     });
 
-
+    */
 
     
     /**
@@ -927,6 +920,12 @@ $(document).bind("mobileinit", function(){
 $(document).ready(function() {   
   
    hacerQueNoFuncioneElClickEnPagina();
+
+
+   beforePageChangeStuff();
+    
+
+    $("#mesas-time-reload").text(Risto.MESAS_RELOAD_INTERVAL/1000);
     
 
     
@@ -954,21 +953,42 @@ function productoSeleccionado(e) {
 }
 
 
+function beforePageChangeStuff() {
 
 
-function confirmacionDeSalida(e) {
-	if(!e) e = window.event;
-	//e.cancelBubble is supported by IE - this will kill the bubbling process.
-	e.cancelBubble = true;
-	e.returnValue = 'Seguro que deseas salir de la aplicación?\n si no hay datos guardados, los mismos se perderán'; //This is displayed on the dialog
+  function imprimirMesasEstadoError( ev ) {
+      var mesasList = [];
+      if ( Risto.Adition.adicionar.mozos().length  ) {
+          var listMozos = Risto.Adition.adicionar.mozos();
 
-	//e.stopPropagation works in Firefox.
-	if (e.stopPropagation) {
-		e.stopPropagation();
-		e.preventDefault();
-	}
-    }
-    
+
+          for ( var m = 0; m < listMozos.length; m++ ) {
+            var mozo = listMozos[m];
+            for ( var i = 0; i < mozo.mesas().length; i++ ) {
+                var mesa = mozo.mesas()[i];
+                    if ( mesa.sync() < 1 ) {
+                      mesasList.push( mesa );
+                  }
+              }
+          }
+      }
+
+      var ret = null;
+      if (mesasList.length > 0) {
+        ev.preventDefault();
+        ret = "Existen modificaciones pendientes... seguro desea salir? se perderan los cambios";
+      }
+   
+
+      return ret;
+  }
+
+  $(window).bind("beforeunload", imprimirMesasEstadoError);
+}
+
+
+
+
 
 
 /**

@@ -10583,11 +10583,11 @@ PrinterDriver = {
         if ( !mapTipoFactura || newVersion) {
             /* MAP con tabla tipo_facturas */
             mapTipoFactura = {
-                1: "FA",
-                2: "T",
-                5: "FC",
-                8: "NCB",
-                9: "NCC",
+                 1: "FA",
+                 2: "T",
+                 5: "FC",
+                 8: "NCB",
+                 9: "NCC",
                 10: "NCA",
                 11: "NDB",
                 12: "NDC",
@@ -10889,8 +10889,13 @@ PrinterDriver = {
                 jsonRet["domicilio_cliente"]  = mesa.Cliente().domicilio();
                 jsonRet["nombre_cliente"]  = mesa.Cliente().nombre();
             }
-            
 
+
+            if ( mesa.referencia ) {
+                // setteo numero de comprobante original para Nota de Credito
+                jsonRet["referencia"] = mesa.referencia;
+            }
+            
             return jsonRet;
         }
 
@@ -10982,10 +10987,12 @@ PrinterDriver = {
             "items": items
         };
 
-        // agregar descripcion de pagos si es que los hay
-        var pagos = generarPagos( mesa );
-        if ( pagos.length ) {
-            jsonRet[actionName]['pagos'] = pagos;
+        if ( encabezado.tipo_cbte != 'NCA' && encabezado.tipo_cbte != 'NCB' && encabezado.tipo_cbte != 'NCC'){
+            // agregar descripcion de pagos si es que los hay
+            var pagos = generarPagos( mesa );
+            if ( pagos.length ) {
+                jsonRet[actionName]['pagos'] = pagos;
+            }
         }
 
 
@@ -11005,12 +11012,17 @@ PrinterDriver = {
                     };
         }
 
-        jsonRet[actionName]["setTrailer"] = [
-                    " ",
-                    "MOZO: "+mesa.mozo().numero(),
-                    "MESA: "+mesa.numero(),
-                    " "
-                ];
+
+        if ( encabezado.tipo_cbte != 'NCA' && encabezado.tipo_cbte != 'NCB' && encabezado.tipo_cbte != 'NCC'){
+            jsonRet[actionName]["setTrailer"] = [
+                        " ",
+                        "MOZO: "+mesa.mozo().numero(),
+                        "MESA: "+mesa.numero(),
+                        " "
+                    ];
+        }
+
+console.info("el json ara imprimir es %o", jsonRet);
 
 
         jsonRet = JSON.stringify(jsonRet);
@@ -11692,6 +11704,18 @@ var Mesa = function(mozo, jsonData) {
         this.checkin        = ko.observable();
 
 
+        /**
+        *   Syn indica el estado de sincronizacion de los datos con el servidor
+        *   -1 ERROR
+        *    0 Sincronizando
+        *   +1 Sync OK
+        **/
+        this.sync           = ko.observable(1); 
+        this.syncError      = ko.observable(false);
+        this.createTimeout  = null;
+        this.savePagosTimeout  = null;
+
+
         this.checkout       = ko.observable();
         this.observation    = ko.observable('');
 
@@ -11780,7 +11804,31 @@ Mesa.prototype = {
      *  crea una nueva mesa guardandola en el server
      */
     create: function( ) {
-        return $cakeSaver.send({url: this.urlAdd(), obj: this});
+        var self = this,
+            retry = Risto.MESAS_RELOAD_INTERVAL; // 30 segundos para reconectar
+
+        self.sync(0);
+        var snd = {
+            url: this.urlAdd(), 
+            obj: this            
+        };
+        var ret = $cakeSaver.send(snd);
+
+        ret.done(function(){
+            self.sync(1);
+        });
+
+        ret.error(function( ev ) {
+            self.sync(-1);
+
+            self.createTimeout = setTimeout(function(){ 
+                self.create();
+            }, retry);
+
+
+        });
+
+        return ret;
     },
     
     /**
@@ -12534,36 +12582,43 @@ Mesa.prototype = {
 
     savePagos: function () {
     	var m = this;
-    	var mes = {
-            Mesa: {
-                id: m.id(),
-                estado_id: m.estado_id(),
-                time_cobro: m.time_cobro(),
-                model: 'Mesa'
-            },
-            Pago: m.Pago()
-        };
-        
+
+        m.sync(0);
+
         // guardo los pagos
-        $cakeSaver.send({
+        var ret = $cakeSaver.send({
             url: URL_DOMAIN + TENANT + '/mesa/pagos/add',
-            obj: mes
-        }, function(d){
-            
+            obj: m
         });
 
-        
-        if ( this.Pago().length == 1 && !this.Pago()[0].valor() ) {
-            // es porque la mesa esta cobrada
-            this.setEstadoCobrada();
-        }
+        ret.done(function(){
+            m.sync(1);
+
+            if ( m.Pago().length == 1 && !m.Pago()[0].valor() ) {
+                // es porque la mesa esta cobrada
+                m.setEstadoCobrada();
+            }
 
 
-        if ( this.totalPagos() && this.vuelto() >= 0) {
-        	// es porque la mesa esta cobrada
-        	this.setEstadoCobrada();
-        }
+            if ( m.totalPagos() && m.vuelto() >= 0) {
+            	// es porque la mesa esta cobrada
+            	m.setEstadoCobrada();
+            }
+
+        });
+
+        ret.error(function(){
+            m.sync(-1);
+
+            m.savePagosTimeout = setTimeout(function(){
+                m.savePagos();
+            }, Risto.MESAS_RELOAD_INTERVAL)
+
+        });
+
     }
+
+
 
 };
 /*--------------------------------------------------------------------------------------------------- Risto.Adicion.comanda
@@ -12655,10 +12710,11 @@ Risto.Adition.comanda.prototype = {
             if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
                 // imprimir local fiscalberry
                 PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this, Risto.printerComanderaPPal.Printer.alias);
+            } else {
+                // imprimir con server
+                $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
             }
             
-            // imprimir con server
-            $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
             
         }
     },
@@ -12737,6 +12793,57 @@ Risto.Adition.comandaFabrica.prototype = {
         this.id = undefined;
         return this;
     },
+
+
+    __doCakeSave: function( comanderaComanda ) {
+        var self = this;
+         //  para cada comandera
+        $cakeSaver.send({
+            url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 
+            obj: comanderaComanda
+        }).done( function ( data ) {
+
+            self.mesa.sync(1);
+            if ( data && data.Comanda && data.Comanda.DetalleComanda) {
+                data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
+                nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
+
+                  // comanderaComanda.id( data.Comanda.Comanda.id );
+                comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
+            }
+
+        }).error( function ( ev ) {
+            self.mesa.sync(-1);
+
+            setTimeout(function(){
+                self.__doCakeSave( comanderaComanda );
+            }, Risto.MESAS_RELOAD_INTERVAL);
+        });
+    },
+
+    __generarComandaXComandera  : function(comandera, comandaJsonCopy){
+        var comanderaComanda;
+
+        this.mesa.sync(0);
+
+        comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
+        comanderaComanda.DetalleComanda( comandera );
+
+        this.mesa.Comanda.unshift( comanderaComanda );
+
+        $.each( comanderaComanda.DetalleComanda(), function (i, el){
+            var prodId;
+            if ( typeof el.Producto().id == 'function'  ) {
+                prodId = el.Producto().id();
+            } else {
+                prodId = el.Producto().id;
+            }
+            el.producto_id ( prodId );
+        });
+
+        this.__doCakeSave( comanderaComanda );
+
+    },
     
     
     /**
@@ -12747,46 +12854,11 @@ Risto.Adition.comandaFabrica.prototype = {
      * @param comanderas Array listado de comandas
      */
     __generarComanda: function( comandaJsonCopy, comanderas ){
-        var comanderaComanda
-            self = this;
-
+        
          // creo una nueva comanda para cada comandera
         for (var com in comanderas ) {
-
-            comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
-            comanderaComanda.DetalleComanda( comanderas[com] );
-
-            self.mesa.Comanda.unshift( comanderaComanda );
-
-            $.each( comanderaComanda.DetalleComanda(), function (i, el){
-            	var prodId;
-            	if ( typeof el.Producto().id == 'function'  ) {
-            		prodId = el.Producto().id();
-            	} else {
-            		prodId = el.Producto().id;
-            	}
-            	el.producto_id ( prodId );
-            });
-
-            
-            
-             //  para cada comandera
-            $cakeSaver.send({
-                url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 
-                obj: comanderaComanda
-            }).done( function ( data ) {
-
-                if ( data && data.Comanda && data.Comanda.DetalleComanda) {
-                    data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
-                    nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
-
-                      // comanderaComanda.id( data.Comanda.Comanda.id );
-                    comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
-                }
-
-            }).error( function ( ev ) {
-                alert("Se produjo un error de conexión en el servidor, no se pudo guardar.");
-            });
+            var comandera = comanderas[com];
+            this.__generarComandaXComandera(comandera, comandaJsonCopy);
         }
     },
     
@@ -12985,7 +13057,7 @@ Risto.Adition.comandaFabrica.prototype = {
     
 }
 
-    /**
+/**
  *
  *  Este objeto maneja las mesas recibidas con el json mozos/mesas_abiertas.json
  *  
@@ -13545,7 +13617,16 @@ Risto.Adition.adicionar.mesasCerradas = ko.dependentObservable(function(){
                 
     return mesas;
 
-}, Risto.Adition.adicionar);/*--------------------------------------------------------------------------------------------------- Risto.Adicion.producto
+}, Risto.Adition.adicionar);
+
+
+function showNotificacion ( title, texto ) {
+    $( '.titulo', '#notificaciones').html(title);
+    $.mobile.changePage('#notificaciones', {role: 'dialog'});
+    $( '.contenido > div', '#notificaciones').html( texto );
+}
+
+/*--------------------------------------------------------------------------------------------------- Risto.Adicion.producto
  *
  *
  * Clase Producto
@@ -14619,15 +14700,8 @@ $(document).bind("mobileinit", function(){
 
 
 
-    $(this).ajaxError(function ( ev, data ) {
-        $( '.titulo', '#notificaciones').html(data.statusText);
-        
-        $.mobile.changePage('#notificaciones', {role: 'dialog'});
 
-        $( '.contenido > div', '#notificaciones').html( data.responseText );
 
-    });
-    
     /**
      *
      *
@@ -14652,13 +14726,46 @@ $(document).bind("mobileinit", function(){
         $('#form-cambiar-mozo').unbind('submit');
     });
     
+
     
+
+    /**
+    * NOTAS DE CREDITO
+    * 
+    *
+    
+    $('#adition-nota-credito').live('pageshow',function(event, ui){ 
+        console.info("asaisjoa MOSTRANDOOO");
+
+        if ( PrinterDriver.isConnected() ) {
+          // esta conectado fiscalberry
+          $("#CajeroNotaCreditoForm").bind("submit", function(){
+            return false;
+          });
+
+
+          $("#adition-nota-credito-imprimir").bind("click", function(){
+
+          });
+        }
+    });
+
+    $('#adition-nota-credito').live('pagehide',function(event, ui){
+        console.info("asaisjoa OCULTANDOOOO");
+    });
+
+    */
+
     
     /**
      *  Observacion de los productos
      */
     $('#comanda-add-product-obss').live('pageshow',function(event, ui){    
         $('#obstext').focus();
+
+        if ( PrinterDriver.isConnected() ) {
+          $("#adition-nota-credito-imprimir").unbind("click");
+        }
     });
 
 
@@ -14722,7 +14829,6 @@ $(document).bind("mobileinit", function(){
                   // si tine stock seleccionar
                   context.$data.seleccionar();
                 }
-
             }
         }
 
@@ -14881,6 +14987,29 @@ $(document).bind("mobileinit", function(){
         });
 
 
+        $('#mesa-action-imprimir-nc').bind('click', function(){
+            var numeroTicket = window.prompt( "Ingresar número del ticket anterior" );
+
+            if ( numeroTicket ) {
+              var mesa = Risto.Adition.adicionar.currentMesa();
+
+              mesa.tipo_factura_id = 8; //"NCB";
+              if ( mesa.Cliente() &&  mesa.Cliente().IvaResponsabilidad() ) {
+                  var tipo_factura_id_cliente = mesa.Cliente().IvaResponsabilidad().tipo_factura_id();
+                  if ( tipo_factura_id_cliente == 1 ) { // FA
+                    mesa.tipo_factura_id = 10; // NCA
+                  }
+                  if ( tipo_factura_id_cliente == 5 ) { // FC
+                    mesa.tipo_factura_id = 9; // NCC 
+                  }
+              }
+
+              mesa.referencia = numeroTicket*1;
+              PrinterDriver.printTicket(mesa);
+            }
+        });
+
+
         $('#mesa-borrar').bind('click', function(){
             if (window.confirm('Seguro que desea borrar la mesa '+Risto.Adition.adicionar.currentMesa().numero())){
                 var mesa = Risto.Adition.adicionar.currentMesa();
@@ -14928,6 +15057,7 @@ $(document).bind("mobileinit", function(){
         $('#mesa-textarea-observation').unbind('focusout');
         $('#mesa-observacion-submit').unbind('click');
         $('#mesa-checkout').unbind('click');
+        $('#mesa-action-imprimir-nc').unbind('click');
     });
 
 
@@ -15467,6 +15597,12 @@ $(document).bind("mobileinit", function(){
 $(document).ready(function() {   
   
    hacerQueNoFuncioneElClickEnPagina();
+
+
+   beforePageChangeStuff();
+    
+
+    $("#mesas-time-reload").text(Risto.MESAS_RELOAD_INTERVAL/1000);
     
 
     
@@ -15494,21 +15630,42 @@ function productoSeleccionado(e) {
 }
 
 
+function beforePageChangeStuff() {
 
 
-function confirmacionDeSalida(e) {
-	if(!e) e = window.event;
-	//e.cancelBubble is supported by IE - this will kill the bubbling process.
-	e.cancelBubble = true;
-	e.returnValue = 'Seguro que deseas salir de la aplicación?\n si no hay datos guardados, los mismos se perderán'; //This is displayed on the dialog
+  function imprimirMesasEstadoError( ev ) {
+      var mesasList = [];
+      if ( Risto.Adition.adicionar.mozos().length  ) {
+          var listMozos = Risto.Adition.adicionar.mozos();
 
-	//e.stopPropagation works in Firefox.
-	if (e.stopPropagation) {
-		e.stopPropagation();
-		e.preventDefault();
-	}
-    }
-    
+
+          for ( var m = 0; m < listMozos.length; m++ ) {
+            var mozo = listMozos[m];
+            for ( var i = 0; i < mozo.mesas().length; i++ ) {
+                var mesa = mozo.mesas()[i];
+                    if ( mesa.sync() < 1 ) {
+                      mesasList.push( mesa );
+                  }
+              }
+          }
+      }
+
+      var ret = null;
+      if (mesasList.length > 0) {
+        ev.preventDefault();
+        ret = "Existen modificaciones pendientes... seguro desea salir? se perderan los cambios";
+      }
+   
+
+      return ret;
+  }
+
+  $(window).bind("beforeunload", imprimirMesasEstadoError);
+}
+
+
+
+
 
 
 /**

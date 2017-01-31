@@ -40,6 +40,57 @@ Risto.Adition.comandaFabrica.prototype = {
         this.id = undefined;
         return this;
     },
+
+
+    __doCakeSave: function( comanderaComanda ) {
+        var self = this;
+         //  para cada comandera
+        $cakeSaver.send({
+            url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 
+            obj: comanderaComanda
+        }).done( function ( data ) {
+
+            self.mesa.sync(1);
+            if ( data && data.Comanda && data.Comanda.DetalleComanda) {
+                data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
+                nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
+
+                  // comanderaComanda.id( data.Comanda.Comanda.id );
+                comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
+            }
+
+        }).error( function ( ev ) {
+            self.mesa.sync(-1);
+
+            setTimeout(function(){
+                self.__doCakeSave( comanderaComanda );
+            }, Risto.MESAS_RELOAD_INTERVAL);
+        });
+    },
+
+    __generarComandaXComandera  : function(comandera, comandaJsonCopy){
+        var comanderaComanda;
+
+        this.mesa.sync(0);
+
+        comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
+        comanderaComanda.DetalleComanda( comandera );
+
+        this.mesa.Comanda.unshift( comanderaComanda );
+
+        $.each( comanderaComanda.DetalleComanda(), function (i, el){
+            var prodId;
+            if ( typeof el.Producto().id == 'function'  ) {
+                prodId = el.Producto().id();
+            } else {
+                prodId = el.Producto().id;
+            }
+            el.producto_id ( prodId );
+        });
+
+        this.__doCakeSave( comanderaComanda );
+
+    },
     
     
     /**
@@ -50,46 +101,11 @@ Risto.Adition.comandaFabrica.prototype = {
      * @param comanderas Array listado de comandas
      */
     __generarComanda: function( comandaJsonCopy, comanderas ){
-        var comanderaComanda
-            self = this;
-
+        
          // creo una nueva comanda para cada comandera
         for (var com in comanderas ) {
-
-            comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
-            comanderaComanda.DetalleComanda( comanderas[com] );
-
-            self.mesa.Comanda.unshift( comanderaComanda );
-
-            $.each( comanderaComanda.DetalleComanda(), function (i, el){
-            	var prodId;
-            	if ( typeof el.Producto().id == 'function'  ) {
-            		prodId = el.Producto().id();
-            	} else {
-            		prodId = el.Producto().id;
-            	}
-            	el.producto_id ( prodId );
-            });
-
-            
-            
-             //  para cada comandera
-            $cakeSaver.send({
-                url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 
-                obj: comanderaComanda
-            }).done( function ( data ) {
-
-                if ( data && data.Comanda && data.Comanda.DetalleComanda) {
-                    data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
-                    nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
-
-                      // comanderaComanda.id( data.Comanda.Comanda.id );
-                    comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
-                }
-
-            }).error( function ( ev ) {
-                alert("Se produjo un error de conexión en el servidor, no se pudo guardar.");
-            });
+            var comandera = comanderas[com];
+            this.__generarComandaXComandera(comandera, comandaJsonCopy);
         }
     },
     

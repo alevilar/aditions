@@ -863,6 +863,54 @@ font-size: 10px;
 }
 
 
+#listado-mesas .mesa-sync-status{
+    display: block;
+    position: absolute;
+    font-weight: bolder;
+    top: -10px;
+    left: -8px;
+}
+
+.mesa-sync-status-ok{
+    color: green;
+}
+
+.mesa-sync-status-error{
+    color: #c30000;
+}
+
+.mesa-sync-status-syncing{
+    color: #006da5;
+}
+
+
+.block-descr{
+    background: red;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+}
+
+
+
+
+.mesa-blink-error {
+  animation: blink-error 1s steps(5, start) infinite;
+  -webkit-animation: blink-error 1s steps(5, start) infinite;
+}
+@keyframes blink-error {
+  to {
+    border: 1px solid red;
+  }
+}
+@-webkit-keyframes blink-error {
+  to {
+    border: 1px solid black;
+  }
+}
+
+
+
 /* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
 @media screen and (max-height: 450px) {
     .overlay a {font-size: 20px}
@@ -871,3 +919,7 @@ font-size: 10px;
         top: 15px;
         right: 35px;
     }
+
+
+
+}

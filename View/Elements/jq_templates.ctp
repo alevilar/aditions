@@ -195,12 +195,22 @@ el ajax que verifica el estado de las mesas (si fue abierta o cerrada alguna. --
 <script id="listaMesas" type="text/x-jquery-tmpl">
     <li data-bind="attr: {mozo: mozo().id(), 'id': 'mesa-li-id-'+id(), 'class': estado().icon}">
 
-     <a  data-bind="click: seleccionar, attr: {accesskey: numero, id: 'mesa-id-'+id()}" 
+     <a  data-bind="click: seleccionar, attr: {accesskey: numero, id: 'mesa-id-'+id()}, 'css': {'mesa-blink-error':sync()<1}" 
             data-theme="c"
             data-role="button" 
             href="#mesa-view" 
             class="ui-btn ui-btn-up-c"
             >
+              
+              <span  class="mesa-sync-status mesa-sync-status-syncing" data-bind="visible: sync() == 0 ">
+                  ⇅
+              </span>
+
+              <span  class="mesa-sync-status mesa-sync-status-error" data-bind="visible: sync() < 0">
+                    &#9888;
+              </span>
+
+
                 <span  class="mesa-tipofactura" data-bind="visible: clienteTipoFacturaText()">
                     <span data-bind="text: clienteTipoFacturaText()"></span>
                     <span data-bind="text: clienteNameData()"></span>

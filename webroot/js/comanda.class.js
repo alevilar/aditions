@@ -87,10 +87,11 @@ Risto.Adition.comanda.prototype = {
             if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
                 // imprimir local fiscalberry
                 PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this, Risto.printerComanderaPPal.Printer.alias);
+            } else {
+                // imprimir con server
+                $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
             }
             
-            // imprimir con server
-            $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
             
         }
     },

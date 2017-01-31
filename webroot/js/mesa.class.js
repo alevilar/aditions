@@ -15,6 +15,18 @@ var Mesa = function(mozo, jsonData) {
         this.checkin        = ko.observable();
 
 
+        /**
+        *   Syn indica el estado de sincronizacion de los datos con el servidor
+        *   -1 ERROR
+        *    0 Sincronizando
+        *   +1 Sync OK
+        **/
+        this.sync           = ko.observable(1); 
+        this.syncError      = ko.observable(false);
+        this.createTimeout  = null;
+        this.savePagosTimeout  = null;
+
+
         this.checkout       = ko.observable();
         this.observation    = ko.observable('');
 
@@ -103,7 +115,31 @@ Mesa.prototype = {
      *  crea una nueva mesa guardandola en el server
      */
     create: function( ) {
-        return $cakeSaver.send({url: this.urlAdd(), obj: this});
+        var self = this,
+            retry = Risto.MESAS_RELOAD_INTERVAL; // 30 segundos para reconectar
+
+        self.sync(0);
+        var snd = {
+            url: this.urlAdd(), 
+            obj: this            
+        };
+        var ret = $cakeSaver.send(snd);
+
+        ret.done(function(){
+            self.sync(1);
+        });
+
+        ret.error(function( ev ) {
+            self.sync(-1);
+
+            self.createTimeout = setTimeout(function(){ 
+                self.create();
+            }, retry);
+
+
+        });
+
+        return ret;
     },
     
     /**
@@ -857,35 +893,42 @@ Mesa.prototype = {
 
     savePagos: function () {
     	var m = this;
-    	var mes = {
-            Mesa: {
-                id: m.id(),
-                estado_id: m.estado_id(),
-                time_cobro: m.time_cobro(),
-                model: 'Mesa'
-            },
-            Pago: m.Pago()
-        };
-        
+
+        m.sync(0);
+
         // guardo los pagos
-        $cakeSaver.send({
+        var ret = $cakeSaver.send({
             url: URL_DOMAIN + TENANT + '/mesa/pagos/add',
-            obj: mes
-        }, function(d){
-            
+            obj: m
         });
 
-        
-        if ( this.Pago().length == 1 && !this.Pago()[0].valor() ) {
-            // es porque la mesa esta cobrada
-            this.setEstadoCobrada();
-        }
+        ret.done(function(){
+            m.sync(1);
+
+            if ( m.Pago().length == 1 && !m.Pago()[0].valor() ) {
+                // es porque la mesa esta cobrada
+                m.setEstadoCobrada();
+            }
 
 
-        if ( this.totalPagos() && this.vuelto() >= 0) {
-        	// es porque la mesa esta cobrada
-        	this.setEstadoCobrada();
-        }
+            if ( m.totalPagos() && m.vuelto() >= 0) {
+            	// es porque la mesa esta cobrada
+            	m.setEstadoCobrada();
+            }
+
+        });
+
+        ret.error(function(){
+            m.sync(-1);
+
+            m.savePagosTimeout = setTimeout(function(){
+                m.savePagos();
+            }, Risto.MESAS_RELOAD_INTERVAL)
+
+        });
+
     }
+
+
 
 };

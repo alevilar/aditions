@@ -324,8 +324,14 @@ PrinterDriver = {
                 }
             }
         }
-        for(var i=0; i<comanderasInvolucradas.length;i++) {
-            var printerName = comanderasInvolucradas[i].Printer.alias;
+
+        if ( typeof printerName == "undefined" ) {
+            // imprimir en todas las comandas involucradas
+            for(var i=0; i<comanderasInvolucradas.length;i++) {                
+                PrinterDriver.__doPrintComanda(mesa, comanda, comanderasInvolucradas[i].Printer.alias);
+            }
+        } else {
+            // imprimir solo en 1 comanda
             PrinterDriver.__doPrintComanda(mesa, comanda, printerName);
         }
         
@@ -555,8 +561,6 @@ PrinterDriver = {
                         " "
                     ];
         }
-
-console.info("el json ara imprimir es %o", jsonRet);
 
 
         jsonRet = JSON.stringify(jsonRet);

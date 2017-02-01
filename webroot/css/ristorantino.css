@@ -901,11 +901,13 @@ font-size: 10px;
 @keyframes blink-error {
   to {
     border: 1px solid red;
+    background-color: #feffbc;
   }
 }
 @-webkit-keyframes blink-error {
   to {
-    border: 1px solid black;
+    border: 1px solid red;
+    background-color: #feffbc;
   }
 }
 

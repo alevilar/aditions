@@ -10790,8 +10790,14 @@ PrinterDriver = {
                 }
             }
         }
-        for(var i=0; i<comanderasInvolucradas.length;i++) {
-            var printerName = comanderasInvolucradas[i].Printer.alias;
+
+        if ( typeof printerName == "undefined" ) {
+            // imprimir en todas las comandas involucradas
+            for(var i=0; i<comanderasInvolucradas.length;i++) {                
+                PrinterDriver.__doPrintComanda(mesa, comanda, comanderasInvolucradas[i].Printer.alias);
+            }
+        } else {
+            // imprimir solo en 1 comanda
             PrinterDriver.__doPrintComanda(mesa, comanda, printerName);
         }
         
@@ -11021,8 +11027,6 @@ PrinterDriver = {
                         " "
                     ];
         }
-
-console.info("el json ara imprimir es %o", jsonRet);
 
 
         jsonRet = JSON.stringify(jsonRet);
@@ -12709,7 +12713,7 @@ Risto.Adition.comanda.prototype = {
         if (window.confirm("¿Seguro desea reimprimir comanda?")) {
             if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
                 // imprimir local fiscalberry
-                PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this, Risto.printerComanderaPPal.Printer.alias);
+                PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this);
             } else {
                 // imprimir con server
                 $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
@@ -12796,9 +12800,10 @@ Risto.Adition.comandaFabrica.prototype = {
 
 
     __doCakeSave: function( comanderaComanda ) {
+
         var self = this;
          //  para cada comandera
-        $cakeSaver.send({
+        var ret = $cakeSaver.send({
             url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 
             obj: comanderaComanda
         }).done( function ( data ) {
@@ -12812,13 +12817,15 @@ Risto.Adition.comandaFabrica.prototype = {
                 comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
             }
 
-        }).error( function ( ev ) {
+        }).fail( function ( ev ) {
             self.mesa.sync(-1);
 
             setTimeout(function(){
                 self.__doCakeSave( comanderaComanda );
             }, Risto.MESAS_RELOAD_INTERVAL);
         });
+
+        return ret;
     },
 
     __generarComandaXComandera  : function(comandera, comandaJsonCopy){
@@ -12841,7 +12848,7 @@ Risto.Adition.comandaFabrica.prototype = {
             el.producto_id ( prodId );
         });
 
-        this.__doCakeSave( comanderaComanda );
+        return this.__doCakeSave( comanderaComanda );
 
     },
     
@@ -12854,14 +12861,63 @@ Risto.Adition.comandaFabrica.prototype = {
      * @param comanderas Array listado de comandas
      */
     __generarComanda: function( comandaJsonCopy, comanderas ){
-        
-         // creo una nueva comanda para cada comandera
-        for (var com in comanderas ) {
-            var comandera = comanderas[com];
-            this.__generarComandaXComandera(comandera, comandaJsonCopy);
+        var comanda = this.comanda,
+            mesa    = this.mesa;
+        // imprimir comanda con fiscalberry
+        if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
+            PrinterDriver.printComanda(this.mesa, comanda);
         }
+        
+        var imprimio = false;
+        function imprimirComandaError() {
+            if ( !imprimio ) {
+                // imprimir solo 1 vez
+                var obsAnt = comanda.observacion();
+                // mandar comandera por la comandera PRINCIPAL para que se enteren que no se guardaron los cambios
+                // y que se podria estar "regalando" comida
+
+                var newObs = "ERROR DE SINCRONIZACION. Reimprimiendo la siguiente comanda no pudo ser guardada pero salio impresa. VERIFICAR TODAS LAS COMPUTADORAS CONECTADAS";
+
+                if ( obsAnt ) {
+                    newObs += "\n\nOBS: "+obsAnt;
+                }
+                comanda.observacion(newObs);
+
+
+                PrinterDriver.printComanda(mesa, comanda, Risto.printerComanderaPPal.Printer.alias);        
+                imprimio = true;
+            }
+        }
+
+
+        var promises = this.__ejecutarComanderasDeferrer(comandaJsonCopy, comanderas);
+        $.when.apply(this, promises)
+            .fail(function(){
+                imprimirComandaError();
+            });
+
     },
     
+
+    /**
+    *
+    *       @return list of promises
+    **/
+    __ejecutarComanderasDeferrer: function( comandaJsonCopy, comanderas ) {
+
+        // creo una nueva comanda para cada comandera
+        var proms = [];
+        for (var com in comanderas ) {
+            var comandera = comanderas[com];
+            var comanderaName = Risto.getPrinterId(com);
+
+            proms.push ( this.__generarComandaXComandera(comandera, comandaJsonCopy) );
+        }
+        return proms;
+
+        
+
+    },
     
     save: function() {
         if ( !this.mesa){
@@ -12908,13 +12964,7 @@ Risto.Adition.comandaFabrica.prototype = {
                 imprimir: this.comanda.imprimir()
             }
         
-        this.__generarComanda(comandaJsonCopy, comanderas);
-        
-
-        // imprimir comanda con fiscalberry
-        if ( Risto.printerComanderaPPal && PrinterDriver.isConnected() ) {
-            PrinterDriver.printComanda(this.mesa, this.comanda, Risto.printerComanderaPPal.Printer.alias);
-        }
+        this.__generarComanda(comandaJsonCopy, comanderas); 
 
 
         return this.comanda;

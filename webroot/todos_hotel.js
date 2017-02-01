@@ -12876,7 +12876,7 @@ Risto.Adition.comandaFabrica.prototype = {
                 // mandar comandera por la comandera PRINCIPAL para que se enteren que no se guardaron los cambios
                 // y que se podria estar "regalando" comida
 
-                var newObs = "ERROR DE SINCRONIZACION. Reimprimiendo la siguiente comanda no pudo ser guardada pero salio impresa. VERIFICAR TODAS LAS COMPUTADORAS CONECTADAS";
+                var newObs = "ERROR DE SINCRONIZACION.\nReimprimiendo comanda\nVERIFICAR TODAS LAS\nCOMPUTADORAS CONECTADAS";
 
                 if ( obsAnt ) {
                     newObs += "\n\nOBS: "+obsAnt;
@@ -12893,9 +12893,9 @@ Risto.Adition.comandaFabrica.prototype = {
         var promises = this.__ejecutarComanderasDeferrer(comandaJsonCopy, comanderas);
         $.when.apply(this, promises)
             .fail(function(){
+                console.error("voy a imprimir comanda de error porque falló");
                 imprimirComandaError();
             });
-
     },
     
 
@@ -12914,8 +12914,6 @@ Risto.Adition.comandaFabrica.prototype = {
             proms.push ( this.__generarComandaXComandera(comandera, comandaJsonCopy) );
         }
         return proms;
-
-        
 
     },
     

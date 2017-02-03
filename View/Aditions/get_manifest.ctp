@@ -29,9 +29,9 @@ echo $this->Html->url('/aditions/css/jquery-mobile/jquery.mobile-custom.css', tr
 
 
 if ( Configure::check('Site.type') && Configure::read('Site.type') == SITE_TYPE_HOTEL ) {
-    echo $this->Html->url('/aditions/todos_hotel.min', true)."\n";
+    echo $this->Html->url('/aditions/todos_hotel.min.js', true)."\n";
 } else {
-    echo $this->Html->url('/aditions/todos.min', true)."\n";
+    echo $this->Html->url('/aditions/todos.min.js', true)."\n";
 }
 
 

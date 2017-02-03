@@ -40,6 +40,24 @@ class AditionsController extends AditionsAppController {
             $this->set('observaciones', ClassRegistry::init('Comanda.Observacion')->find('list', array('order' => 'Observacion.name')));
             $this->set('observacionesComanda', ClassRegistry::init('Comanda.ObservacionComanda')->find('list', array('order' => 'ObservacionComanda.name')));
 	}
+
+
+
+	function get_manifest(){
+		$this->layout = false;
+		$this->response->header( 'Content-type', "text/cache-manifest");
+
+
+		$this->set('categorias', $this->Categoria->find('list', array(
+			'fields' => array('id', 'media_id')
+			)));
+
+		$this->set('tipo_de_pagos', $this->Mozo->Mesa->Pago->TipoDePago->find('list', array(
+			'fields' => array('id', 'media_id')
+			)));
+
+		$this->set('mozos', $this->Mozo->dameActivos());
+	}
     
 
 	

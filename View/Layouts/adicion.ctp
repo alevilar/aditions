@@ -1,9 +1,14 @@
-<?php App::uses('MtSites', 'MtSites.Utility'); ?>
 <!DOCTYPE HTML>
-<html xml:lang="es-ES" lang="es-ES" dir="ltr">    
+<?php App::uses('MtSites', 'MtSites.Utility'); ?>
+
+<?php if ( Configure::read('debug') > 0 ) { ?>
+    <html>
+<?php } else { ?>
+    <html manifest="<?php echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'get_manifest') )?>">    
+<?php } ?>
 <head>
 
-    <link rel="manifest" href="<?php echo $this->Html->url('/aditions/manifest.json')?>">
+    <!-- <link rel="manifest" href="<?php echo $this->Html->url('/aditions/manifest.json')?>"> -->
 
         <meta charset="utf-8">
         <script type="text/javascript">
@@ -14,9 +19,6 @@
             var RISTO_CUBIERTOS_OBLIGATORIOS = JSON.parse( '<?php echo json_encode( Configure::read('Adicion.cantidadCubiertosObligatorio'), JSON_NUMERIC_CHECK );?>');
             var RISTO_CONFIGURE_SITE = JSON.parse( '<?php echo json_encode( Configure::read('Site'), JSON_NUMERIC_CHECK );?>');
             var RISTO_CONFIGURE_ADICION = JSON.parse( '<?php echo json_encode( Configure::read('Adicion'), JSON_NUMERIC_CHECK );?>');
-
-
-
        
        
         <?php if (Configure::check('Printer.fiscalberry_ip') ) { ?>
@@ -35,7 +37,7 @@
 		<?php echo $title_for_layout; ?>
 	</title>
         
-        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"> 
         <meta name="apple-mobile-web-app-capable" content="yes">
 
 
@@ -52,7 +54,8 @@
         <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
         <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-        <link rel="manifest" href="/manifest.json">
+        
+
         <meta name="msapplication-TileColor" content="#666666">
         <meta name="msapplication-TileImage" content="/mstile-144x144.png">
         <meta name="theme-color" content="#ffffff">

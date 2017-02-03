@@ -1,7 +1,9 @@
 <?php echo $this->element('jq_templates'); ?>
 <?php echo $this->element('jq_calendar'); ?>
 
-      
+<?php echo $this->Html->css('Risto.layout_header_late');?>
+
+
 <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL ) {  ?>
 
 
@@ -14,12 +16,32 @@
 -->
 <!-- Pagina 1, Home Page por default segun JQM: Listado de Mesas -->
 <div data-role="page" id="listado-mesas">
+    <div style="padding: 0px; position: absolute; z-index:99999; margin: 3px;">
+            <?php
+                $imgLogo = $this->Html->image('/paxapos/img/isologo_rojo.png', array('height'=>'50px'));
 
-    <div  data-role="header">
+                $imgpaxapos = $this->Html->image('/paxapos/img/logotypo_azul.png', array('style'=>'height: 30px; position:relative; top: -10px; left: 20px; opacity: 0.8'));
 
-            <h1><span style="color: #fcf0b5" data-bind="text: adn().mesas().length">0</span> <?php echo Inflector::pluralize( Configure::read('Mesa.tituloMesa') )?></h1>
+                $link = $this->Html->link($imgLogo, '#adicion-opciones' , array(
+                       // 'data-ajax' => 'false',
+                        'data-rel'  => 'dialog',
+                        'class'     => 'navbar-brand ui-btn-left late', 
+                        'escape'    => false,
+                        'id' => 'isologo',
+                        'class' => 'late',
+                      // 'data-icon' => "gear",
+                        'data-rel'  => "dialog",
+                        'data-enhance' => false,
+                        )); 
+            
+            echo $link.$imgpaxapos;
+            ?>
+    </div>
 
-            <a href='#adicion-opciones' data-icon="gear" data-rel="dialog" class="ui-btn-right">Opciones</a>                    
+
+
+    <div  data-role="header" data-theme="c">
+            <h1 class="pull-right"><span style="color: #9a820b" data-bind="text: adn().mesas().length">0</span> <?php echo Inflector::pluralize( Configure::read('Mesa.tituloMesa') )?></h1>
     </div>
                     
     <div  data-role="content" class="content_mesas">       
@@ -79,15 +101,28 @@
         <div class="calendar-grid">
             <div class="controll control-header">
                 <div class="col-header btn-controls">
-                    <?php
-                        $imgLogo = $this->Html->image('/paxapos/img/isologo_rojo.png');
-                        echo $this->Html->link($imgLogo, '#adicion-opciones' , array(
-                               // 'data-ajax' => 'false',
-                                'data-rel' => 'dialog',
-                                'class' => 'navbar-brand', 
-                                'escape'=>false
-                                )); 
-                    ?>
+                    <div>
+                            <?php
+                                $imgLogo = $this->Html->image('/paxapos/img/isologo_rojo.png', array('height'=>'50px'));
+
+                                $imgpaxapos = $this->Html->image('/paxapos/img/logotypo_azul.png', array('style'=>'height: 15px; position:relative; top: -15px; left: 20px; opacity: 0.8'));
+
+                                $link = $this->Html->link($imgLogo, '#adicion-opciones' , array(
+                                       // 'data-ajax' => 'false',
+                                        'data-rel'  => 'dialog',
+                                        'class'     => 'navbar-brand ui-btn-left late', 
+                                        'escape'    => false,
+                                        'id' => 'isologo',
+                                        'class' => 'late',
+                                      // 'data-icon' => "gear",
+                                        'data-rel'  => "dialog",
+                                        'data-enhance' => false,
+                                        )); 
+                            
+                            echo $link.$imgpaxapos;
+                            ?>
+                    </div>
+
 
                     <div class="control-actions">                            
                         <a href="#" class="ui-btn-active controll back" onclick='Risto.Adition.adicionar.calendarGrid.prevWeek()'>&lt;&lt;</a>
@@ -128,7 +163,7 @@
     <div data-role="header">
         <h1>Opciones de Cajero</h1>
     </div>
-    <div data-role="content">
+    <div data-role="content"">
         
             <a href="#listado-mesas" data-role="button">Modo Adicionista</a>
 
@@ -142,8 +177,6 @@
                 echo $this->element( $cajeroElOps ); 
             }
             ?>
-            
-           
             
             <div class="ui-grid-a">
                 <div class="ui-block-a"><a href="#" data-rel="back" data-role="button">Cancelar</a></div>
@@ -204,21 +237,44 @@
 <!-- Pagina 1, Home Page por default segun JQM: Listado de Mesas -->
 <div data-role="page" id="listado-mesas-cerradas">
 
-	<div  data-role="header">
-            <h1><span style="color: #fcf0b5" data-bind="text: adn().mesasCerradas().length">0</span> <?php echo Inflector::pluralize( Configure::read('Mesa.tituloMesa') )?> Cerradas
-                y <span data-bind="text: Math.abs(adn().mesasCerradas().length - adn().mesas().length)"></span> abiertas
-            </h1>
 
-            <a href='#cajero-opciones' data-icon="gear" data-rel="dialog" class="ui-btn-right">Opciones</a>
-        </div>
+    <div style="padding: 0px; position: absolute; z-index:99999; margin: 3px;">
+            <?php
+                $imgLogo = $this->Html->image('/paxapos/img/isologo_rojo.png', array('height'=>'50px'));
+
+                $imgpaxapos = $this->Html->image('/paxapos/img/logotypo_azul.png', array('style'=>'height: 30px; position:relative; top: -10px; left: 20px; opacity: 0.8'));
+
+                $link = $this->Html->link($imgLogo, '#cajero-opciones' , array(
+                       // 'data-ajax' => 'false',
+                        'data-rel'  => 'dialog',
+                        'class'     => 'navbar-brand ui-btn-left late', 
+                        'escape'    => false,
+                        'id' => 'isologo',
+                        'class' => 'late',
+                      // 'data-icon' => "gear",
+                        'data-rel'  => "dialog",
+                        'data-enhance' => false,
+                        )); 
+            
+            echo $link.$imgpaxapos;
+            ?>
+    </div>
+
+
+	<div  data-role="header" data-theme="c">
+        <h1><span style="color: #9a820b" data-bind="text: adn().mesasCerradas().length">0</span> <?php echo Inflector::pluralize( Configure::read('Mesa.tituloMesa') )?> Cerradas
+            y <span data-bind="text: Math.abs(adn().mesasCerradas().length - adn().mesas().length)"></span> abiertas
+        </h1>
+
+    </div>
 
                     
-        <div  data-role="content" class="content_mesas">
-                <!-- aca va el listado de mesas que se carga dinamicamente en un script de abajo -->
-                <ul id="ul-mesas-cajero" class="listado-adicion" data-bind='template: { name: "listaMesasCajero", foreach: adn().mesasCerradas }'>
-                       
-                </ul>
-        </div><!-- /navbar -->
+    <div  data-role="content" class="content_mesas">
+            <!-- aca va el listado de mesas que se carga dinamicamente en un script de abajo -->
+            <ul id="ul-mesas-cajero" class="listado-adicion" data-bind='template: { name: "listaMesasCajero", foreach: adn().mesasCerradas }'>
+                   
+            </ul>
+    </div><!-- /navbar -->
             
 </div>
 <!-- Fin Pagina Cajero -->
@@ -617,6 +673,7 @@
 
 -->
 <div data-role="page" id="mesa-cobrar" data-theme="e" class="dialog-reancho dialog-arriba">
+
     <div data-role="header">
         <h1><?php echo Configure::read('Mesa.tituloMesa')?> <span data-bind="text: adn().currentMesa().numero()"></span> | <span data-bind="text: adn().currentMesa().vueltoText()"></span></h1>
         <a href="#mesa-view" data-direction="reverse">Ver Mesa</a>        

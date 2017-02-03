@@ -192,7 +192,7 @@ ul.listado-adicion .mesa-mozo,ul.listado-adicion .mozo-cant-mesas {
     display: none;
 }
 
-#listado-mozos, #listado-mesas  {
+#listado-mozos, #listado-mesas, #listado-mesas-cerradas  {
      background:#BBBBBB;
 }
 

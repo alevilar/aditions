@@ -81,8 +81,8 @@ foreach ($tipo_de_pagos as $mediaId) {
 
 echo "#mesa-view";
 echo $this->Html->url( '/paxapos/img/isologo_rojo.png', true). "\n";
-echo $this->Html->url( '/mesa-abrio.png', true)."\n";
-echo $this->Html->url( '/mozomoniob.png', true)."\n";
+echo $this->Html->url( '/img/mesa-abrio.png', true)."\n";
+echo $this->Html->url( '/img/mozomoniob.png', true)."\n";
 echo $this->Html->url( '/aditions/css/img/products_64.png', true ). "\n";
 echo $this->Html->url( '/aditions/css/img/customers.png', true ). "\n";
 echo $this->Html->url( '/aditions/css/img/cerrarmesa.png') . "\n";

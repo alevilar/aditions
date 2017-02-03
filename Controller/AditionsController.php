@@ -42,6 +42,23 @@ class AditionsController extends AditionsAppController {
 	}
 
 
+	function js_init() {
+		$this->layout = false;
+		$this->response->header( 'Content-type', "application/javascript");
+
+		$this->Printer->recursive = -1;
+    	$this->set('categorias', $this->Categoria->array_listado());
+        $this->set('tipo_de_pagos', $this->Mozo->Mesa->Pago->TipoDePago->find('all'));
+        $this->set('mesas', $this->Mozo->mesasAbiertas());
+        $this->set('mozos', $this->Mozo->dameActivos());
+        $this->set('printer', $this->Printer->read(null, Configure::read('Printers.fiscal_id') ));
+        $this->set('comanderaPpal', $this->Printer->read(null, Configure::read('Printers.receipt_id') ));
+        $this->set('printers', $this->Printer->find('all', array('recursive'=>-1)));
+        $this->set('observaciones', ClassRegistry::init('Comanda.Observacion')->find('list', array('order' => 'Observacion.name')));
+        $this->set('observacionesComanda', ClassRegistry::init('Comanda.ObservacionComanda')->find('list', array('order' => 'ObservacionComanda.name')));
+		
+	}
+
 
 	function get_manifest(){
 		$this->layout = false;

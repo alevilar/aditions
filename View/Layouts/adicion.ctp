@@ -147,13 +147,12 @@
 
 
     //scripts de Cake
-    echo $this->element('js_init');
+    $url = $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_init'), true);
+    echo $this->Html->script( $url );
     
     echo $scripts_for_layout;
     
 ?>
-
-
 
 </head>
 

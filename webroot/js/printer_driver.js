@@ -38,20 +38,21 @@ PrinterDriver = {
                                 <ul class="printer-driver-msg"></ul>\
                                </div>');
             PrinterDriver.$printerDriverContainer.css({
-                'position': 'fixed',
-                'top': '10px',
-                'left': '10px',
-                'width': '300px',
-                'height': '20px',
-                'padding': '3px'
+                   'position': 'fixed',
+                   'z-index': '9999999',
+                   'top': '10px',
+                   'right': '10px',
+                   'width': '300px',
+                   'height': '30px',
+                   'padding': '3px',
+                   'overflow': 'hidden'
             });
 
             $(".icon", PrinterDriver.$printerDriverContainer).css({
-                'position': 'absolute',
-                'top': '10px',
-                'left': '10px',
+                'float': 'right',
                 'width': '20px',
                 'height': '20px',
+                'margin-top': '8px',
                 '-webkit-border-radius': '50px',
                 '-moz-border-radius': '50px',
                 'border-radius': '50px'
@@ -60,29 +61,30 @@ PrinterDriver = {
 
             $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).css({
                 'padding': '0px',
-                'position': 'absolute',
-                'top': '-10px',
-                'left': '50px',
-                'width': '300px',
-                'color': '#AEFFAE',
-                'font-size': '8pt'
+                'color': '#0c6b00',
+                'text-align': 'right',
+                'font-size': '8pt',
+                'margin-right': '30px',
+                'float': 'right'
             });
-
             if ( PrinterDriver.fbrry.isConnected() ) {
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'green');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', '#0c6b00');
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter ONLINE</li>");
+
             } else {
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', '#ce2116');
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter DESCONECTADO</li>");
             }
-            PrinterDriver.$printerDriverContainer.appendTo( $("#listado-mesas") );
+            PrinterDriver.$printerDriverContainer.appendTo( $("body") );
 
             // al conectar poner en verde
             PrinterDriver.fbrry.bind('open', function(){
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'green');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', '#0c6b00');
             });
 
             // al desconectar poner en rojo nuevDataamente
             PrinterDriver.fbrry.bind('close', function(){
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', '#ce2116');
             });
 
             PrinterDriver.fbrry.bind('fb:msg', function( ev, evData ){
@@ -94,7 +96,8 @@ PrinterDriver = {
                         }
                     }
                 }
-                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html(msg);
+                var msgAnt = $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html();
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html(msg + msgAnt);
             });
         });
     },

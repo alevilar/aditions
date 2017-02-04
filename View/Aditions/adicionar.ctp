@@ -1,8 +1,6 @@
 <?php echo $this->element('jq_templates'); ?>
 <?php echo $this->element('jq_calendar'); ?>
 
-<?php echo $this->Html->css('Risto.layout_header_late');?>
-
 
 <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL ) {  ?>
 

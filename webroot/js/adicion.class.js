@@ -205,18 +205,20 @@ Risto.Adition.adicionar = {
         Risto.Adition.handleMesasRecibidas.created.call( Risto.Adition.adicionar, mesas );
 
 
-        Risto.Adition.tenantIo = io(Risto.URL_DOMAIN.slice(0,-1)+":8085");
+        if ( typeof io != 'undefined' ) {
+            Risto.Adition.tenantIo = io(Risto.URL_DOMAIN.slice(0,-1)+":8085");
+
+            Risto.Adition.tenantIo.on('connect', function(){
+                Risto.Adition.tenantIo.emit('join', Risto.TENANT);
+            });
 
 
-        Risto.Adition.tenantIo.on('connect', function(){
-            Risto.Adition.tenantIo.emit('join', Risto.TENANT);
-        });
+            Risto.Adition.tenantIo.on('mesa:add', alAgregarMesa);
+            Risto.Adition.tenantIo.on('mesa:edit', alEditarMesa);
+            Risto.Adition.tenantIo.on('mesa:delete', alBorrarMesa);
+            Risto.Adition.tenantIo.on("reconnect", reconectarYPedirDataActualizada);
+        }
 
-
-        Risto.Adition.tenantIo.on('mesa:add', alAgregarMesa);
-        Risto.Adition.tenantIo.on('mesa:edit', alEditarMesa);
-        Risto.Adition.tenantIo.on('mesa:delete', alBorrarMesa);
-        Risto.Adition.tenantIo.on("reconnect", reconectarYPedirDataActualizada);
 
 
         function updateMesa(data) {

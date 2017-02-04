@@ -1,9 +1,11 @@
 CACHE MANIFEST
-# 2017-02-03 21:23 :v1
+# 2017-02-03 22:59 :v1
 
 
 # Explicitly cached entries
 <?php
+// home page
+echo $this->Html->url( array('plugin'=>'risto', 'controller'=>'pages', 'action'=>'display', 'dashboard'), true). "\n";
 
 //scripts de Cake
 echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_init'), true). "\n";
@@ -22,6 +24,11 @@ echo $this->Html->url ("/android-chrome-192x192.png", true ) . "\n";
 echo $this->Html->url ("/favicon-96x96.png", true ) . "\n";
 echo $this->Html->url ("/favicon-16x16.png", true ) . "\n";
 echo $this->Html->url( "/mstile-144x144.png", true) . "\n";
+echo $this->Html->url( "/aditions/css/jquery-mobile/images/ajax-loader.png ", true) . "\n";
+echo $this->Html->url( "/aditions/css/img/loading.gif", true) . "\n";
+echo $this->Html->url( "/aditions/css/jquery-mobile/images/icons-18-white.png", true) . "\n";
+
+
 
 
 echo $this->Html->url('/aditions/css/jquery-mobile/jquerymobile.coqus.css', true)."\n";
@@ -34,7 +41,7 @@ echo $this->Html->url('/aditions/css/jquery-mobile/jquery.mobile-custom.css', tr
 if ( Configure::check('Site.type') && Configure::read('Site.type') == SITE_TYPE_HOTEL ) {
     echo $this->Html->url('/aditions/todos_hotel.min.js', true)."\n";
 } else {
-    echo $this->Html->url('/aditions/todos.min.js', true)."\n";
+    echo $this->Html->url('/aditions/todos.js', true)."\n";
 }
 
 
@@ -107,11 +114,10 @@ echo $this->Html->url( '/aditions/css/img/editarmesa.png', true) ."\n";
 
 # offline.html will be displayed if the user is offline
 # FALLBACK:
-
+<?php echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_mesas_init'), true); ?> <?php echo $this->Html->url( '/aditions/js/js_mesas_init_fallback', true ). "\n"; ?>
 
 # All other resources (e.g. sites) require the user to be online. 
 NETWORK:
-*
 <?php echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_mesas_init'), true). "\n"; ?>
 
 # Additional resources to cache

@@ -258,18 +258,18 @@ Mesa.prototype = {
    
 
     /* listado de URLS de accion con la mesa */
-    urlGetData: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/ticket_view/'+this.id() },
-    urlView: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/view/'+this.id() },
-    urlEdit: function() { return URL_DOMAIN + TENANT + '/mesas/ajax_edit/'+this.id() },
-    urlAdd: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/add.json' },
-    urlFullEdit: function() { return URL_DOMAIN + TENANT + '/mesas/edit/'+this.id() },
-    urlDelete: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/delete/'+this.id() },
-    urlComandaAdd: function() { return URL_DOMAIN + TENANT +'/mesa/comandas/add/'+this.id() },
-    urlReimprimirTicket: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/imprimirTicket/'+this.id() },
-    urlCerrarMesa: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/cerrarMesa/'+this.id() },
-    urlReabrir: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/reabrir/'+this.id() },
+    urlGetData: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/ticket_view/'+this.id() },
+    urlView: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/view/'+this.id() },
+    urlEdit: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesas/ajax_edit/'+this.id() },
+    urlAdd: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/add.json' },
+    urlFullEdit: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesas/edit/'+this.id() },
+    urlDelete: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/mesas/delete/'+this.id() },
+    urlComandaAdd: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/comandas/add/'+this.id() },
+    urlReimprimirTicket: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/mesas/imprimirTicket/'+this.id() },
+    urlCerrarMesa: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/mesas/cerrarMesa/'+this.id() },
+    urlReabrir: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/mesas/reabrir/'+this.id() },
     urlAddCliente: function( clienteId ){
-        var url = URL_DOMAIN + TENANT + '/mesa/mesas/addClienteToMesa/'+this.id();
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/addClienteToMesa/'+this.id();
         if (clienteId){
             url += '/'+clienteId;
         }
@@ -466,7 +466,7 @@ Mesa.prototype = {
 
 
     doCheckout: function () {        
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/checkout';
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/checkout';
         var id;
         if (typeof this.id == 'function') {
             id = this.id();
@@ -509,7 +509,7 @@ Mesa.prototype = {
      * Envia un ajax con la peticion de cerrar esta mesa
      */
     cerrar: function(){
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/cerrarMesa' + '/' + this.currentMesa.id + '/0',
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/cerrarMesa' + '/' + this.currentMesa.id + '/0',
             self = this;
             
         $.get(url, {}, function(){
@@ -522,7 +522,7 @@ Mesa.prototype = {
      * Envia un ajax con la peticion de borrar esta mesa
      */
     borrar : function(){
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/delete/' +this.id,
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/delete/' +this.id,
             self = this;
         if (this.id() ) {
             $.get(url, {}, function(){
@@ -592,7 +592,7 @@ Mesa.prototype = {
         if (!data['data[Mesa][id]']) {
             data['data[Mesa][id]'] = this.id();
         }
-        $.post( window.URL_DOMAIN + TENANT + '/mesa/mesas/ajax_edit', data);
+        $.post( Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/ajax_edit', data);
         return this;
     },
     
@@ -898,7 +898,7 @@ Mesa.prototype = {
 
         // guardo los pagos
         var ret = $cakeSaver.send({
-            url: URL_DOMAIN + TENANT + '/mesa/pagos/add',
+            url: Risto.URL_DOMAIN + Risto.TENANT + '/mesa/pagos/add',
             obj: m
         });
 

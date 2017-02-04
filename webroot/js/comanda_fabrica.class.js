@@ -46,35 +46,40 @@ Risto.Adition.comandaFabrica.prototype = {
 
         var self = this;
          //  para cada comandera
-        var ret = $cakeSaver.send({
-            url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 
-            obj: comanderaComanda
-        }).done( function ( data ) {
+        var mesaId = parseInt(self.mesa.id());
+        if ( mesaId && mesaId > 0) {
+            comanderaComanda.mesa_id(mesaId);
+            this.mesa.sync(0);
+            var ret = $cakeSaver.send({
+                url: Risto.URL_DOMAIN + Risto.TENANT + '/comanda/detalle_comandas/add.json', 
+                obj: comanderaComanda
+            }).done( function ( data ) {
 
-            self.mesa.sync(1);
-            if ( data && data.Comanda && data.Comanda.DetalleComanda) {
-                data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
-                nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
+                self.mesa.sync(1);
+                if ( data && data.Comanda && data.Comanda.DetalleComanda) {
+                    data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
+                    nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
 
-                  // comanderaComanda.id( data.Comanda.Comanda.id );
-                comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
-            }
+                      // comanderaComanda.id( data.Comanda.Comanda.id );
+                    comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
+                }
 
-        }).fail( function ( ev ) {
-            self.mesa.sync(-1);
+            }).fail( function ( ev ) {
+                self.mesa.sync(-1);
 
-            setTimeout(function(){
-                self.__doCakeSave( comanderaComanda );
-            }, Risto.MESAS_RELOAD_INTERVAL);
-        });
+                setTimeout(function(){
+                    self.__doCakeSave( comanderaComanda );
+                }, Risto.MESAS_RELOAD_INTERVAL);
+            });
 
-        return ret;
+            return ret;
+        }
     },
 
     __generarComandaXComandera  : function(comandera, comandaJsonCopy){
         var comanderaComanda;
 
-        this.mesa.sync(0);
+        
 
         comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
         comanderaComanda.DetalleComanda( comandera );
@@ -165,17 +170,7 @@ Risto.Adition.comandaFabrica.prototype = {
                 jQuery.error("no hay una mesa setteada. No se puede guardar una comanda de ninguna mesa");
                 return null;
         }
-        
-        // si la mesa no tiene ID es porque aun no se guardo.. entonces vuelvo 
-        // a llamar a este metodo pero dentro de un rato
-        if ( !this.mesa.id() ) {
-            var este = this;
-            setTimeout( function(){ 
-                este.save();
-            }, Risto.MESAS_RELOAD_INTERVAL); 
-            return null;
-        }
-        
+     
         
         // separo la comanda generada en varias comandas
         // se genera 1 comanda por cada impresora que haya (comandera)

@@ -205,11 +205,11 @@ Risto.Adition.adicionar = {
         Risto.Adition.handleMesasRecibidas.created.call( Risto.Adition.adicionar, mesas );
 
 
-        Risto.Adition.tenantIo = io(URL_DOMAIN.slice(0,-1)+":8085");
+        Risto.Adition.tenantIo = io(Risto.URL_DOMAIN.slice(0,-1)+":8085");
 
 
         Risto.Adition.tenantIo.on('connect', function(){
-            Risto.Adition.tenantIo.emit('join', TENANT);
+            Risto.Adition.tenantIo.emit('join', Risto.TENANT);
         });
 
 
@@ -262,7 +262,7 @@ Risto.Adition.adicionar = {
         /**
          *  Esta funcion es la que ejecuta el ajax que va a devolver las mesas
          */
-            var url = URL_DOMAIN + TENANT + "/";
+            var url = Risto.URL_DOMAIN + Risto.TENANT + "/";
             
             // traer todas
             url = url + 'mesa/mozos/mesas_abiertas.json';
@@ -375,7 +375,7 @@ Risto.Adition.adicionar = {
      */
     ticketView: function ( elementToUpdate ) {
         var elem = elementToUpdate || document.createElement('div');
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/ticket_view' + '/'+this.currentMesa.id ;
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/ticket_view' + '/'+this.currentMesa.id ;
         return $(elem).load(url);
     },
 

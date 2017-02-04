@@ -11,31 +11,22 @@
     <!-- <link rel="manifest" href="<?php echo $this->Html->url('/aditions/manifest.json')?>"> -->
 
         <meta charset="utf-8">
-        <script type="text/javascript">
-        <!--
-            // Inicializacion de variable global de url
-            var URL_DOMAIN = "<?php echo $this->Html->url('/' ,true);?>";
-            var TENANT = "<?php echo  MtSites::getSiteName();?>";
-            var RISTO_CUBIERTOS_OBLIGATORIOS = JSON.parse( '<?php echo json_encode( Configure::read('Adicion.cantidadCubiertosObligatorio'), JSON_NUMERIC_CHECK );?>');
-            var RISTO_CONFIGURE_SITE = JSON.parse( '<?php echo json_encode( Configure::read('Site'), JSON_NUMERIC_CHECK );?>');
-            var RISTO_CONFIGURE_ADICION = JSON.parse( '<?php echo json_encode( Configure::read('Adicion'), JSON_NUMERIC_CHECK );?>');
-       
-       
-        <?php if (Configure::check('Printer.fiscalberry_ip') ) { ?>
-            var FISCALBERRYHOST = "<?php echo Configure::read('Printer.fiscalberry_ip');?>";
-        <?php } else { ?>
-            var FISCALBERRYHOST = "paxaprinter.local";
-        <?php } ?> 
-       
-
-
-        -->
-        </script>
     
 	<?php echo $this->Html->charset(); ?>
 	<title>
 		<?php echo $title_for_layout; ?>
 	</title>
+
+    <?php
+    //scripts de Cake
+    $url = $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_init'), true);
+    echo $this->Html->script( $url );
+
+    $url = $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_mesas_init'), true);
+    echo $this->Html->script( $url );
+    unset($url);
+    ?>
+
         
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"> 
         <meta name="apple-mobile-web-app-capable" content="yes">
@@ -146,9 +137,6 @@
 <?php
 
 
-    //scripts de Cake
-    $url = $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_init'), true);
-    echo $this->Html->script( $url );
     
     echo $scripts_for_layout;
     

@@ -171,7 +171,7 @@ Mozo.prototype = {
         } else {
             mediaId = this.media_id;
         }
-        return URL_DOMAIN + TENANT + "/risto/medias/thumb/" + mediaId + "/88/88";
+        return Risto.URL_DOMAIN + Risto.TENANT + "/risto/medias/thumb/" + mediaId + "/88/88";
     },
 
 

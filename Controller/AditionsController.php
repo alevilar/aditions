@@ -27,29 +27,30 @@ class AditionsController extends AditionsAppController {
 	 * la diferencia aca es que se van amostrar todas las mesas abiertas independientemente del mozo
 	 * @return unknown_type
 	 */
-	function adicionar()
-        {
+	function adicionar() {
+			$this->set('tipo_de_pagos', $this->Mozo->Mesa->Pago->TipoDePago->find('all'));
+		 	$this->set('mozos', $this->Mozo->dameActivos());
         	$this->Printer->recursive = -1;
-        	$this->set('categorias', $this->Categoria->array_listado());
-            $this->set('tipo_de_pagos', $this->Mozo->Mesa->Pago->TipoDePago->find('all'));
-            $this->set('mesas', $this->Mozo->mesasAbiertas());
-            $this->set('mozos', $this->Mozo->dameActivos());
-            $this->set('printer', $this->Printer->read(null, Configure::read('Printers.fiscal_id') ));
-            $this->set('comanderaPpal', $this->Printer->read(null, Configure::read('Printers.receipt_id') ));
-            $this->set('printers', $this->Printer->find('all', array('recursive'=>-1)));
             $this->set('observaciones', ClassRegistry::init('Comanda.Observacion')->find('list', array('order' => 'Observacion.name')));
             $this->set('observacionesComanda', ClassRegistry::init('Comanda.ObservacionComanda')->find('list', array('order' => 'ObservacionComanda.name')));
 	}
 
+	function js_mesas_init() {
+		$this->layout = false;
+		$this->response->header( 'Content-type', "application/javascript");
+
+
+		$this->set('categorias', $this->Categoria->array_listado());
+        $this->set('mesas', $this->Mozo->mesasAbiertas());
+	}
 
 	function js_init() {
 		$this->layout = false;
 		$this->response->header( 'Content-type', "application/javascript");
 
 		$this->Printer->recursive = -1;
-    	$this->set('categorias', $this->Categoria->array_listado());
-        $this->set('tipo_de_pagos', $this->Mozo->Mesa->Pago->TipoDePago->find('all'));
-        $this->set('mesas', $this->Mozo->mesasAbiertas());
+    	
+       // $this->set('tipo_de_pagos', $this->Mozo->Mesa->Pago->TipoDePago->find('all'));
         $this->set('mozos', $this->Mozo->dameActivos());
         $this->set('printer', $this->Printer->read(null, Configure::read('Printers.fiscal_id') ));
         $this->set('comanderaPpal', $this->Printer->read(null, Configure::read('Printers.receipt_id') ));

@@ -28,9 +28,9 @@ Risto.Adition.pago.prototype = {
     
     image: function(){
         if (this.TipoDePago() && typeof this.TipoDePago().media_id == 'function' && this.TipoDePago().media_id() ) {
-            return URL_DOMAIN + TENANT + '/risto/medias/view/' + this.TipoDePago().media_id();
+            return Risto.URL_DOMAIN + Risto.TENANT + '/risto/medias/view/' + this.TipoDePago().media_id();
         } else {
-            return URL_DOMAIN + TENANT + '/risto/medias/view/' + this.TipoDePago().media_id;
+            return Risto.URL_DOMAIN + Risto.TENANT + '/risto/medias/view/' + this.TipoDePago().media_id;
         }
 
         return '';
@@ -39,7 +39,7 @@ Risto.Adition.pago.prototype = {
 
     eliminar: function ( mesa ) {
         if ( this.id() ) {
-            var url = URL_DOMAIN + TENANT + '/mesa/pagos/delete/' + this.id();
+            var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/pagos/delete/' + this.id();
             $.ajax({
                 url: url,
                 type: 'DELETE'

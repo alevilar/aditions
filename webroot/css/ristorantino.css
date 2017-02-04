@@ -449,6 +449,26 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
 }
 
 
+.brand-logo{
+    padding: 0px; 
+    position: absolute; 
+    z-index:99999; 
+    margin: 3px;
+}
+
+.brand-logo .brand-logo-isologo{
+    height: 50px; 
+}
+
+.brand-logo .brand-logo-logotipo{
+    height: 30px; 
+    position:relative; 
+    top: -10px; 
+    left: 20px; 
+    opacity: 0.8
+}
+
+
 
 @media (max-width: 1100px) { 
     .mesa-tipofactura{
@@ -456,6 +476,13 @@ ul.tipo_de_pagos ,.tipo_de_pagos ul{
     }
     .mesa-time{
         display: none !important;
+    }
+    .brand-logo-logotipo{
+        display: none !important;
+    }
+
+    .printer-driver-msg{
+        display: none !important;   
     }
 }
 

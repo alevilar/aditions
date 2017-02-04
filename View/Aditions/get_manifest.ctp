@@ -1,9 +1,12 @@
 CACHE MANIFEST
-# 2017-02-01:v1
+# 2017-02-03 21:23 :v1
+
 
 # Explicitly cached entries
 <?php
 
+//scripts de Cake
+echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_init'), true). "\n";
 
 echo $this->Html->url ("/apple-touch-icon-57x57.png", true). "\n";
 echo $this->Html->url ("/apple-touch-icon-60x60.png", true). "\n";
@@ -109,6 +112,7 @@ echo $this->Html->url( '/aditions/css/img/editarmesa.png', true) ."\n";
 # All other resources (e.g. sites) require the user to be online. 
 NETWORK:
 *
+<?php echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_mesas_init'), true). "\n"; ?>
 
 # Additional resources to cache
 # CACHE:

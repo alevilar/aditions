@@ -5,12 +5,12 @@ if (typeof(Storage) !== "undefined") {
     // Code for localStorage/sessionStorage.
     var fiscalberryHost = localStorage.getItem("fiscalberryHost");
     if ( !fiscalberryHost ) {
-    	fiscalberryHost = FISCALBERRYHOST;
+    	fiscalberryHost = Risto.FISCALBERRYHOST;
     	localStorage.setItem("fiscalberryHost", fiscalberryHost);
     }
 } else {
     // Sorry! No Web Storage support..
-    var fiscalberryHost = FISCALBERRYHOST;
+    var fiscalberryHost = Risto.FISCALBERRYHOST;
 }
 
 
@@ -32,6 +32,8 @@ PrinterDriver = {
     
     _setUI: function(){
         $(function(){
+            var colorGreen  = '#0c6b00',
+                colorRed    = '#ce2116';
             PrinterDriver.$printerDriverContainer = 
                             $('<div id="printer-driver-container">\
                                 <div class="icon"></div>\
@@ -45,7 +47,8 @@ PrinterDriver = {
                    'width': '300px',
                    'height': '30px',
                    'padding': '3px',
-                   'overflow': 'hidden'
+                   'overflow': 'hidden',
+                   'color': colorGreen, // verde
             });
 
             $(".icon", PrinterDriver.$printerDriverContainer).css({
@@ -61,30 +64,35 @@ PrinterDriver = {
 
             $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).css({
                 'padding': '0px',
-                'color': '#0c6b00',
                 'text-align': 'right',
                 'font-size': '8pt',
                 'margin-right': '30px',
                 'float': 'right'
             });
             if ( PrinterDriver.fbrry.isConnected() ) {
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', '#0c6b00');
-                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter ONLINE</li>");
-
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', colorGreen);
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter CONECTADO</li>");
             } else {
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', '#ce2116');
-                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter DESCONECTADO</li>");
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', colorRed );
             }
-            PrinterDriver.$printerDriverContainer.appendTo( $("body") );
+            PrinterDriver.$printerDriverContainer.appendTo( $("#listado-mesas") );
 
             // al conectar poner en verde
             PrinterDriver.fbrry.bind('open', function(){
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', '#0c6b00');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', colorGreen);
+                PrinterDriver.$printerDriverContainer.css('color', colorGreen);
+
+                var msgAnt = $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html();
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter CONECTADO</li>"+msgAnt);
             });
 
             // al desconectar poner en rojo nuevDataamente
             PrinterDriver.fbrry.bind('close', function(){
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', '#ce2116');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', colorRed);
+                PrinterDriver.$printerDriverContainer.css('color', colorRed);
+
+                var msgAnt = $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html();
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter DESCONECTADO</li>"+msgAnt);
             });
 
             PrinterDriver.fbrry.bind('fb:msg', function( ev, evData ){

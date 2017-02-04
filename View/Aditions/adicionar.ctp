@@ -16,11 +16,11 @@
 -->
 <!-- Pagina 1, Home Page por default segun JQM: Listado de Mesas -->
 <div data-role="page" id="listado-mesas">
-    <div style="padding: 0px; position: absolute; z-index:99999; margin: 3px;">
+    <div class="brand-logo">
             <?php
-                $imgLogo = $this->Html->image('/paxapos/img/isologo_rojo.png', array('height'=>'50px'));
+                $imgLogo = $this->Html->image('/paxapos/img/isologo_rojo.png', array('class'=>'brand-logo-isologo'));
 
-                $imgpaxapos = $this->Html->image('/paxapos/img/logotypo_azul.png', array('style'=>'height: 30px; position:relative; top: -10px; left: 20px; opacity: 0.8'));
+                $imgpaxapos = $this->Html->image('/paxapos/img/logotypo_azul.png', array('class'=>'brand-logo-logotipo'));
 
                 $link = $this->Html->link($imgLogo, '#adicion-opciones' , array(
                        // 'data-ajax' => 'false',

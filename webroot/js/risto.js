@@ -3,8 +3,12 @@
  *
  * Paquete Risto
  */
-var Risto = {
-    modelizar: function(obToModelizar){
+
+if ( typeof Risto == 'undefined' ) {
+  var Risto = {};
+}
+
+Risto.modelizar = function(obToModelizar){
         
         obToModelizar.timeCreated = function(){
             var d;
@@ -24,7 +28,6 @@ var Risto = {
             var min =  (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
             return d.getHours()+":"+min;
         }
-    }
 }
 
 

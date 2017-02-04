@@ -2,6 +2,10 @@
 <script id="listaComandas" type="text/x-jquery-tmpl">
    <div data-role="collapsible">
        <h3>
+          <span data-bind="visible: !id()">
+            <span style="font-size: 8pt; color: #80D8F6">Guardando</span>
+            <?php echo $this->Html->image('/aditions/css/img/loading.gif'); ?>
+         </span>
            <span class="id-comanda">#<span data-bind="text: id"></span></span>  <span class="hora-comanda"  data-bind="text: timeCreated()"></span>&nbsp;&nbsp;&nbsp;
            <span class="comanda-listado-productos-string" data-bind="text: productsStringListing()"></span>
            
@@ -169,12 +173,9 @@
 <!-- Template: Listado de productos del detalle Comanda -->
 <script id="li-productos-detallecomanda" type="text/x-jquery-tmpl">
  <li class="ui-li ui-li-static ui-body-c">
-     <span data-bind="visible: !id()">
-        <span style="font-size: 8pt; color: #80D8F6">Guardando</span>
-        <?php echo $this->Html->image('/aditions/css/img/loading.gif'); ?>
-     </span>
+     
 
-    <span data-bind="visible: id()">
+    <span>
        <span class="producto-precio">p/u: {{= '$'}}<span data-bind="text: precio()"></span></span>
        
        <span data-bind="visible: esEntrada(), css: { es_entrada: esEntrada()}" href="#" title="Entrada" data-theme="c">E</span>

@@ -516,7 +516,7 @@ $(document).bind("mobileinit", function(){
                 error = true;
               }
 
-              if ( !cubiertos && Risto.Adition.cubiertosObligatorios) {
+              if ( !cubiertos && Risto.cubiertosObligatorios) {
                 $(".cubiertos-mensaje-error-vacio", "#abrir-mesa-nueva").show();
                 error = true;
               }
@@ -572,7 +572,7 @@ $(document).bind("mobileinit", function(){
               }
           }
 
-          if ( Risto.Adition.cubiertosObligatorios ) {
+          if ( Risto.cubiertosObligatorios ) {
             $(".mesa-cubiertos-input").show();
           } else {
             $(".mesa-cubiertos-input").hide();
@@ -636,7 +636,7 @@ $(document).bind("mobileinit", function(){
                 val = $(this).val();
 
             if ( val.length > 2 )
-            $.getJSON(URL_DOMAIN + TENANT +'/clientes/index', {
+            $.getJSON(Risto.URL_DOMAIN + Risto.TENANT +'/clientes/index', {
                 'search' : val
             }, function (e) {
               clientesNuevos = [];
@@ -924,7 +924,6 @@ $(document).ready(function() {
 
    beforePageChangeStuff();
     
-
     $("#mesas-time-reload").text(Risto.MESAS_RELOAD_INTERVAL/1000);
     
 

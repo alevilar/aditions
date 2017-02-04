@@ -203,7 +203,7 @@ Risto.Adition.detalleComanda.prototype = {
             // guardar cambios
             var dc = this;
             $cakeSaver.send({
-               url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/edit/' + id,
+               url: Risto.URL_DOMAIN + Risto.TENANT + '/comanda/detalle_comandas/edit/' + id,
                obj: dc
             }, function() {
             });

@@ -10471,12 +10471,12 @@ if (typeof(Storage) !== "undefined") {
     // Code for localStorage/sessionStorage.
     var fiscalberryHost = localStorage.getItem("fiscalberryHost");
     if ( !fiscalberryHost ) {
-    	fiscalberryHost = FISCALBERRYHOST;
+    	fiscalberryHost = Risto.FISCALBERRYHOST;
     	localStorage.setItem("fiscalberryHost", fiscalberryHost);
     }
 } else {
     // Sorry! No Web Storage support..
-    var fiscalberryHost = FISCALBERRYHOST;
+    var fiscalberryHost = Risto.FISCALBERRYHOST;
 }
 
 
@@ -10498,26 +10498,30 @@ PrinterDriver = {
     
     _setUI: function(){
         $(function(){
+            var colorGreen  = '#0c6b00',
+                colorRed    = '#ce2116';
             PrinterDriver.$printerDriverContainer = 
                             $('<div id="printer-driver-container">\
                                 <div class="icon"></div>\
                                 <ul class="printer-driver-msg"></ul>\
                                </div>');
             PrinterDriver.$printerDriverContainer.css({
-                'position': 'fixed',
-                'top': '10px',
-                'left': '10px',
-                'width': '300px',
-                'height': '20px',
-                'padding': '3px'
+                   'position': 'fixed',
+                   'z-index': '9999999',
+                   'top': '10px',
+                   'right': '10px',
+                   'width': '300px',
+                   'height': '30px',
+                   'padding': '3px',
+                   'overflow': 'hidden',
+                   'color': colorGreen, // verde
             });
 
             $(".icon", PrinterDriver.$printerDriverContainer).css({
-                'position': 'absolute',
-                'top': '10px',
-                'left': '10px',
+                'float': 'right',
                 'width': '20px',
                 'height': '20px',
+                'margin-top': '8px',
                 '-webkit-border-radius': '50px',
                 '-moz-border-radius': '50px',
                 'border-radius': '50px'
@@ -10526,29 +10530,35 @@ PrinterDriver = {
 
             $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).css({
                 'padding': '0px',
-                'position': 'absolute',
-                'top': '-10px',
-                'left': '50px',
-                'width': '300px',
-                'color': '#AEFFAE',
-                'font-size': '8pt'
+                'text-align': 'right',
+                'font-size': '8pt',
+                'margin-right': '30px',
+                'float': 'right'
             });
-
             if ( PrinterDriver.fbrry.isConnected() ) {
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'green');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', colorGreen);
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter CONECTADO</li>");
             } else {
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', colorRed );
             }
             PrinterDriver.$printerDriverContainer.appendTo( $("#listado-mesas") );
 
             // al conectar poner en verde
             PrinterDriver.fbrry.bind('open', function(){
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'green');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', colorGreen);
+                PrinterDriver.$printerDriverContainer.css('color', colorGreen);
+
+                var msgAnt = $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html();
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter CONECTADO</li>"+msgAnt);
             });
 
             // al desconectar poner en rojo nuevDataamente
             PrinterDriver.fbrry.bind('close', function(){
-                $(".icon", PrinterDriver.$printerDriverContainer).css('background', 'red');
+                $(".icon", PrinterDriver.$printerDriverContainer).css('background', colorRed);
+                PrinterDriver.$printerDriverContainer.css('color', colorRed);
+
+                var msgAnt = $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html();
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html("<li>PaxaPrinter DESCONECTADO</li>"+msgAnt);
             });
 
             PrinterDriver.fbrry.bind('fb:msg', function( ev, evData ){
@@ -10560,7 +10570,8 @@ PrinterDriver = {
                         }
                     }
                 }
-                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html(msg);
+                var msgAnt = $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html();
+                $(".printer-driver-msg", PrinterDriver.$printerDriverContainer).html(msg + msgAnt);
             });
         });
     },
@@ -11042,8 +11053,12 @@ PrinterDriver.init();/*---------------------------------------------------------
  *
  * Paquete Risto
  */
-var Risto = {
-    modelizar: function(obToModelizar){
+
+if ( typeof Risto == 'undefined' ) {
+  var Risto = {};
+}
+
+Risto.modelizar = function(obToModelizar){
         
         obToModelizar.timeCreated = function(){
             var d;
@@ -11063,7 +11078,6 @@ var Risto = {
             var min =  (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
             return d.getHours()+":"+min;
         }
-    }
 }
 
 
@@ -11400,7 +11414,7 @@ Mozo.prototype = {
         } else {
             mediaId = this.media_id;
         }
-        return URL_DOMAIN + TENANT + "/risto/medias/thumb/" + mediaId + "/88/88";
+        return Risto.URL_DOMAIN + Risto.TENANT + "/risto/medias/thumb/" + mediaId + "/88/88";
     },
 
 
@@ -11631,14 +11645,14 @@ var MESA_ESTADOS_POSIBLES =  {
         event: Risto.Adition.EventHandler.mesaAbierta ,
         id: 1,
         icon: 'mesa-abierta',
-        url: URL_DOMAIN + TENANT + '/mesa/mesas/add'
+        url: Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/add'
     },
     reabierta : {
         msg: 'Re-Abierta',
         event: Risto.Adition.EventHandler.mesaAbierta ,
         id: 1,
         icon: 'mesa-abierta',
-        url: URL_DOMAIN + TENANT  + '/mesa/mesas/reabrir'
+        url: Risto.URL_DOMAIN + Risto.TENANT  + '/mesa/mesas/reabrir'
     },
     checkout: {
         msg: 'Cerrada',
@@ -11651,7 +11665,7 @@ var MESA_ESTADOS_POSIBLES =  {
         event: Risto.Adition.EventHandler.mesaCerrada,
         id: 2,
         icon: 'mesa-cerrada',
-        url: URL_DOMAIN + TENANT + '/mesa/mesas/cerrarMesa'
+        url: Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/cerrarMesa'
     },
     cuponPendiente: {
         msg: 'con Cupón Pendiente',
@@ -11682,7 +11696,7 @@ var MESA_ESTADOS_POSIBLES =  {
         event: Risto.Adition.EventHandler.mesaBorrada,
         id: 0,
         icon: '',
-        url: URL_DOMAIN + TENANT + '/mesa/mesas/delete'
+        url: Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/delete'
     },
     seleccionada: {
         msg: 'Seleccionada',
@@ -11951,18 +11965,18 @@ Mesa.prototype = {
    
 
     /* listado de URLS de accion con la mesa */
-    urlGetData: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/ticket_view/'+this.id() },
-    urlView: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/view/'+this.id() },
-    urlEdit: function() { return URL_DOMAIN + TENANT + '/mesas/ajax_edit/'+this.id() },
-    urlAdd: function() { return URL_DOMAIN + TENANT + '/mesa/mesas/add.json' },
-    urlFullEdit: function() { return URL_DOMAIN + TENANT + '/mesas/edit/'+this.id() },
-    urlDelete: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/delete/'+this.id() },
-    urlComandaAdd: function() { return URL_DOMAIN + TENANT +'/mesa/comandas/add/'+this.id() },
-    urlReimprimirTicket: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/imprimirTicket/'+this.id() },
-    urlCerrarMesa: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/cerrarMesa/'+this.id() },
-    urlReabrir: function() { return URL_DOMAIN + TENANT +'/mesa/mesas/reabrir/'+this.id() },
+    urlGetData: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/ticket_view/'+this.id() },
+    urlView: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/view/'+this.id() },
+    urlEdit: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesas/ajax_edit/'+this.id() },
+    urlAdd: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/add.json' },
+    urlFullEdit: function() { return Risto.URL_DOMAIN + Risto.TENANT + '/mesas/edit/'+this.id() },
+    urlDelete: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/mesas/delete/'+this.id() },
+    urlComandaAdd: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/comandas/add/'+this.id() },
+    urlReimprimirTicket: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/mesas/imprimirTicket/'+this.id() },
+    urlCerrarMesa: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/mesas/cerrarMesa/'+this.id() },
+    urlReabrir: function() { return Risto.URL_DOMAIN + Risto.TENANT +'/mesa/mesas/reabrir/'+this.id() },
     urlAddCliente: function( clienteId ){
-        var url = URL_DOMAIN + TENANT + '/mesa/mesas/addClienteToMesa/'+this.id();
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/addClienteToMesa/'+this.id();
         if (clienteId){
             url += '/'+clienteId;
         }
@@ -12159,7 +12173,7 @@ Mesa.prototype = {
 
 
     doCheckout: function () {        
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/checkout';
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/checkout';
         var id;
         if (typeof this.id == 'function') {
             id = this.id();
@@ -12202,7 +12216,7 @@ Mesa.prototype = {
      * Envia un ajax con la peticion de cerrar esta mesa
      */
     cerrar: function(){
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/cerrarMesa' + '/' + this.currentMesa.id + '/0',
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/cerrarMesa' + '/' + this.currentMesa.id + '/0',
             self = this;
             
         $.get(url, {}, function(){
@@ -12215,7 +12229,7 @@ Mesa.prototype = {
      * Envia un ajax con la peticion de borrar esta mesa
      */
     borrar : function(){
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/delete/' +this.id,
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/delete/' +this.id,
             self = this;
         if (this.id() ) {
             $.get(url, {}, function(){
@@ -12285,7 +12299,7 @@ Mesa.prototype = {
         if (!data['data[Mesa][id]']) {
             data['data[Mesa][id]'] = this.id();
         }
-        $.post( window.URL_DOMAIN + TENANT + '/mesa/mesas/ajax_edit', data);
+        $.post( Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/ajax_edit', data);
         return this;
     },
     
@@ -12591,7 +12605,7 @@ Mesa.prototype = {
 
         // guardo los pagos
         var ret = $cakeSaver.send({
-            url: URL_DOMAIN + TENANT + '/mesa/pagos/add',
+            url: Risto.URL_DOMAIN + Risto.TENANT + '/mesa/pagos/add',
             obj: m
         });
 
@@ -12716,7 +12730,7 @@ Risto.Adition.comanda.prototype = {
                 PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this);
             } else {
                 // imprimir con server
-                $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
+                $.get(Risto.URL_DOMAIN + Risto.TENANT + '/comanda/comandas/imprimir/' +this.id());
             }
             
             
@@ -12803,35 +12817,40 @@ Risto.Adition.comandaFabrica.prototype = {
 
         var self = this;
          //  para cada comandera
-        var ret = $cakeSaver.send({
-            url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/add.json', 
-            obj: comanderaComanda
-        }).done( function ( data ) {
+        var mesaId = parseInt(self.mesa.id());
+        if ( mesaId && mesaId > 0) {
+            comanderaComanda.mesa_id(mesaId);
+            this.mesa.sync(0);
+            var ret = $cakeSaver.send({
+                url: Risto.URL_DOMAIN + Risto.TENANT + '/comanda/detalle_comandas/add.json', 
+                obj: comanderaComanda
+            }).done( function ( data ) {
 
-            self.mesa.sync(1);
-            if ( data && data.Comanda && data.Comanda.DetalleComanda) {
-                data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
-                nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
+                self.mesa.sync(1);
+                if ( data && data.Comanda && data.Comanda.DetalleComanda) {
+                    data.Comanda.Comanda.DetalleComanda = data.Comanda.DetalleComanda;
+                    nuevacomanderaComanda = new Risto.Adition.comanda( data.Comanda.Comanda );
 
-                  // comanderaComanda.id( data.Comanda.Comanda.id );
-                comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
-            }
+                      // comanderaComanda.id( data.Comanda.Comanda.id );
+                    comanderaComanda.DetalleComanda( nuevacomanderaComanda.DetalleComanda() );
+                }
 
-        }).fail( function ( ev ) {
-            self.mesa.sync(-1);
+            }).fail( function ( ev ) {
+                self.mesa.sync(-1);
 
-            setTimeout(function(){
-                self.__doCakeSave( comanderaComanda );
-            }, Risto.MESAS_RELOAD_INTERVAL);
-        });
+                setTimeout(function(){
+                    self.__doCakeSave( comanderaComanda );
+                }, Risto.MESAS_RELOAD_INTERVAL);
+            });
 
-        return ret;
+            return ret;
+        }
     },
 
     __generarComandaXComandera  : function(comandera, comandaJsonCopy){
         var comanderaComanda;
 
-        this.mesa.sync(0);
+        
 
         comanderaComanda = new Risto.Adition.comanda( comandaJsonCopy );
         comanderaComanda.DetalleComanda( comandera );
@@ -12922,17 +12941,7 @@ Risto.Adition.comandaFabrica.prototype = {
                 jQuery.error("no hay una mesa setteada. No se puede guardar una comanda de ninguna mesa");
                 return null;
         }
-        
-        // si la mesa no tiene ID es porque aun no se guardo.. entonces vuelvo 
-        // a llamar a este metodo pero dentro de un rato
-        if ( !this.mesa.id() ) {
-            var este = this;
-            setTimeout( function(){ 
-                este.save();
-            }, Risto.MESAS_RELOAD_INTERVAL); 
-            return null;
-        }
-        
+     
         
         // separo la comanda generada en varias comandas
         // se genera 1 comanda por cada impresora que haya (comandera)
@@ -13312,11 +13321,11 @@ Risto.Adition.adicionar = {
         Risto.Adition.handleMesasRecibidas.created.call( Risto.Adition.adicionar, mesas );
 
 
-        Risto.Adition.tenantIo = io(URL_DOMAIN.slice(0,-1)+":8085");
+        Risto.Adition.tenantIo = io(Risto.URL_DOMAIN.slice(0,-1)+":8085");
 
 
         Risto.Adition.tenantIo.on('connect', function(){
-            Risto.Adition.tenantIo.emit('join', TENANT);
+            Risto.Adition.tenantIo.emit('join', Risto.TENANT);
         });
 
 
@@ -13369,7 +13378,7 @@ Risto.Adition.adicionar = {
         /**
          *  Esta funcion es la que ejecuta el ajax que va a devolver las mesas
          */
-            var url = URL_DOMAIN + TENANT + "/";
+            var url = Risto.URL_DOMAIN + Risto.TENANT + "/";
             
             // traer todas
             url = url + 'mesa/mozos/mesas_abiertas.json';
@@ -13482,7 +13491,7 @@ Risto.Adition.adicionar = {
      */
     ticketView: function ( elementToUpdate ) {
         var elem = elementToUpdate || document.createElement('div');
-        var url = window.URL_DOMAIN + TENANT + '/mesa/mesas/ticket_view' + '/'+this.currentMesa.id ;
+        var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/mesas/ticket_view' + '/'+this.currentMesa.id ;
         return $(elem).load(url);
     },
 
@@ -13980,9 +13989,9 @@ Risto.Adition.pago.prototype = {
     
     image: function(){
         if (this.TipoDePago() && typeof this.TipoDePago().media_id == 'function' && this.TipoDePago().media_id() ) {
-            return URL_DOMAIN + TENANT + '/risto/medias/view/' + this.TipoDePago().media_id();
+            return Risto.URL_DOMAIN + Risto.TENANT + '/risto/medias/view/' + this.TipoDePago().media_id();
         } else {
-            return URL_DOMAIN + TENANT + '/risto/medias/view/' + this.TipoDePago().media_id;
+            return Risto.URL_DOMAIN + Risto.TENANT + '/risto/medias/view/' + this.TipoDePago().media_id;
         }
 
         return '';
@@ -13991,7 +14000,7 @@ Risto.Adition.pago.prototype = {
 
     eliminar: function ( mesa ) {
         if ( this.id() ) {
-            var url = URL_DOMAIN + TENANT + '/mesa/pagos/delete/' + this.id();
+            var url = Risto.URL_DOMAIN + Risto.TENANT + '/mesa/pagos/delete/' + this.id();
             $.ajax({
                 url: url,
                 type: 'DELETE'
@@ -14208,7 +14217,7 @@ Risto.Adition.detalleComanda.prototype = {
             // guardar cambios
             var dc = this;
             $cakeSaver.send({
-               url: URL_DOMAIN + TENANT + '/comanda/detalle_comandas/edit/' + id,
+               url: Risto.URL_DOMAIN + Risto.TENANT + '/comanda/detalle_comandas/edit/' + id,
                obj: dc
             }, function() {
             });
@@ -15241,7 +15250,7 @@ $(document).bind("mobileinit", function(){
                 error = true;
               }
 
-              if ( !cubiertos && Risto.Adition.cubiertosObligatorios) {
+              if ( !cubiertos && Risto.cubiertosObligatorios) {
                 $(".cubiertos-mensaje-error-vacio", "#abrir-mesa-nueva").show();
                 error = true;
               }
@@ -15297,7 +15306,7 @@ $(document).bind("mobileinit", function(){
               }
           }
 
-          if ( Risto.Adition.cubiertosObligatorios ) {
+          if ( Risto.cubiertosObligatorios ) {
             $(".mesa-cubiertos-input").show();
           } else {
             $(".mesa-cubiertos-input").hide();
@@ -15361,7 +15370,7 @@ $(document).bind("mobileinit", function(){
                 val = $(this).val();
 
             if ( val.length > 2 )
-            $.getJSON(URL_DOMAIN + TENANT +'/clientes/index', {
+            $.getJSON(Risto.URL_DOMAIN + Risto.TENANT +'/clientes/index', {
                 'search' : val
             }, function (e) {
               clientesNuevos = [];
@@ -15649,7 +15658,6 @@ $(document).ready(function() {
 
    beforePageChangeStuff();
     
-
     $("#mesas-time-reload").text(Risto.MESAS_RELOAD_INTERVAL/1000);
     
 
@@ -15902,7 +15910,7 @@ Risto.Adition.menu = {
     __getRemoteMenu: function(){
         var este = this;
         // si no hay categorias las cargo via AJAX
-        $.getJSON( URL_DOMAIN + TENANT + '/product/categorias/listar.json', function(data){
+        $.getJSON( Risto.URL_DOMAIN + Risto.TENANT + '/product/categorias/listar.json', function(data){
             if ( data.categorias ) {
                 este.__iniciarCategoriasTreeServer( data.categorias );
             }            

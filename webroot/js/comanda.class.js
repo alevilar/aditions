@@ -89,7 +89,7 @@ Risto.Adition.comanda.prototype = {
                 PrinterDriver.printComanda( Risto.Adition.adicionar.currentMesa() , this);
             } else {
                 // imprimir con server
-                $.get(URL_DOMAIN + TENANT + '/comanda/comandas/imprimir/' +this.id());
+                $.get(Risto.URL_DOMAIN + Risto.TENANT + '/comanda/comandas/imprimir/' +this.id());
             }
             
             

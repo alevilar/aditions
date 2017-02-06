@@ -20,8 +20,14 @@
 
       
 $(document).bind("mobileinit", function(){    
+  console.info("Inicializando v2017-02-04.12.55");
 
-
+  $(document).ajaxError(function( event, jqxhr, settings, thrownError ){
+    if ( jqxhr.status == 403 ) {
+      // FORBIDDEN      
+      $.mobile.changePage('#adicion-login');
+    }
+  });
 
 
 
@@ -953,7 +959,6 @@ function productoSeleccionado(e) {
 
 
 function beforePageChangeStuff() {
-
 
   function imprimirMesasEstadoError( ev ) {
       var mesasList = [];

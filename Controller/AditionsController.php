@@ -29,6 +29,8 @@ class AditionsController extends AditionsAppController {
 	 */
 	function adicionar() {
 			$this->set('tipo_de_pagos', $this->Mozo->Mesa->Pago->TipoDePago->find('all'));
+	        $this->set('printer', $this->Printer->read(null, Configure::read('Printers.fiscal_id') ));
+
 		 	$this->set('mozos', $this->Mozo->dameActivos());
         	$this->Printer->recursive = -1;
             $this->set('observaciones', ClassRegistry::init('Comanda.Observacion')->find('list', array('order' => 'Observacion.name')));

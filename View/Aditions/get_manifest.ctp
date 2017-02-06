@@ -1,11 +1,14 @@
 CACHE MANIFEST
-# 2017-02-03 22:59 :v1
+# 2017-02-04 10:09 :v1
 
 
 # Explicitly cached entries
 <?php
 // home page
 echo $this->Html->url( array('plugin'=>'risto', 'controller'=>'pages', 'action'=>'display', 'dashboard'), true). "\n";
+echo $this->Html->url( array('plugin'=>'users', 'controller'=>'users', 'action'=>'tenant_login'), true). "\n";
+echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'adicionar'), true). "\n";
+
 
 //scripts de Cake
 echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_init'), true). "\n";
@@ -109,16 +112,64 @@ echo $this->Html->url( '/aditions/css/img/editarmesa.png', true) ."\n";
 
 
 
+
+echo $this->Html->url( '/risto/css/risto_base_style.css', true) ."\n";
+
+
+echo $this->Html->url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')."\n";
+echo $this->Html->url('/paxapos/css/paxapos-bootstrap-supernice.css', true). "\n";
+echo $this->Html->url('/risto/css/ristorantino/style.css', true). "\n";
+echo $this->Html->url('/risto/lib/bootstrap_datetimepicker/css/bootstrap-datetimepicker.min.css', true). "\n";
+echo $this->Html->url('/risto/css/ristorantino/print.css', true). "\n";
+
+
+
+// CSS by Rol
+if ( $this->Session->check('Auth.User.Rol') ) {
+    $roles = $this->Session->read('Auth.User.Rol');
+
+    foreach ($roles as $r ) {
+    	$rcss = "acl-" . $r['machin_name'];
+        $ppath = App::pluginPath('Risto');
+        if ( file_exists( $ppath . DS . 'webroot' . DS . 'css' . DS . $rcss . '.css') ) {
+            echo $this->Html->url('/risto/css/'.$rcss.".css");
+        }
+    }
+}
+
+
+
+echo $this->Html->url( 'https://code.jquery.com/jquery-2.2.4.min.js', true ). "\n";
+echo $this->Html->url( 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js', true ). "\n";
+echo $this->Html->url( '/risto/lib/bootstrap_datetimepicker/js/bootstrap-datetimepicker.min.js', true ). "\n";
+
+echo $this->Html->url( '/risto/js/jquery/jquery-ui.js', true)."\n";
+echo $this->Html->url( '/paxapos/img/logotip_azul_con_isologo_rojo.png', true). "\n";
+
+
+
+echo $this->Html->url( '/risto/font-awesome-4.6.3/css/font-awesome.min.css', true). "\n";
+echo $this->Html->url( '/risto/css/layout_header_late.css', true). "\n";
+echo $this->Html->url( '/risto/css/ristorantino/home/ristorantino.dashboard.css', true). "\n";
+echo $this->Html->url( '/risto/js/layout_header_late.js', true). "\n";
+
+
+
 ?>
+
+http://fonts.googleapis.com/css?family=Merriweather+Sans:700,400,300
+
 
 
 # offline.html will be displayed if the user is offline
 # FALLBACK:
-<?php echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_mesas_init'), true); ?> <?php echo $this->Html->url( '/aditions/js/js_mesas_init_fallback', true ). "\n"; ?>
+<?php echo $this->Html->url( array('plugin'=>'risto', 'controller'=>'pages', 'action'=>'display', 'dashboard'), true). " ".$this->Html->url( array('plugin'=>'risto', 'controller'=>'pages', 'action'=>'display', 'dashboard_offline'), true)."\n";
+ ?>
 
 # All other resources (e.g. sites) require the user to be online. 
 NETWORK:
 <?php echo $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_mesas_init'), true). "\n"; ?>
+*
 
 # Additional resources to cache
 # CACHE:

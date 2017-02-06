@@ -228,6 +228,22 @@
     </div>
 </div>
 
+
+
+<!-- 
+            Opciones ADICIONISTA
+-->
+<div data-role="page" id="adicion-login">
+    <div data-role="header">
+        <h1>LOGIN</h1>
+    </div>
+    <div data-role="content">
+        <iframe src="<?php echo $this->Html->url(array('plugin'=>'users', 'controller'=>'users', 'action'=>'tenant_login'));?>" style="width: 100%; height: 670px"></iframe>
+    </div>
+</div>
+
+
+
 <!--
                         LISTADO MESAS CERRADAS:::: MODO CAJERO
 

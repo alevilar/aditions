@@ -69,14 +69,7 @@ Risto.getPrinterId = function( id ) {
     return null;
 }
 
-
 window.addEventListener("load", function load(event){
-
-    moment.locale("es");
-    if ( typeof Risto.CalendarGrid != 'undefined' ) {
-        Risto.Adition.adicionar.calendarGrid = new Risto.CalendarGrid;
-    }
-
 
     $.extend(  $.mobile , {
         backBtnText: "Volver"

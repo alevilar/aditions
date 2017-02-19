@@ -61,6 +61,7 @@
                     '/aditions/css/jquery-mobile/jquery.mobile.actionsheet',
                     '/aditions/css/ristorantino',
                     '/aditions/css/jquery-mobile/jquery.mobile-custom',
+                    'Risto.layout_header_late',
                     ));
 
                 echo $this->element('Risto.per_role_style');
@@ -126,15 +127,17 @@
                 if ( Configure::check('Site.type') && Configure::read('Site.type') == SITE_TYPE_HOTEL) {
                     // Add CSS
                     echo $this->Html->css('/aditions/css/ristorantino_hotel');
+                    ?>
+                    <script type="text/javascript">
+                            moment.locale("es");
+                            Risto.Adition.adicionar.calendarGrid = new Risto.CalendarGrid;
+                    </script>
+                    <?php
                 }
 
             ?>
 <?php
-
-
-    
     echo $scripts_for_layout;
-    
 ?>
 
 </head>

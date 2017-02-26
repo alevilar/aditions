@@ -157,7 +157,7 @@ echo $this->Html->url( '/risto/js/layout_header_late.js', true). "\n";
 
 ?>
 
-http://fonts.googleapis.com/css?family=Merriweather+Sans:700,400,300
+https://fonts.googleapis.com/css?family=Merriweather+Sans:700,400,300
 
 
 

@@ -14,10 +14,10 @@
 
     <?php
     //scripts de Cake
-    $url = $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_init'), true);
+    $url = $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_init', 'ext'=>'js'), true);
     echo $this->Html->script( $url );
 
-    $url = $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_mesas_init'), true);
+    $url = $this->Html->url( array('plugin'=>'aditions', 'controller'=>'aditions', 'action'=>'js_mesas_init', 'ext'=>'js'), true);
     echo $this->Html->script( $url );
     unset($url);
     ?>

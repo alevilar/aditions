@@ -1,6 +1,18 @@
-var app = require('http').createServer(handler)
+
+const fs = require('fs');
+var config = require('./config');
+
+
+// options read from config.js
+if (typeof config != "undefined") {
+  var app = require('https').createServer(config, handler)
+  var HOSTMETHOD = 'https://';
+} else {
+  var app = require('http').createServer(handler)
+  var HOSTMETHOD = 'http://';
+}
+
 var io = require('socket.io')(app);
-var fs = require('fs');
 
 
 var net = require('net');
@@ -75,6 +87,6 @@ io.on('connection', function(socket) {
 
 console.log("Version "+APPVERSION+" running...")
 console.log('CakePHP Server listening on ' + HOST +':'+ PORT);
-console.log('Websocket listening on ' + HOST +':'+ WS_PORT);
+console.log('Websocket listening on ' + HOSTMETHOD + HOST +':'+ WS_PORT);
 
 

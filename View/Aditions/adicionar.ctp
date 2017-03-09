@@ -1,6 +1,8 @@
 <?php echo $this->element('jq_templates'); ?>
 <?php echo $this->element('jq_calendar'); ?>
 
+<?php echo $this->Html->css('Risto.layout_header_late'); ?>
+
 
 <?php if (Configure::read('Site.type') != SITE_TYPE_HOTEL ) {  ?>
 
@@ -256,7 +258,7 @@
             <?php
                 $imgLogo = $this->Html->image('/paxapos/img/isologo_rojo.png', array('height'=>'50px'));
 
-                $imgpaxapos = $this->Html->image('/paxapos/img/logotypo_azul.png', array('style'=>'height: 30px; position:relative; top: -10px; left: 20px; opacity: 0.8'));
+                $imgpaxapos = $this->Html->image('/paxapos/img/logotypo_blanco.png', array('style'=>'height: 30px; position:relative; top: -10px; left: 20px; opacity: 0.8'));
 
                 $link = $this->Html->link($imgLogo, '#cajero-opciones' , array(
                        // 'data-ajax' => 'false',
@@ -275,7 +277,7 @@
     </div>
 
 
-	<div  data-role="header" data-theme="c">
+	<div  data-role="header" data-theme="a">
         <h1><span style="color: #9a820b" data-bind="text: adn().mesasCerradas().length">0</span> <?php echo Inflector::pluralize( Configure::read('Mesa.tituloMesa') )?> Cerradas
             y <span data-bind="text: Math.abs(adn().mesasCerradas().length - adn().mesas().length)"></span> abiertas
         </h1>

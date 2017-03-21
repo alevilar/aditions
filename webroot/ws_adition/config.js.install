@@ -9,10 +9,16 @@
 key and crt for SSL and starts HTTPS server 
 uncomment this lines if you want to turn on SSL
 */
-// const fs = require('fs');
-// var keyPath = 'PATH_TO.key;
-// var crtPath = 'PATH_TO.crt';
-// const options = {
+const fs = require('fs');
+
+//var keyPath = '/etc/letsencrypt/live/dev.paxapos.com/privkey.pem';
+//var crtPath = '/etc/letsencrypt/live/dev.paxapos.com/fullchain.pem';
+const config = undefined;
+// this const is used for load https server
+//const config = {
 //  key: fs.readFileSync(keyPath),
 //  cert: fs.readFileSync(crtPath)
 //};
+
+module.exports = config;
+

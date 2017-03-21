@@ -10,6 +10,8 @@ Risto.Adition.cliente = function(jsonMap){
     this.IvaResponsabilidad = ko.observable(null);
     this.TipoDocumento = ko.observable(null);
     this.porcentaje = ko.observable( undefined );
+    this.telefono = ko.observable( "" );
+    this.domicilio = ko.observable( "" );
 
     return this.initialize(jsonMap);
 }

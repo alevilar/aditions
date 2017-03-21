@@ -2,9 +2,12 @@
 const fs = require('fs');
 var config = require('./config');
 
+console.log(config);
+
+console.log(config != {}) ;
 
 // options read from config.js
-if (typeof config != "undefined") {
+if (config && typeof config != "undefined") {
   var app = require('https').createServer(config, handler)
   var HOSTMETHOD = 'https://';
 } else {

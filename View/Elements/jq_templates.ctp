@@ -212,7 +212,7 @@ el ajax que verifica el estado de las mesas (si fue abierta o cerrada alguna. --
               </span>
 
 
-                <span  class="mesa-tipofactura" data-bind="visible: clienteTipoFacturaText()">
+                <span  class="mesa-tipofactura" data-bind="visible: clienteNameData()">
                     <span data-bind="text: clienteTipoFacturaText()"></span>
                     <span data-bind="text: clienteNameData()"></span>
                 </span>

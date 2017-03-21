@@ -414,7 +414,7 @@ PrinterDriver = {
             jsonRet["tipo_cbte"] = "T"; // tiquet pr defecto
 
 
-            if ( mesa.Cliente() &&  mesa.Cliente().IvaResponsabilidad() ) {
+            if ( mesa.Cliente() &&  mesa.Cliente().IvaResponsabilidad() && mesa.Cliente().IvaResponsabilidad().tipo_factura_id()) {
                 var tipo_factura_id = mesa.Cliente().IvaResponsabilidad().tipo_factura_id();
                 var mapTipoFactura = JSON.parse( localStorage.getItem("mapTipoFactura") );
                 jsonRet["tipo_cbte"] = mapTipoFactura[tipo_factura_id];
@@ -426,19 +426,35 @@ PrinterDriver = {
                 jsonRet["tipo_cbte"] = mapTipoFactura[tipo_factura_id];
             }
 
-            if ( mesa.Cliente() &&  mesa.Cliente().nrodocumento() ) {
+            if ( mesa.Cliente() ) {
                 
-                var iva_responsabilidad_id = mesa.Cliente().iva_responsabilidad_id();
-                var mapResponsabilidad = JSON.parse( localStorage.getItem("mapResponsabilidad") );
-                jsonRet["tipo_responsable"] = mapResponsabilidad[iva_responsabilidad_id];
+                if ( mesa.Cliente().iva_responsabilidad_id() ) {
+                    var iva_responsabilidad_id = mesa.Cliente().iva_responsabilidad_id();
+                    var mapResponsabilidad = JSON.parse( localStorage.getItem("mapResponsabilidad") );
+                    jsonRet["tipo_responsable"] = mapResponsabilidad[iva_responsabilidad_id];
+                }
 
-                var tipo_doc_id = mesa.Cliente().tipo_documento_id();
-                var mapTipodoc = JSON.parse( localStorage.getItem("mapTipodoc") );
-                jsonRet["tipo_doc"] = mapTipodoc[tipo_doc_id];
+                if ( mesa.Cliente().tipo_documento_id() ) {
+                    var tipo_doc_id = mesa.Cliente().tipo_documento_id();
+                    var mapTipodoc = JSON.parse( localStorage.getItem("mapTipodoc") );
+                    jsonRet["tipo_doc"] = mapTipodoc[tipo_doc_id];
+                }
                 
-                jsonRet["nro_doc"]  = mesa.Cliente().nrodocumento();
-                jsonRet["domicilio_cliente"]  = mesa.Cliente().domicilio();
-                jsonRet["nombre_cliente"]  = mesa.Cliente().nombre();
+                if ( mesa.Cliente().nrodocumento() ) {
+                    jsonRet["nro_doc"]  = mesa.Cliente().nrodocumento();
+                }
+
+                if ( mesa.Cliente().domicilio() ) {
+                    jsonRet["domicilio_cliente"]  = mesa.Cliente().domicilio();
+                }
+
+                if ( mesa.Cliente().telefono() ) {
+                    jsonRet["telefono"]  = mesa.Cliente().telefono();
+                }
+
+                if ( mesa.Cliente().nombre() ) {
+                    jsonRet["nombre_cliente"]  = mesa.Cliente().nombre();
+                }
             }
 
 

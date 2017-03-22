@@ -766,6 +766,23 @@ Mesa.prototype = {
             }
             return texto;
         },
+
+
+        clienteDomicilio: function(){
+            var texto = "";
+            if ( this.Cliente() && typeof this.Cliente().domicilio == 'function' ) {
+                texto = this.Cliente().domicilio();
+            }
+            return texto;
+        },
+
+        clienteTelefono: function(){
+            var texto = "";
+            if ( this.Cliente() && typeof this.Cliente().telefono == 'function' ) {
+                texto = this.Cliente().telefono();
+            }
+            return texto;
+        },
         
         
         /**

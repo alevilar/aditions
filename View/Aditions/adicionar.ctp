@@ -472,6 +472,15 @@
                         <button id="mesa-observacion-cancel" type="button" value="Guardar" style="display: none" data-enhance="false" data-role="none">Cancelar</button>
                     </div>                            
 
+
+                    <div data-bind="visible: adn().currentMesa().clienteTelefono() || adn().currentMesa().clienteDomicilio()">
+                        <h3 class="titulo-comanda">Detalle del Cliente: "<span data-bind="text: adn().currentMesa().clienteNameData()" style="white-space: normal"></span>"</h3>
+                            <div data-bind="visible: adn().currentMesa().clienteDomicilio()"><span style="opacity:0.8">Domicilio:</span> <b data-bind="text: adn().currentMesa().clienteDomicilio()"></b></div>
+                            <div data-bind="visible: adn().currentMesa().clienteTelefono()"><span style="opacity:0.8">Teléfono: </span> <b data-bind="text: adn().currentMesa().clienteTelefono()"></b></div>
+                            <br><br>
+                    </div>
+
+
                     <div class="date-checkin-checkout" data-bind="visible: adn().currentMesa().checkin() || adn().currentMesa().checkin() ">
                         <div class="date-checkin" data-bind="visible: adn().currentMesa().checkin()">
                             <span class="title">Checkin:</span> <span class="data" data-bind="text: moment(adn().currentMesa().checkin()).format('dddd, DD/MM/YY HH:mm')"></span>
